@@ -10,11 +10,7 @@
             background: #050607; 
             font-family: 'Inter', sans-serif;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            perspective: 1000px; 
+            overflow: hidden; /* We handle scrolling in the container */
             color: white;
         }
 
@@ -28,15 +24,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 20;
+            z-index: 100;
             box-sizing: border-box;
             text-transform: uppercase;
+            pointer-events: none;
         }
 
         .nav-left { font-weight: 900; letter-spacing: 2px; font-size: 0.8rem; }
         .nav-right { font-weight: 400; letter-spacing: 4px; font-size: 0.6rem; opacity: 0.4; }
 
-        /* High-Density Starfield */
+        /* Starfield */
         #star-container {
             position: fixed;
             top: 0;
@@ -51,7 +48,7 @@
             position: absolute;
             background: white;
             border-radius: 50%;
-            animation: moveStar var(--speed) linear infinite, twinkle var(--twinkle-speed) ease-in-out infinite;
+            animation: moveStar var(--speed) linear infinite;
         }
 
         @keyframes moveStar {
@@ -59,57 +56,59 @@
             to { transform: translateY(-10vh); }
         }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        /* The Card */
-        .card-container {
+        /* Scroll Container with Snapping */
+        .main-scroller {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
             position: relative;
             z-index: 10;
-            width: 90%;
-            max-width: 650px;
-            cursor: pointer;
-            transition: transform 0.3s ease-out; 
-            transform-style: preserve-3d;
         }
 
+        .section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            scroll-snap-align: center;
+            perspective: 1000px;
+        }
+
+        /* The Card Design */
         .flashcard {
             background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             padding: 60px;
+            width: 90%;
+            max-width: 650px;
             border-radius: 2px; 
             border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
         }
 
-        .card-number {
-            font-size: 0.7rem;
-            font-weight: 700;
-            opacity: 0.2;
-            letter-spacing: 2px;
-            margin-bottom: 25px;
-            display: block;
+        h1 { font-size: 4.5rem; margin: 0; font-weight: 900; letter-spacing: -4px; transform: translateZ(50px); }
+        p { font-size: 1.1rem; margin-top: 15px; opacity: 0.6; transform: translateZ(30px); }
+
+        /* Arrow Button */
+        .arrow-btn {
+            margin-top: 30px;
+            display: inline-block;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: 0.3s;
+            transform: translateZ(40px);
         }
 
-        h1 {
-            font-size: 4.5rem;
-            margin: 0;
-            font-weight: 900;
-            letter-spacing: -4px;
-            color: white; 
-            transform: translateZ(50px); 
-        }
-
-        p {
-            font-size: 1.1rem;
-            margin-top: 15px;
-            opacity: 0.6;
-            transform: translateZ(30px);
-        }
+        .arrow-btn:hover { opacity: 1; transform: translateZ(40px) translateY(5px); }
 
         .tags-right {
             position: absolute;
@@ -141,59 +140,84 @@
 
     <div id="star-container"></div>
 
-    <div class="card-container" id="tilt-card">
-        <div class="flashcard">
-            <span class="card-number">01</span>
-            <h1>Todouro</h1>
-            <p>Hello there, welcome visitor.</p>
-            
-            <div class="tags-right">
-                <div class="mini-tag">MAN</div>
-                <div class="mini-tag">LEGEND</div>
+    <div class="main-scroller">
+        
+        <div class="section" id="sec1">
+            <div class="flashcard">
+                <h1>Todouro</h1>
+                <p>Welcome to the index.</p>
+                <button class="arrow-btn" onclick="document.getElementById('sec2').scrollIntoView();">↓</button>
+                <div class="tags-right">
+                    <div class="mini-tag">Identity</div>
+                </div>
             </div>
         </div>
+
+        <div class="section" id="sec2">
+            <div class="flashcard">
+                <h1>About Me</h1>
+                <p>Just a creator exploring the digital void.</p>
+                <button class="arrow-btn" onclick="document.getElementById('sec3').scrollIntoView();">↓</button>
+                <div class="tags-right">
+                    <div class="mini-tag">Bio</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="sec3">
+            <div class="flashcard">
+                <h1>Likes</h1>
+                <p>Coding, Space Aesthetics, and Minimal Design.</p>
+                <button class="arrow-btn" onclick="document.getElementById('sec4').scrollIntoView();">↓</button>
+                <div class="tags-right">
+                    <div class="mini-tag">Interests</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="sec4">
+            <div class="flashcard">
+                <h1>Socials</h1>
+                <p>Catch me on Discord or GitHub.</p>
+                <div class="tags-right">
+                    <div class="mini-tag">Discord</div>
+                    <div class="mini-tag">GitHub</div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // High-Density Star Generation
+        // High-Density Starfield
         const stars = document.getElementById('star-container');
-        const starCount = 800; // Massively increased count
-
-        for (let i = 0; i < starCount; i++) {
+        for (let i = 0; i < 600; i++) {
             const s = document.createElement('div');
             s.className = 'star';
-            
-            // Randomly scatter across the screen
             s.style.left = Math.random() * 100 + '%';
             s.style.top = Math.random() * 100 + '%';
-            
-            // Varied tiny sizes to create "depth"
-            const size = Math.random() * 1.2; 
+            const size = Math.random() * 1.5;
             s.style.width = size + 'px';
             s.style.height = size + 'px';
-            
-            // Random movement and twinkle speeds
-            s.style.setProperty('--speed', (Math.random() * 40 + 20) + 's');
-            s.style.setProperty('--twinkle-speed', (Math.random() * 5 + 2) + 's');
-            
+            s.style.setProperty('--speed', (Math.random() * 30 + 15) + 's');
             stars.appendChild(s);
         }
 
-        // Interaction
-        const card = document.getElementById('tilt-card');
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left; 
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = (centerY - y) / 80; 
-            const rotateY = (x - centerX) / 80;
-            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        // Interaction Logic
+        document.querySelectorAll('.flashcard').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left; 
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (centerY - y) / 80; 
+                const rotateY = (x - centerX) / 80;
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            });
         });
     </script>
 </body>
