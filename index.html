@@ -47,12 +47,13 @@
             position: absolute;
             background: white;
             border-radius: 50%;
+            /* Continuous movement upward */
             animation: moveStar var(--speed) linear infinite;
         }
 
         @keyframes moveStar {
-            from { transform: translateY(100vh); }
-            to { transform: translateY(-10vh); }
+            from { transform: translateY(0); }
+            to { transform: translateY(-150vh); }
         }
 
         .main-scroller {
@@ -105,7 +106,7 @@
 
         .arrow-btn:hover { opacity: 1; transform: translateZ(40px) translateY(5px); }
 
-        /* Social List Styling */
+        /* Social Spacing Fixes */
         .social-list {
             margin-top: 40px;
             display: flex;
@@ -116,9 +117,9 @@
 
         .social-item {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Logo left, Handle right */
             align-items: center;
-            padding: 15px 0;
+            padding: 18px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             text-decoration: none;
             color: white;
@@ -132,19 +133,20 @@
         }
 
         .social-icon { font-size: 1.4rem; color: white; }
-        .social-link { font-size: 0.8rem; opacity: 0.4; font-family: monospace; }
+        .social-link { font-size: 0.85rem; opacity: 0.4; font-family: monospace; }
 
         .back-top {
             margin-top: 40px;
             background: none;
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             cursor: pointer;
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             transition: 0.3s;
+            width: 100%; /* Better button alignment */
         }
 
         .back-top:hover { background: white; color: black; }
@@ -220,22 +222,19 @@
                 <p>Todouro on everywhere.</p>
                 
                 <div class="social-list">
-                    <div class="social-list">
-    <a href="https://discord.com/users/1379090219688525898" target="_blank" class="social-item">
-        <i class="fab fa-discord social-icon"></i>
-        <span class="social-link">@todouro</span>
-    </a>
-
-    <a href="https://github.com/todouro" target="_blank" class="social-item">
-        <i class="fab fa-github social-icon"></i>
-        <span class="social-link">/todouro</span>
-    </a>
-
-    <a href="https://instagram.com/Todouro" target="_blank" class="social-item">
-        <i class="fab fa-instagram social-icon"></i>
-        <span class="social-link">@Todouro</span>
-    </a>
-</div>
+                    <a href="https://discord.com/users/1379090219688525898" target="_blank" class="social-item">
+                        <i class="fab fa-discord social-icon"></i>
+                        <span class="social-link">@todouro</span>
+                    </a>
+                    <a href="https://github.com/todouro" target="_blank" class="social-item">
+                        <i class="fab fa-github social-icon"></i>
+                        <span class="social-link">/todouro</span>
+                    </a>
+                    <a href="https://instagram.com/Todouro" target="_blank" class="social-item">
+                        <i class="fab fa-instagram social-icon"></i>
+                        <span class="social-link">@Todouro</span>
+                    </a>
+                </div>
 
                 <button class="back-top" onclick="document.getElementById('sec1').scrollIntoView();">↑ Back to Start</button>
             </div>
@@ -243,47 +242,41 @@
     </div>
 
     <script>
-      // High-Density Starfield
-const stars = document.getElementById('star-container');
+        const stars = document.getElementById('star-container');
 
-for (let i = 0; i < 600; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    
-    s.style.left = Math.random() * 100 + '%';
-    
-    // Mix starting positions: some already on screen (0-100), some below (100-200)
-    // This ensures the site isn't empty when you first load it
-    s.style.top = (Math.random() * 200) + '%';
-    
-    const size = Math.random() * 1.5;
-    s.style.width = size + 'px';
-    s.style.height = size + 'px';
-    
-    s.style.setProperty('--speed', (Math.random() * 20 + 10) + 's');
-    
-    // Removed the delay so they start moving immediately
-    s.style.animationDelay = '0s';
-    
-    stars.appendChild(s);
-}
+        for (let i = 0; i < 600; i++) {
+            const s = document.createElement('div');
+            s.className = 'star';
+            s.style.left = Math.random() * 100 + '%';
+            
+            // Starts everywhere on and below screen for continuous flow
+            s.style.top = (Math.random() * 200) + '%';
+            
+            const size = Math.random() * 1.5;
+            s.style.width = size + 'px';
+            s.style.height = size + 'px';
+            
+            s.style.setProperty('--speed', (Math.random() * 20 + 10) + 's');
+            s.style.animationDelay = '0s';
+            
+            stars.appendChild(s);
+        }
 
-// Keep your existing Interaction Logic for the card tilt
-document.querySelectorAll('.flashcard').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left; 
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = (centerY - y) / 80; 
-        const rotateY = (x - centerX) / 80;
-        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    });
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = `rotateX(0deg) rotateY(0deg)`;
-    });
-});
+        document.querySelectorAll('.flashcard').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left; 
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (centerY - y) / 80; 
+                const rotateY = (x - centerX) / 80;
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            });
+        });
     </script>
 </body>
 </html>
