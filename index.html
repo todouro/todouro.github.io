@@ -243,31 +243,27 @@
     </div>
 
     <script>
-       // High-Density Starfield
+      // High-Density Starfield
 const stars = document.getElementById('star-container');
 
-// Create a large number of stars for density
 for (let i = 0; i < 600; i++) {
     const s = document.createElement('div');
     s.className = 'star';
     
-    // Spread stars across the full width
     s.style.left = Math.random() * 100 + '%';
     
-    // FIX: Start all stars at the bottom (100% or more) 
-    // This ensures they "flow into" the site as they animate up
-    s.style.top = (100 + Math.random() * 100) + '%';
+    // Mix starting positions: some already on screen (0-100), some below (100-200)
+    // This ensures the site isn't empty when you first load it
+    s.style.top = (Math.random() * 200) + '%';
     
-    // Randomize size for depth
     const size = Math.random() * 1.5;
     s.style.width = size + 'px';
     s.style.height = size + 'px';
     
-    // Randomize speed for a natural flow effect
     s.style.setProperty('--speed', (Math.random() * 20 + 10) + 's');
     
-    // Optional: Add a slight delay to each star so they don't all appear at once
-    s.style.animationDelay = (Math.random() * 10) + 's';
+    // Removed the delay so they start moving immediately
+    s.style.animationDelay = '0s';
     
     stars.appendChild(s);
 }
