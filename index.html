@@ -36,7 +36,7 @@
         .nav-left { font-weight: 900; letter-spacing: 2px; font-size: 0.8rem; }
         .nav-right { font-weight: 400; letter-spacing: 4px; font-size: 0.6rem; opacity: 0.4; }
 
-        /* Starfield */
+        /* High-Density Starfield */
         #star-container {
             position: fixed;
             top: 0;
@@ -51,13 +51,17 @@
             position: absolute;
             background: white;
             border-radius: 50%;
-            box-shadow: 0 0 3px rgba(255,255,255,0.8);
-            animation: moveStar var(--speed) linear infinite;
+            animation: moveStar var(--speed) linear infinite, twinkle var(--twinkle-speed) ease-in-out infinite;
         }
 
         @keyframes moveStar {
             from { transform: translateY(100vh); }
             to { transform: translateY(-10vh); }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
         }
 
         /* The Card */
@@ -96,7 +100,6 @@
             margin: 0;
             font-weight: 900;
             letter-spacing: -4px;
-            /* Case changed to Todouro */
             color: white; 
             transform: translateZ(50px); 
         }
@@ -152,22 +155,31 @@
     </div>
 
     <script>
-        // Star Generation - Increased to 400
+        // High-Density Star Generation
         const stars = document.getElementById('star-container');
-        for (let i = 0; i < 400; i++) {
+        const starCount = 800; // Massively increased count
+
+        for (let i = 0; i < starCount; i++) {
             const s = document.createElement('div');
             s.className = 'star';
+            
+            // Randomly scatter across the screen
             s.style.left = Math.random() * 100 + '%';
             s.style.top = Math.random() * 100 + '%';
-            const size = Math.random() * 1.5; // Smaller, sharper stars
+            
+            // Varied tiny sizes to create "depth"
+            const size = Math.random() * 1.2; 
             s.style.width = size + 'px';
             s.style.height = size + 'px';
-            s.style.opacity = Math.random();
-            s.style.setProperty('--speed', (Math.random() * 30 + 10) + 's');
+            
+            // Random movement and twinkle speeds
+            s.style.setProperty('--speed', (Math.random() * 40 + 20) + 's');
+            s.style.setProperty('--twinkle-speed', (Math.random() * 5 + 2) + 's');
+            
             stars.appendChild(s);
         }
 
-        // Subtly Tilt Interaction
+        // Interaction
         const card = document.getElementById('tilt-card');
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
@@ -175,14 +187,4 @@
             const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            const rotateX = (centerY - y) / 70; 
-            const rotateY = (x - centerX) / 70;
-            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = `rotateX(0deg) rotateY(0deg)`;
-        });
-    </script>
-</body>
-</html>
+            const rotateX = (centerY - y) / 80;
