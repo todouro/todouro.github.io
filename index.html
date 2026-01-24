@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todouro | Index</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
             margin: 0;
             background: #050607; 
             font-family: 'Inter', sans-serif;
             height: 100vh;
-            overflow: hidden; /* We handle scrolling in the container */
+            overflow: hidden;
             color: white;
         }
 
-        /* Top Navigation Bar */
         nav {
             position: fixed;
             top: 0;
@@ -33,7 +33,6 @@
         .nav-left { font-weight: 900; letter-spacing: 2px; font-size: 0.8rem; }
         .nav-right { font-weight: 400; letter-spacing: 4px; font-size: 0.6rem; opacity: 0.4; }
 
-        /* Starfield */
         #star-container {
             position: fixed;
             top: 0;
@@ -56,7 +55,6 @@
             to { transform: translateY(-10vh); }
         }
 
-        /* Scroll Container with Snapping */
         .main-scroller {
             height: 100vh;
             overflow-y: scroll;
@@ -75,7 +73,6 @@
             perspective: 1000px;
         }
 
-        /* The Card Design */
         .flashcard {
             background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: blur(20px);
@@ -94,10 +91,8 @@
         h1 { font-size: 4.5rem; margin: 0; font-weight: 900; letter-spacing: -4px; transform: translateZ(50px); }
         p { font-size: 1.1rem; margin-top: 15px; opacity: 0.6; transform: translateZ(30px); }
 
-        /* Arrow Button */
         .arrow-btn {
             margin-top: 30px;
-            display: inline-block;
             background: none;
             border: none;
             color: white;
@@ -136,7 +131,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-        .social-name { font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
+        .social-icon { font-size: 1.4rem; color: white; }
         .social-link { font-size: 0.8rem; opacity: 0.4; font-family: monospace; }
 
         .back-top {
@@ -150,7 +145,6 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             transition: 0.3s;
-            transform: translateZ(20px);
         }
 
         .back-top:hover { background: white; color: black; }
@@ -227,15 +221,15 @@
                 
                 <div class="social-list">
                     <a href="#" target="_blank" class="social-item">
-                        <span class="social-name">Discord</span>
+                        <i class="fab fa-discord social-icon"></i>
                         <span class="social-link">@todouro</span>
                     </a>
                     <a href="https://github.com/todouro" target="_blank" class="social-item">
-                        <span class="social-name">GitHub</span>
+                        <i class="fab fa-github social-icon"></i>
                         <span class="social-link">/todouro</span>
                     </a>
                     <a href="#" target="_blank" class="social-item">
-                        <span class="social-name">Instagram</span>
+                        <i class="fab fa-instagram social-icon"></i>
                         <span class="social-link">@todouro</span>
                     </a>
                 </div>
@@ -243,7 +237,6 @@
                 <button class="back-top" onclick="document.getElementById('sec1').scrollIntoView();">↑ Back to Start</button>
             </div>
         </div>
-
     </div>
 
     <script>
