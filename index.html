@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todouro | Index</title>
+    <title>Shan | Index</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
@@ -62,7 +62,6 @@
         .social-text { flex-grow: 1; text-align: left; font-size: 1rem; font-weight: 500; }
         .social-link { font-size: 0.75rem; opacity: 0.4; font-family: monospace; }
 
-        /* Reverted Original Arrows */
         .arrow-btn { margin-top: 30px; background: none; border: none; color: white; font-size: 2rem; cursor: pointer; opacity: 0.5; transition: 0.3s; transform: translateZ(40px); }
         .arrow-btn:hover { opacity: 1; transform: translateZ(40px) translateY(5px); }
 
@@ -87,7 +86,13 @@
         .stat-label { text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; opacity: 0.5; }
 
         /* Anime Card Styles */
-        .anime-card { display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 8px; transition: 0.3s; margin-bottom: 20px; flex-direction: column; }
+        .anime-card { 
+            display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+            padding: 25px; border-radius: 8px; transition: 0.3s; margin-bottom: 20px; flex-direction: column; 
+        }
+        /* Hover Effect for Anime Cards */
+        .anime-card:hover { border-color: rgba(255, 255, 255, 1); transform: scale(1.01); }
+
         .anime-header { display: flex; align-items: center; width: 100%; }
         .rank-num { font-size: 2rem; font-weight: 900; opacity: 0.2; width: 60px; }
         .anime-name { margin: 0; font-size: 1.4rem; }
@@ -130,7 +135,7 @@
     <div class="main-scroller">
         <div class="section" id="sec1">
             <div class="flashcard">
-                <h1>Todouro</h1>
+                <h1>Shan</h1>
                 <p>Welcome to the index.</p>
                 <button class="arrow-btn" onclick="document.getElementById('sec2').scrollIntoView();">↓</button>
             </div>
@@ -177,9 +182,9 @@
                         <span class="social-text"><i class="fab fa-github social-icon"></i> GitHub</span>
                         <span class="social-link">/todouro</span>
                     </a>
-                    <a href="https://instagram.com/Todouro" target="_blank" class="social-item">
+                    <a href="https://instagram.com/Theodore_Schawn" target="_blank" class="social-item">
                         <span class="social-text"><i class="fab fa-instagram social-icon"></i> Instagram</span>
-                        <span class="social-link">@Todouro</span>
+                        <span class="social-link">@Theodore_Schawn</span>
                     </a>
                 </div>
                 <button class="back-top" onclick="document.getElementById('sec1').scrollIntoView();">↑ Back to Start</button>
@@ -229,7 +234,10 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
                 <div>
                     <h2 style="font-size:2.5rem; letter-spacing:-1.5px; margin:0;">Chess Stats</h2>
-                    <p style="opacity:0.5; margin:5px 0 0 0; font-size:0.9rem;">Live from Chess.com (@todouro)</p>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                        <div id="status-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #444; transition: 0.3s;"></div>
+                        <span id="live-status" style="font-size: 0.75rem; letter-spacing: 2px; opacity: 0.6; text-transform: uppercase;">Checking Status...</span>
+                    </div>
                 </div>
                 <button class="close-window-btn" onclick="closeAllOverlays()">CLOSE ✕</button>
             </div>
@@ -241,9 +249,9 @@
                     <span id="rapid-record" class="stat-label">Wins: 0 | Losses: 0</span>
                 </div>
                 <div class="chess-card">
-                    <span class="stat-label">Blitz ELO</span>
-                    <span id="blitz-elo" class="elo-text">...</span>
-                    <span id="blitz-record" class="stat-label">Wins: 0 | Losses: 0</span>
+                    <span class="stat-label">Total Matches</span>
+                    <span id="total-matches" class="elo-text">...</span>
+                    <span class="stat-label">All-time games</span>
                 </div>
             </div>
 
@@ -294,17 +302,34 @@
             document.getElementById('chess-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
             
+            const username = 'todouro';
             try {
-                const response = await fetch('https://api.chess.com/pub/player/todouro/stats');
-                const data = await response.json();
+                const [statsRes, statusRes] = await Promise.all([
+                    fetch(`https://api.chess.com/pub/player/${username}/stats`),
+                    fetch(`https://api.chess.com/pub/player/${username}/is-online`)
+                ]);
+                const statsData = await statsRes.json();
+                const statusData = await statusRes.json();
                 
-                if(data.chess_rapid) {
-                    document.getElementById('rapid-elo').innerText = data.chess_rapid.last.rating;
-                    document.getElementById('rapid-record').innerText = `W: ${data.chess_rapid.record.win} | L: ${data.chess_rapid.record.loss} | D: ${data.chess_rapid.record.draw}`;
+                if(statsData.chess_rapid) {
+                    const rapid = statsData.chess_rapid;
+                    document.getElementById('rapid-elo').innerText = rapid.last.rating;
+                    document.getElementById('rapid-record').innerText = `W: ${rapid.record.win} | L: ${rapid.record.loss} | D: ${rapid.record.draw}`;
+                    document.getElementById('total-matches').innerText = rapid.record.win + rapid.record.loss + rapid.record.draw;
                 }
-                if(data.chess_blitz) {
-                    document.getElementById('blitz-elo').innerText = data.chess_blitz.last.rating;
-                    document.getElementById('blitz-record').innerText = `W: ${data.chess_blitz.record.win} | L: ${data.chess_blitz.record.loss} | D: ${data.chess_blitz.record.draw}`;
+
+                const dot = document.getElementById('status-dot');
+                const statusText = document.getElementById('live-status');
+                if (statusData.online) {
+                    dot.style.background = "#81b64c"; 
+                    dot.style.boxShadow = "0 0 12px #81b64c";
+                    statusText.innerText = "Online Now";
+                    statusText.style.opacity = "1";
+                } else {
+                    dot.style.background = "#444";
+                    dot.style.boxShadow = "none";
+                    statusText.innerText = "Offline";
+                    statusText.style.opacity = "0.6";
                 }
             } catch (err) {
                 console.error("Chess.com API Error:", err);
