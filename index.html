@@ -3,105 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todouro's Space</title>
+    <title>Todouro's Index</title>
     <style>
-        /* 1. The Deep Space Background (Red area in your drawing) */
+        /* 1. Deep Space Background */
         body {
             margin: 0;
             padding: 0;
-            background: #020617; 
-            font-family: 'Segoe UI', sans-serif;
+            background: #000000; /* Pure black like your reference */
+            font-family: 'Inter', sans-serif;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            color: white;
         }
 
-        /* Animated Stars */
+        /* 2. Moving Stars Animation */
+        #star-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
         .star {
             position: absolute;
             background: white;
             border-radius: 50%;
-            opacity: 0.5;
-            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: 0.8;
+            animation: moveStar var(--speed) linear infinite;
         }
 
-        @keyframes twinkle {
-            0%, 100% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.5); opacity: 1; }
+        @keyframes moveStar {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100vh); }
         }
 
-        /* 2. The Light Theme Card (Yellow area in your drawing) */
-        .card {
+        /* 3. The Flashcard (Yellow area in your drawing) */
+        .card-container {
             position: relative;
             z-index: 10;
-            /* Bright Light Theme Look */
-            background: rgba(255, 255, 255, 0.9); 
-            backdrop-filter: blur(10px);
-            padding: 3rem;
-            border-radius: 24px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            max-width: 400px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .flashcard {
+            background: white; /* Light theme card */
+            color: black;
+            padding: 40px;
+            border-radius: 4px; /* Sharper corners for that 'Index' look */
+            text-align: left;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .flashcard:hover {
+            transform: scale(1.02);
+        }
+
+        .card-number {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #888;
+            margin-bottom: 10px;
+            display: block;
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin: 0;
-            color: #1e293b; /* Dark text for light theme */
+            font-weight: 800;
+            letter-spacing: -2px;
+            text-transform: uppercase;
         }
 
         p {
-            color: #64748b; /* Soft grey text */
+            color: #444;
             font-size: 1rem;
-            margin: 15px 0;
+            margin-top: 10px;
+            line-height: 1.4;
         }
 
-        /* High-Contrast Button */
-        .btn {
+        .tag {
             display: inline-block;
-            padding: 10px 25px;
-            background: #0f172a; /* Dark button */
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
+            margin-top: 20px;
+            padding: 4px 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
             font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-            background: #334155;
+            color: #666;
         }
     </style>
 </head>
 <body>
 
-    <div id="star-field"></div>
+    <div id="star-container"></div>
 
-    <div class="card">
-        <h1>Sup yo</h1>
-        <p>A.K.A the greatest man to walk on the planet.</p>
-        <a href="#" class="btn">My Projects</a>
+    <div class="card-container">
+        <div class="flashcard">
+            <span class="card-number">01</span>
+            <h1>Sup yo</h1>
+            <p>A.K.A the greatest man to walk on the planet.</p>
+            <div class="tag">Selected Works / 2026</div>
+        </div>
     </div>
 
     <script>
-        const container = document.getElementById('star-field');
-        for (let i = 0; i < 150; i++) {
+        // Generating the moving stars
+        const container = document.getElementById('star-container');
+        const starCount = 200;
+
+        for (let i = 0; i < starCount; i++) {
             const star = document.createElement('div');
             star.className = 'star';
+            
             const x = Math.random() * 100;
             const y = Math.random() * 100;
-            const size = Math.random() * 2 + 1;
-            const duration = (Math.random() * 3 + 2) + 's';
+            const size = Math.random() * 2;
+            const speed = (Math.random() * 20 + 10) + 's'; // How fast they move up
 
             star.style.left = x + '%';
             star.style.top = y + '%';
             star.style.width = size + 'px';
             star.style.height = size + 'px';
-            star.style.setProperty('--duration', duration);
+            star.style.setProperty('--speed', speed);
+
             container.appendChild(star);
         }
     </script>
