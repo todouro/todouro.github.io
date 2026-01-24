@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todouro | Interactive</title>
+    <title>Todouro | Portfolio</title>
     <style>
         body {
             margin: 0;
@@ -40,20 +40,19 @@
             to { transform: translateY(-10vh); }
         }
 
-        /* 1. The Container - Now handles the interaction area */
         .card-container {
             position: relative;
             z-index: 10;
             width: 90%;
             max-width: 600px;
             cursor: pointer;
-            transition: transform 0.3s ease-out; /* Smooth return to center */
+            transition: transform 0.3s ease-out; 
             transform-style: preserve-3d;
         }
 
-        /* 2. The Flashcard Design */
         .flashcard {
-            background: rgba(255, 255, 255, 0.05); 
+            /* 10% opacity white background */
+            background: rgba(255, 255, 255, 0.1); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             padding: 50px;
@@ -75,24 +74,22 @@
         }
 
         h1 {
-            font-size: 4rem;
+            font-size: 4.5rem; /* Larger hero text */
             margin: 0;
             font-weight: 900;
             letter-spacing: -3px;
-            text-transform: uppercase;
-            color: white;
-            transform: translateZ(40px); /* Subtle text pop */
+            color: white; /* 100% white text */
+            transform: translateZ(40px); 
         }
 
         p {
-            color: white;
+            color: white; /* 100% white text */
             font-size: 1.1rem;
-            margin-top: 20px;
+            margin-top: 10px;
             opacity: 0.6;
             transform: translateZ(20px);
         }
 
-        /* Side Tags */
         .tags-right {
             position: absolute;
             right: 40px;
@@ -134,7 +131,6 @@
     </div>
 
     <script>
-        // Generate Stars
         const stars = document.getElementById('star-container');
         for (let i = 0; i < 150; i++) {
             const s = document.createElement('div');
@@ -148,28 +144,25 @@
             stars.appendChild(s);
         }
 
-        // 3D Tilt Logic - Now scoped to the CARD only
         const card = document.getElementById('tilt-card');
 
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left; // Mouse position within the card
+            const x = e.clientX - rect.left; 
             const y = e.clientY - rect.top;
-            
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            // Reduced movement (/ 45 makes it much more subtle)
-            const rotateX = (centerY - y) / 45; 
-            const rotateY = (x - centerX) / 45;
+            // Subtly tilts 1 degree for every 100 pixels
+            const rotateX = (centerY - y) / 100; 
+            const rotateY = (x - centerX) / 100;
             
-            card.style.transition = 'transform 0.1s ease-out'; // Fast tracking
+            card.style.transition = 'transform 0.1s ease-out';
             card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         });
 
-        // Reset position when mouse leaves the card area
         card.addEventListener('mouseleave', () => {
-            card.style.transition = 'transform 0.6s ease'; // Smooth reset
+            card.style.transition = 'transform 0.6s ease'; 
             card.style.transform = `rotateX(0deg) rotateY(0deg)`;
         });
     </script>
