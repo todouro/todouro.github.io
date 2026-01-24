@@ -8,7 +8,7 @@
     <style>
         body {
             margin: 0;
-            background: #050607; 
+            background: radial-gradient(circle at center, #0a0c12 0%, #050607 100%); 
             font-family: 'Inter', sans-serif;
             height: 100vh;
             overflow: hidden;
@@ -16,194 +16,79 @@
         }
 
         nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 40px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            box-sizing: border-box;
-            text-transform: uppercase;
-            pointer-events: none;
+            position: fixed; top: 0; left: 0; width: 100%; padding: 40px 60px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100; box-sizing: border-box; text-transform: uppercase; pointer-events: none;
         }
 
         .nav-left { font-weight: 900; letter-spacing: 2px; font-size: 0.8rem; }
         .nav-right { font-weight: 400; letter-spacing: 4px; font-size: 0.6rem; opacity: 0.4; }
 
-        #star-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
+        #star-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 
         .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: moveStar var(--speed) linear infinite;
+            position: absolute; border-radius: 50%; opacity: 0.8;
+            box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+            animation: moveStar var(--speed) linear infinite, twinkle 3s ease-in-out infinite alternate;
         }
 
-        @keyframes moveStar {
-            from { transform: translateY(0); }
-            to { transform: translateY(-150vh); }
-        }
+        @keyframes moveStar { from { transform: translateY(0); } to { transform: translateY(-150vh); } }
+        @keyframes twinkle { from { opacity: 0.3; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
 
-        .main-scroller {
-            height: 100vh;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-            position: relative;
-            z-index: 10;
-        }
-
-        .section {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            scroll-snap-align: center;
-            perspective: 1000px;
-        }
+        .main-scroller { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; position: relative; z-index: 10; }
+        .section { height: 100vh; display: flex; justify-content: center; align-items: center; scroll-snap-align: center; perspective: 1000px; }
 
         .flashcard {
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 60px;
-            width: 90%;
-            max-width: 650px;
-            border-radius: 2px; 
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 60px; width: 90%; max-width: 650px; border-radius: 2px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); position: relative;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transform-style: preserve-3d; transition: transform 0.1s ease-out;
         }
 
         h1 { font-size: 4.5rem; margin: 0; font-weight: 900; letter-spacing: -4px; transform: translateZ(50px); }
         p { font-size: 1.1rem; margin-top: 15px; opacity: 0.6; transform: translateZ(30px); }
 
-        .arrow-btn {
-            margin-top: 30px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            opacity: 0.5;
-            transition: 0.3s;
-            transform: translateZ(40px);
+        .social-list { margin-top: 30px; display: flex; flex-direction: column; width: 100%; transform: translateZ(40px); }
+
+        /* Buttons styled like the reference */
+        .social-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none; color: white; transition: all 0.3s ease;
+            background: transparent; border-top: none; border-left: none; border-right: none;
+            cursor: pointer; font-family: inherit; width: 100%; box-sizing: border-box;
         }
 
+        .social-item:hover { padding-left: 30px; background: rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.5); }
+        .social-icon { font-size: 1.2rem; margin-right: 15px; }
+        .social-text { flex-grow: 1; text-align: left; font-size: 1rem; font-weight: 500; }
+        .social-link { font-size: 0.75rem; opacity: 0.4; font-family: monospace; }
+
+        .arrow-btn { margin-top: 30px; background: none; border: none; color: white; font-size: 2rem; cursor: pointer; opacity: 0.5; transition: 0.3s; transform: translateZ(40px); }
         .arrow-btn:hover { opacity: 1; transform: translateZ(40px) translateY(5px); }
 
-        .social-list {
-            margin-top: 40px;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            transform: translateZ(40px);
-        }
-
-        .social-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .social-item:hover {
-            padding-left: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-        }
-
-        .social-icon { font-size: 1.4rem; color: white; }
-        .social-link { font-size: 0.85rem; opacity: 0.4; font-family: monospace; }
-
-        .back-top {
-            margin-top: 40px;
-            background: none;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 12px 24px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: 0.3s;
-            width: 100%;
-        }
-
+        .back-top { margin-top: 40px; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px 24px; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; width: 100%; }
         .back-top:hover { background: white; color: black; }
 
-        .tags-right {
-            position: absolute;
-            right: 50px;
-            top: 50%;
-            transform: translateY(-50%) translateZ(40px);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        /* Gallery Overlay Style */
+        #gallery-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5,6,7,0.98); z-index: 1000; overflow-y: auto; padding: 80px 20px;
         }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .gallery-img { width: 100%; height: 350px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: 0.3s; }
+        .gallery-img:hover { transform: scale(1.02); border-color: rgba(255,255,255,0.4); }
 
-        .mini-tag {
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 30px;
-            padding: 5px 15px;
-            font-size: 0.55rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            text-align: center;
-        }
+        .close-btn { position: fixed; top: 30px; right: 30px; background: white; color: black; border: none; padding: 10px 20px; cursor: pointer; font-weight: 900; z-index: 1001; }
 
-        /* --- MOBILE FIXES ADDED HERE --- */
         @media (max-width: 768px) {
-            nav {
-                padding: 25px 30px;
-            }
-            .nav-left { font-size: 0.6rem; }
-            .nav-right { font-size: 0.45rem; letter-spacing: 2px; }
-
-            .flashcard {
-                padding: 40px 30px;
-                width: 85%;
-            }
-
-            h1 {
-                font-size: 2.8rem; /* Keeps 'Todouro' from cutting off */
-                letter-spacing: -2px;
-            }
-
-            p {
-                font-size: 0.95rem;
-                line-height: 1.4;
-            }
-
-            .tags-right {
-                position: relative; /* Moves tags below text instead of right side */
-                right: auto;
-                top: auto;
-                transform: none;
-                flex-direction: row;
-                margin-top: 25px;
-                gap: 8px;
-            }
-
-            .social-icon { font-size: 1.2rem; }
-            .social-link { font-size: 0.75rem; }
+            nav { padding: 25px 30px; }
+            .flashcard { padding: 40px 25px; width: 85%; }
+            h1 { font-size: 2.8rem; letter-spacing: -2px; }
+            .social-item { padding: 15px 10px; }
+            .social-text { font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -217,15 +102,11 @@
     <div id="star-container"></div>
 
     <div class="main-scroller">
-        
         <div class="section" id="sec1">
             <div class="flashcard">
                 <h1>Todouro</h1>
                 <p>Welcome to the index.</p>
                 <button class="arrow-btn" onclick="document.getElementById('sec2').scrollIntoView();">↓</button>
-                <div class="tags-right">
-                    <div class="mini-tag">Identity</div>
-                </div>
             </div>
         </div>
 
@@ -234,78 +115,97 @@
                 <h1>About Me</h1>
                 <p>Mostly chill, sometimes overthinking, usually doing my own thing.</p>
                 <button class="arrow-btn" onclick="document.getElementById('sec3').scrollIntoView();">↓</button>
-                <div class="tags-right">
-                    <div class="mini-tag">Bio</div>
-                </div>
             </div>
         </div>
 
         <div class="section" id="sec3">
             <div class="flashcard">
-                <h1>Likes</h1>
-                <p>Chess, Anime, and Football.</p>
-                <button class="arrow-btn" onclick="document.getElementById('sec4').scrollIntoView();">↓</button>
-                <div class="tags-right">
-                    <div class="mini-tag">Interests</div>
+                <h1>Interests</h1>
+                <div class="social-list">
+                    <button class="social-item" onclick="openGallery()">
+                        <span class="social-text"><i class="fas fa-camera social-icon"></i> Photography</span>
+                        <span class="social-link">View Gallery →</span>
+                    </button>
+                    <button class="social-item" onclick="window.open('https://chess.com', '_blank')">
+                        <span class="social-text"><i class="fas fa-chess social-icon"></i> Chess</span>
+                        <span class="social-link">Play Me →</span>
+                    </button>
+                    <button class="social-item" onclick="window.open('https://myanimelist.net', '_blank')">
+                        <span class="social-text"><i class="fas fa-tv social-icon"></i> Anime</span>
+                        <span class="social-link">My List →</span>
+                    </button>
                 </div>
+                <button class="arrow-btn" onclick="document.getElementById('sec4').scrollIntoView();">↓</button>
             </div>
         </div>
 
         <div class="section" id="sec4">
             <div class="flashcard">
                 <h1>Socials</h1>
-                <p>Todouro on everywhere.</p>
-                
                 <div class="social-list">
                     <a href="https://discord.com/users/1379090219688525898" target="_blank" class="social-item">
-                        <i class="fab fa-discord social-icon"></i>
+                        <span class="social-text"><i class="fab fa-discord social-icon"></i> Discord</span>
                         <span class="social-link">@todouro</span>
                     </a>
                     <a href="https://github.com/todouro" target="_blank" class="social-item">
-                        <i class="fab fa-github social-icon"></i>
+                        <span class="social-text"><i class="fab fa-github social-icon"></i> GitHub</span>
                         <span class="social-link">/todouro</span>
                     </a>
                     <a href="https://instagram.com/Todouro" target="_blank" class="social-item">
-                        <i class="fab fa-instagram social-icon"></i>
+                        <span class="social-text"><i class="fab fa-instagram social-icon"></i> Instagram</span>
                         <span class="social-link">@Todouro</span>
                     </a>
                 </div>
-
                 <button class="back-top" onclick="document.getElementById('sec1').scrollIntoView();">↑ Back to Start</button>
             </div>
         </div>
     </div>
 
-    <script>
-        const stars = document.getElementById('star-container');
+    <div id="gallery-overlay">
+        <button class="close-btn" onclick="closeGallery()">CLOSE ✕</button>
+        <h2 style="text-align:center; font-size:3rem; letter-spacing:-2px; margin-bottom:40px;">Photography</h2>
+        <div class="gallery-grid">
+            <img src="https://via.placeholder.com/400x500/111/eee?text=Photo+1" class="gallery-img">
+            <img src="https://via.placeholder.com/400x500/111/eee?text=Photo+2" class="gallery-img">
+            <img src="https://via.placeholder.com/400x500/111/eee?text=Photo+3" class="gallery-img">
+        </div>
+    </div>
 
+    <script>
+        // Starfield logic
+        const stars = document.getElementById('star-container');
+        const starColors = ['#ffffff', '#ffffff', '#e0e7ff', '#ffedd5'];
         for (let i = 0; i < 600; i++) {
             const s = document.createElement('div');
             s.className = 'star';
             s.style.left = Math.random() * 100 + '%';
             s.style.top = (Math.random() * 200) + '%';
             const size = Math.random() * 1.5;
-            s.style.width = size + 'px';
-            s.style.height = size + 'px';
+            s.style.width = size + 'px'; s.style.height = size + 'px';
+            s.style.background = starColors[Math.floor(Math.random() * starColors.length)];
             s.style.setProperty('--speed', (Math.random() * 20 + 10) + 's');
-            s.style.animationDelay = '0s';
             stars.appendChild(s);
         }
 
+        // Gallery Control
+        function openGallery() { 
+            document.getElementById('gallery-overlay').style.display = 'block'; 
+            document.body.style.overflow = 'hidden';
+        }
+        function closeGallery() { 
+            document.getElementById('gallery-overlay').style.display = 'none'; 
+            document.body.style.overflow = 'auto';
+        }
+
+        // Tilt logic
         document.querySelectorAll('.flashcard').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left; 
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = (centerY - y) / 80; 
-                const rotateY = (x - centerX) / 80;
+                const rotateX = (rect.height / 2 - (e.clientY - rect.top)) / 80; 
+                const rotateY = ((e.clientX - rect.left) - rect.width / 2) / 80;
                 card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
             });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `rotateX(0deg) rotateY(0deg)`;
-            });
+            card.addEventListener('mouseleave', () => card.style.transform = `rotateX(0deg) rotateY(0deg)`);
         });
     </script>
 </body>
