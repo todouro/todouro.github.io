@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todouro | Portfolio</title>
+    <title>Todouro | Index</title>
     <style>
         body {
             margin: 0;
@@ -15,8 +15,28 @@
             align-items: center;
             overflow: hidden;
             perspective: 1000px; 
+            color: white;
         }
 
+        /* Top Navigation Bar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 40px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20;
+            box-sizing: border-box;
+            text-transform: uppercase;
+        }
+
+        .nav-left { font-weight: 900; letter-spacing: 2px; font-size: 0.8rem; }
+        .nav-right { font-weight: 400; letter-spacing: 4px; font-size: 0.6rem; opacity: 0.4; }
+
+        /* Starfield */
         #star-container {
             position: fixed;
             top: 0;
@@ -31,7 +51,7 @@
             position: absolute;
             background: white;
             border-radius: 50%;
-            opacity: 0.4;
+            box-shadow: 0 0 3px rgba(255,255,255,0.8);
             animation: moveStar var(--speed) linear infinite;
         }
 
@@ -40,80 +60,81 @@
             to { transform: translateY(-10vh); }
         }
 
+        /* The Card */
         .card-container {
             position: relative;
             z-index: 10;
             width: 90%;
-            max-width: 600px;
+            max-width: 650px;
             cursor: pointer;
             transition: transform 0.3s ease-out; 
             transform-style: preserve-3d;
         }
 
         .flashcard {
-            /* 10% opacity white background */
-            background: rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 50px;
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 60px;
             border-radius: 2px; 
             border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
-            overflow: hidden;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
         }
 
         .card-number {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 700;
-            color: white;
-            opacity: 0.3;
+            opacity: 0.2;
             letter-spacing: 2px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: block;
         }
 
         h1 {
-            font-size: 4.5rem; /* Larger hero text */
+            font-size: 4.5rem;
             margin: 0;
             font-weight: 900;
-            letter-spacing: -3px;
-            color: white; /* 100% white text */
-            transform: translateZ(40px); 
+            letter-spacing: -4px;
+            /* Case changed to Todouro */
+            color: white; 
+            transform: translateZ(50px); 
         }
 
         p {
-            color: white; /* 100% white text */
             font-size: 1.1rem;
-            margin-top: 10px;
+            margin-top: 15px;
             opacity: 0.6;
-            transform: translateZ(20px);
+            transform: translateZ(30px);
         }
 
         .tags-right {
             position: absolute;
-            right: 40px;
+            right: 50px;
             top: 50%;
-            transform: translateY(-50%) translateZ(30px);
+            transform: translateY(-50%) translateZ(40px);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .mini-tag {
             border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 0.6rem;
-            font-weight: bold;
-            color: white;
-            text-transform: uppercase;
+            border-radius: 30px;
+            padding: 5px 15px;
+            font-size: 0.55rem;
+            font-weight: 900;
             letter-spacing: 1px;
             text-align: center;
         }
     </style>
 </head>
 <body>
+
+    <nav>
+        <div class="nav-left">Index</div>
+        <div class="nav-right">Selected Works / 2026</div>
+    </nav>
 
     <div id="star-container"></div>
 
@@ -131,38 +152,35 @@
     </div>
 
     <script>
+        // Star Generation - Increased to 400
         const stars = document.getElementById('star-container');
-        for (let i = 0; i < 150; i++) {
+        for (let i = 0; i < 400; i++) {
             const s = document.createElement('div');
             s.className = 'star';
             s.style.left = Math.random() * 100 + '%';
             s.style.top = Math.random() * 100 + '%';
-            const size = Math.random() * 2;
+            const size = Math.random() * 1.5; // Smaller, sharper stars
             s.style.width = size + 'px';
             s.style.height = size + 'px';
-            s.style.setProperty('--speed', (Math.random() * 20 + 10) + 's');
+            s.style.opacity = Math.random();
+            s.style.setProperty('--speed', (Math.random() * 30 + 10) + 's');
             stars.appendChild(s);
         }
 
+        // Subtly Tilt Interaction
         const card = document.getElementById('tilt-card');
-
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left; 
             const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            
-            // Subtly tilts 1 degree for every 100 pixels
-            const rotateX = (centerY - y) / 100; 
-            const rotateY = (x - centerX) / 100;
-            
-            card.style.transition = 'transform 0.1s ease-out';
+            const rotateX = (centerY - y) / 70; 
+            const rotateY = (x - centerX) / 70;
             card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         });
 
         card.addEventListener('mouseleave', () => {
-            card.style.transition = 'transform 0.6s ease'; 
             card.style.transform = `rotateX(0deg) rotateY(0deg)`;
         });
     </script>
