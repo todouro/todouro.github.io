@@ -243,34 +243,51 @@
     </div>
 
     <script>
-        const stars = document.getElementById('star-container');
-        for (let i = 0; i < 600; i++) {
-            const s = document.createElement('div');
-            s.className = 'star';
-            s.style.left = Math.random() * 100 + '%';
-            s.style.top = Math.random() * 100 + '%';
-            const size = Math.random() * 1.5;
-            s.style.width = size + 'px';
-            s.style.height = size + 'px';
-            s.style.setProperty('--speed', (Math.random() * 30 + 15) + 's');
-            stars.appendChild(s);
-        }
+       // High-Density Starfield
+const stars = document.getElementById('star-container');
 
-        document.querySelectorAll('.flashcard').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left; 
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = (centerY - y) / 80; 
-                const rotateY = (x - centerX) / 80;
-                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `rotateX(0deg) rotateY(0deg)`;
-            });
-        });
+// Create a large number of stars for density
+for (let i = 0; i < 600; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    
+    // Spread stars across the full width
+    s.style.left = Math.random() * 100 + '%';
+    
+    // FIX: Start all stars at the bottom (100% or more) 
+    // This ensures they "flow into" the site as they animate up
+    s.style.top = (100 + Math.random() * 100) + '%';
+    
+    // Randomize size for depth
+    const size = Math.random() * 1.5;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    
+    // Randomize speed for a natural flow effect
+    s.style.setProperty('--speed', (Math.random() * 20 + 10) + 's');
+    
+    // Optional: Add a slight delay to each star so they don't all appear at once
+    s.style.animationDelay = (Math.random() * 10) + 's';
+    
+    stars.appendChild(s);
+}
+
+// Keep your existing Interaction Logic for the card tilt
+document.querySelectorAll('.flashcard').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left; 
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (centerY - y) / 80; 
+        const rotateY = (x - centerX) / 80;
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+    });
+});
     </script>
 </body>
 </html>
