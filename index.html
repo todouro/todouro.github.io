@@ -70,7 +70,7 @@
         .back-top:hover { background: white; color: black; }
 
         /* Taller Gallery Overlay */
-        #gallery-overlay {
+        .overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5,6,7,0.95); z-index: 1000; overflow-y: auto;
         }
@@ -91,10 +91,27 @@
             overflow: hidden; 
             border: 1px solid rgba(255,255,255,0.1); 
             transition: 0.3s; 
-            height: 450px; /* Made it taller */
+            height: 450px; 
         }
         .gallery-item:hover { border-color: white; transform: scale(1.02); }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Anime Card Styles */
+        .anime-card {
+            display: flex;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 8px;
+            transition: 0.3s;
+            margin-bottom: 20px;
+            flex-direction: column;
+        }
+        .anime-header { display: flex; align-items: center; width: 100%; }
+        .rank-num { font-size: 2rem; font-weight: 900; opacity: 0.2; width: 60px; }
+        .anime-name { margin: 0; font-size: 1.4rem; }
+        .anime-genre { margin: 5px 0 0 0; font-size: 0.8rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
+        .anime-desc { margin: 15px 0 0 60px; font-size: 0.9rem; opacity: 0.7; line-height: 1.5; font-style: italic; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 15px; }
 
         /* Preview Modal */
         #preview-modal {
@@ -161,9 +178,9 @@
                         <span class="social-text"><i class="fas fa-chess social-icon"></i> Chess</span>
                         <span class="social-link">Play Me →</span>
                     </button>
-                    <button class="social-item" onclick="window.open('https://myanimelist.net', '_blank')">
+                    <button class="social-item" onclick="openAnime()">
                         <span class="social-text"><i class="fas fa-tv social-icon"></i> Anime</span>
-                        <span class="social-link">My List →</span>
+                        <span class="social-link">My Top 5 →</span>
                     </button>
                 </div>
                 <button class="arrow-btn" onclick="document.getElementById('sec4').scrollIntoView();">↓</button>
@@ -192,13 +209,76 @@
         </div>
     </div>
 
-    <div id="gallery-overlay">
+    <div id="gallery-overlay" class="overlay">
         <div class="gallery-window">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
                 <h2 style="font-size:2.5rem; letter-spacing:-1.5px; margin:0;">Photography</h2>
                 <button class="close-window-btn" onclick="closeGallery()">CLOSE ✕</button>
             </div>
             <div class="gallery-grid" id="photo-grid"></div>
+        </div>
+    </div>
+
+    <div id="anime-overlay" class="overlay">
+        <div class="gallery-window">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+                <div>
+                    <h2 style="font-size:2.5rem; letter-spacing:-1.5px; margin:0;">Top 5 Anime</h2>
+                    <p style="opacity:0.5; margin:5px 0 0 0; font-size:0.9rem;">Watching since 2023/2024</p>
+                </div>
+                <button class="close-window-btn" onclick="closeAnime()">CLOSE ✕</button>
+            </div>
+            
+            <div class="anime-card">
+                <div class="anime-header">
+                    <span class="rank-num">01</span>
+                    <div>
+                        <h3 class="anime-name">Attack on Titan</h3>
+                        <p class="anime-genre">Action / Drama / Dark Fantasy</p>
+                    </div>
+                </div>
+                <p class="anime-desc">"This was one of my very first anime, it was an amazing watch. 100% recommend."</p>
+            </div>
+
+            <div class="anime-card">
+                <div class="anime-header">
+                    <span class="rank-num">02</span>
+                    <div>
+                        <h3 class="anime-name">Vinland Saga</h3>
+                        <p class="anime-genre">Adventure / Historical / Seinen</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="anime-card">
+                <div class="anime-header">
+                    <span class="rank-num">03</span>
+                    <div>
+                        <h3 class="anime-name">Frieren: Beyond Journey's End</h3>
+                        <p class="anime-genre">Fantasy / Adventure / Slice of Life</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="anime-card">
+                <div class="anime-header">
+                    <span class="rank-num">04</span>
+                    <div>
+                        <h3 class="anime-name">Death Note</h3>
+                        <p class="anime-genre">Psychological / Thriller / Supernatural</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="anime-card">
+                <div class="anime-header">
+                    <span class="rank-num">05</span>
+                    <div>
+                        <h3 class="anime-name">Blue Box</h3>
+                        <p class="anime-genre">Romance / Sports / School Life</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -236,6 +316,16 @@
         }
 
         function closeGallery() { document.getElementById('gallery-overlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
+        
+        function openAnime() {
+            document.getElementById('anime-overlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeAnime() {
+            document.getElementById('anime-overlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
         function openPreview(index) {
             const p = photos[index];
             document.getElementById('modal-img').src = p.url;
@@ -245,7 +335,7 @@
         }
         function closePreview() { document.getElementById('preview-modal').style.display = 'none'; }
 
-        // Original Starfield logic
+        // Starfield logic
         const stars = document.getElementById('star-container');
         for (let i = 0; i < 600; i++) {
             const s = document.createElement('div');
