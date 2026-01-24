@@ -69,7 +69,7 @@
         .back-top { margin-top: 40px; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px 24px; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; width: 100%; }
         .back-top:hover { background: white; color: black; }
 
-        /* Taller Gallery Overlay */
+        /* Overlays */
         .overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5,6,7,0.95); z-index: 1000; overflow-y: auto;
@@ -79,63 +79,41 @@
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
             padding: 60px 40px; border-radius: 4px; position: relative;
         }
-        .gallery-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-            gap: 25px; 
-            padding-bottom: 100px;
-        }
-        .gallery-item { 
-            cursor: pointer; 
-            border-radius: 4px; 
-            overflow: hidden; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            transition: 0.3s; 
-            height: 450px; 
-        }
-        .gallery-item:hover { border-color: white; transform: scale(1.02); }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Chess Cards */
+        .chess-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
+        .chess-card { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+        .elo-text { font-size: 3rem; font-weight: 900; margin: 10px 0; display: block; }
+        .stat-label { text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; opacity: 0.5; }
 
         /* Anime Card Styles */
-        .anime-card {
-            display: flex;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 25px;
-            border-radius: 8px;
-            transition: 0.3s;
-            margin-bottom: 20px;
-            flex-direction: column;
-        }
+        .anime-card { display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 8px; transition: 0.3s; margin-bottom: 20px; flex-direction: column; }
         .anime-header { display: flex; align-items: center; width: 100%; }
         .rank-num { font-size: 2rem; font-weight: 900; opacity: 0.2; width: 60px; }
         .anime-name { margin: 0; font-size: 1.4rem; }
         .anime-genre { margin: 5px 0 0 0; font-size: 0.8rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
         .anime-desc { margin: 15px 0 0 60px; font-size: 0.9rem; opacity: 0.7; line-height: 1.5; font-style: italic; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 15px; }
 
-        /* Preview Modal */
+        /* Photography Grid */
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding-bottom: 100px; }
+        .gallery-item { cursor: pointer; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; height: 450px; }
+        .gallery-item:hover { border-color: white; transform: scale(1.02); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        .close-window-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; cursor: pointer; font-size: 0.8rem; border-radius: 4px; }
+        .close-window-btn:hover { background: white; color: black; }
+
+        /* Preview Photo Modal */
         #preview-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center;
             backdrop-filter: blur(15px);
         }
-        .preview-card {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
-            padding: 25px; border-radius: 8px; display: flex; flex-direction: column;
-            max-width: 900px; width: 90%; position: relative;
-        }
+        .preview-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 25px; border-radius: 8px; display: flex; flex-direction: column; max-width: 900px; width: 90%; position: relative; }
         .preview-img { width: 100%; max-height: 70vh; object-fit: contain; border-radius: 4px; }
-        .preview-info { margin-top: 20px; }
-        .preview-title { font-size: 1.8rem; font-weight: 800; margin: 0; }
-        .preview-meta { font-size: 0.9rem; opacity: 0.4; margin-top: 5px; font-family: monospace; }
-
-        .close-window-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; cursor: pointer; font-size: 0.8rem; border-radius: 4px; }
-        .close-window-btn:hover { background: white; color: black; }
 
         @media (max-width: 768px) {
             .gallery-window { padding: 20px; width: 90%; margin-top: 80px; }
-            .gallery-item { height: 400px; }
-            .nav { padding: 25px 30px; }
             h1 { font-size: 2.8rem; letter-spacing: -2px; }
         }
     </style>
@@ -174,9 +152,9 @@
                         <span class="social-text"><i class="fas fa-camera social-icon"></i> Photography</span>
                         <span class="social-link">View Gallery →</span>
                     </button>
-                    <button class="social-item" onclick="window.open('https://chess.com', '_blank')">
+                    <button class="social-item" onclick="openChess()">
                         <span class="social-text"><i class="fas fa-chess social-icon"></i> Chess</span>
-                        <span class="social-link">Play Me →</span>
+                        <span class="social-link">Live Stats →</span>
                     </button>
                     <button class="social-item" onclick="openAnime()">
                         <span class="social-text"><i class="fas fa-tv social-icon"></i> Anime</span>
@@ -213,7 +191,7 @@
         <div class="gallery-window">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
                 <h2 style="font-size:2.5rem; letter-spacing:-1.5px; margin:0;">Photography</h2>
-                <button class="close-window-btn" onclick="closeGallery()">CLOSE ✕</button>
+                <button class="close-window-btn" onclick="closeAllOverlays()">CLOSE ✕</button>
             </div>
             <div class="gallery-grid" id="photo-grid"></div>
         </div>
@@ -226,7 +204,7 @@
                     <h2 style="font-size:2.5rem; letter-spacing:-1.5px; margin:0;">Top 5 Anime</h2>
                     <p style="opacity:0.5; margin:5px 0 0 0; font-size:0.9rem;">Watching since 2023/2024</p>
                 </div>
-                <button class="close-window-btn" onclick="closeAnime()">CLOSE ✕</button>
+                <button class="close-window-btn" onclick="closeAllOverlays()">CLOSE ✕</button>
             </div>
             
             <div class="anime-card">
@@ -239,46 +217,37 @@
                 </div>
                 <p class="anime-desc">"This was one of my very first anime, it was an amazing watch. 100% recommend."</p>
             </div>
+            <div class="anime-card"><div class="anime-header"><span class="rank-num">02</span><div><h3 class="anime-name">Vinland Saga</h3><p class="anime-genre">Historical / Seinen</p></div></div></div>
+            <div class="anime-card"><div class="anime-header"><span class="rank-num">03</span><div><h3 class="anime-name">Frieren</h3><p class="anime-genre">Fantasy / Adventure</p></div></div></div>
+            <div class="anime-card"><div class="anime-header"><span class="rank-num">04</span><div><h3 class="anime-name">Death Note</h3><p class="anime-genre">Psychological / Thriller</p></div></div></div>
+            <div class="anime-card"><div class="anime-header"><span class="rank-num">05</span><div><h3 class="anime-name">Blue Box</h3><p class="anime-genre">Romance / Sports</p></div></div></div>
+        </div>
+    </div>
 
-            <div class="anime-card">
-                <div class="anime-header">
-                    <span class="rank-num">02</span>
-                    <div>
-                        <h3 class="anime-name">Vinland Saga</h3>
-                        <p class="anime-genre">Adventure / Historical / Seinen</p>
-                    </div>
+    <div id="chess-overlay" class="overlay">
+        <div class="gallery-window">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+                <div>
+                    <h2 style="font-size:2.5rem; letter-spacing:-1.5px; margin:0;">Chess Stats</h2>
+                    <p style="opacity:0.5; margin:5px 0 0 0; font-size:0.9rem;">Live from Chess.com (@todouro)</p>
+                </div>
+                <button class="close-window-btn" onclick="closeAllOverlays()">CLOSE ✕</button>
+            </div>
+
+            <div class="chess-container">
+                <div class="chess-card">
+                    <span class="stat-label">Rapid ELO</span>
+                    <span id="rapid-elo" class="elo-text">...</span>
+                    <span id="rapid-record" class="stat-label">Wins: 0 | Losses: 0</span>
+                </div>
+                <div class="chess-card">
+                    <span class="stat-label">Blitz ELO</span>
+                    <span id="blitz-elo" class="elo-text">...</span>
+                    <span id="blitz-record" class="stat-label">Wins: 0 | Losses: 0</span>
                 </div>
             </div>
 
-            <div class="anime-card">
-                <div class="anime-header">
-                    <span class="rank-num">03</span>
-                    <div>
-                        <h3 class="anime-name">Frieren: Beyond Journey's End</h3>
-                        <p class="anime-genre">Fantasy / Adventure / Slice of Life</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="anime-card">
-                <div class="anime-header">
-                    <span class="rank-num">04</span>
-                    <div>
-                        <h3 class="anime-name">Death Note</h3>
-                        <p class="anime-genre">Psychological / Thriller / Supernatural</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="anime-card">
-                <div class="anime-header">
-                    <span class="rank-num">05</span>
-                    <div>
-                        <h3 class="anime-name">Blue Box</h3>
-                        <p class="anime-genre">Romance / Sports / School Life</p>
-                    </div>
-                </div>
-            </div>
+            <button class="back-top" style="margin-top: 40px;" onclick="window.open('https://www.chess.com/member/todouro', '_blank')">View Full Profile</button>
         </div>
     </div>
 
@@ -297,33 +266,49 @@
             { url: "https://i.imgur.com/qHixIKi.jpeg", title: "Cool bonsai in a restaurant I once ate at.", date: "Dec 2024" },
             { url: "https://i.imgur.com/e91Lyow.jpeg", title: "Cool network tower thing", date: "Nov 2024" },
             { url: "https://i.imgur.com/HImgOvp.jpeg", title: "Had a peaceful ride on one of these.", date: "Dec 2024" },
-            { url: "https://i.imgur.com/YSK4QJP.jpeg", title: "A picture I took on a walk during Vacation.", date: "Oct 2025" },
+            { url: "https://i.imgur.com/YSK4QJP.jpeg", title: "A walk during Vacation.", date: "Oct 2025" },
             { url: "https://i.imgur.com/oSRWXDW.jpeg", title: "Cool river", date: "Oct 2025" },
-            { url: "https://i.imgur.com/tV1BaU1.jpeg", title: "Cute", date: "Dec 2024" },
+            { url: "https://i.imgur.com/tV1BaU1.jpeg", title: "Cute cat", date: "Dec 2024" },
             { url: "https://i.imgur.com/zyuce90.jpeg", title: "Nice road", date: "Aug 2024" },
-            { url: "https://i.imgur.com/9tCsU47.jpeg", title: "Once rowed this by myself.", date: "July 2025" }
+            { url: "https://i.imgur.com/9tCsU47.jpeg", title: "Rowing by myself.", date: "July 2025" }
         ];
 
-        function openGallery() { 
+        function closeAllOverlays() {
+            document.querySelectorAll('.overlay').forEach(el => el.style.display = 'none');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openGallery() {
             const grid = document.getElementById('photo-grid');
-            grid.innerHTML = photos.map((p, i) => `
-                <div class="gallery-item" onclick="openPreview(${i})">
-                    <img src="${p.url}">
-                </div>
-            `).join('');
-            document.getElementById('gallery-overlay').style.display = 'block'; 
+            grid.innerHTML = photos.map((p, i) => `<div class="gallery-item" onclick="openPreview(${i})"><img src="${p.url}"></div>`).join('');
+            document.getElementById('gallery-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
 
-        function closeGallery() { document.getElementById('gallery-overlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
-        
         function openAnime() {
             document.getElementById('anime-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
-        function closeAnime() {
-            document.getElementById('anime-overlay').style.display = 'none';
-            document.body.style.overflow = 'auto';
+
+        async function openChess() {
+            document.getElementById('chess-overlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            try {
+                const response = await fetch('https://api.chess.com/pub/player/todouro/stats');
+                const data = await response.json();
+                
+                if(data.chess_rapid) {
+                    document.getElementById('rapid-elo').innerText = data.chess_rapid.last.rating;
+                    document.getElementById('rapid-record').innerText = `W: ${data.chess_rapid.record.win} | L: ${data.chess_rapid.record.loss} | D: ${data.chess_rapid.record.draw}`;
+                }
+                if(data.chess_blitz) {
+                    document.getElementById('blitz-elo').innerText = data.chess_blitz.last.rating;
+                    document.getElementById('blitz-record').innerText = `W: ${data.chess_blitz.record.win} | L: ${data.chess_blitz.record.loss} | D: ${data.chess_blitz.record.draw}`;
+                }
+            } catch (err) {
+                console.error("Chess.com API Error:", err);
+            }
         }
 
         function openPreview(index) {
@@ -333,15 +318,16 @@
             document.getElementById('modal-meta').innerText = p.date;
             document.getElementById('preview-modal').style.display = 'flex';
         }
+
         function closePreview() { document.getElementById('preview-modal').style.display = 'none'; }
 
-        // Starfield logic
+        // Stars
         const stars = document.getElementById('star-container');
-        for (let i = 0; i < 600; i++) {
+        for (let i = 0; i < 400; i++) {
             const s = document.createElement('div');
             s.className = 'star';
             s.style.left = Math.random() * 100 + '%';
-            s.style.top = Math.random() * 200 + '%';
+            s.style.top = Math.random() * 100 + '%';
             const size = Math.random() * 1.5;
             s.style.width = size + 'px'; s.style.height = size + 'px';
             s.style.background = '#ffffff';
@@ -349,6 +335,7 @@
             stars.appendChild(s);
         }
 
+        // Tilt
         document.querySelectorAll('.flashcard').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
