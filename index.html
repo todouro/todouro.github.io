@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todouro's Glass Space</title>
+    <title>Todouro's Void</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background: #2596be;
+            /* Updated to your specific hex */
+            background: #050607; 
             font-family: 'Inter', sans-serif;
             height: 100vh;
             width: 100vw;
@@ -16,7 +17,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            color: white; /* Sets base text color to white */
+            color: white;
         }
 
         #star-container {
@@ -33,7 +34,7 @@
             position: absolute;
             background: white;
             border-radius: 50%;
-            opacity: 0.7;
+            opacity: 0.6;
             animation: moveStar var(--speed) linear infinite;
         }
 
@@ -42,7 +43,7 @@
             to { transform: translateY(-10vh); }
         }
 
-        /* The Transparent Flashcard */
+        /* Glass Flashcard */
         .card-container {
             position: relative;
             z-index: 10;
@@ -51,28 +52,24 @@
         }
 
         .flashcard {
-            /* 90% transparent white (0.1 opacity) */
+            /* 10% opacity white background */
             background: rgba(255, 255, 255, 0.1); 
-            
-            /* The "Frosted" effect for the stars behind it */
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 40px;
-            border-radius: 8px;
+            border-radius: 4px; /* Sharper 'Index' style corners */
             text-align: left;
-            
-            /* Thin white border to define the glass edges */
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
 
         .card-number {
             font-size: 0.9rem;
             font-weight: 700;
-            color: #ffffff; /* Text 100% opacity white */
+            color: #ffffff;
             margin-bottom: 8px;
             display: block;
+            letter-spacing: 2px;
         }
 
         h1 {
@@ -82,27 +79,29 @@
             letter-spacing: -2px;
             text-transform: uppercase;
             line-height: 1;
-            color: #ffffff; /* Text 100% opacity white */
+            color: #ffffff;
         }
 
         p {
-            color: #ffffff; /* Text 100% opacity white */
+            color: #ffffff;
             font-size: 1.1rem;
             margin-top: 15px;
-            font-weight: 500;
-            opacity: 0.9; /* Slightly softer white for the description */
+            font-weight: 400;
+            opacity: 0.8;
         }
 
         .tag {
             display: inline-block;
             margin-top: 25px;
             padding: 5px 12px;
-            background: rgba(255, 255, 255, 0.2); /* Semi-transparent tag box */
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
             font-size: 0.7rem;
             text-transform: uppercase;
             font-weight: 700;
             color: #ffffff;
+            letter-spacing: 1px;
         }
     </style>
 </head>
@@ -121,15 +120,15 @@
 
     <script>
         const container = document.getElementById('star-container');
-        const starCount = 120;
+        const starCount = 150;
 
         for (let i = 0; i < starCount; i++) {
             const star = document.createElement('div');
             star.className = 'star';
             const x = Math.random() * 100;
             const y = Math.random() * 100;
-            const size = Math.random() * 3;
-            const speed = (Math.random() * 15 + 10) + 's';
+            const size = Math.random() * 2 + 0.5;
+            const speed = (Math.random() * 20 + 10) + 's';
             star.style.left = x + '%';
             star.style.top = y + '%';
             star.style.width = size + 'px';
