@@ -90,7 +90,6 @@
             display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
             padding: 25px; border-radius: 8px; transition: 0.3s; margin-bottom: 20px; flex-direction: column; 
         }
-        /* Hover Effect for Anime Cards */
         .anime-card:hover { border-color: rgba(255, 255, 255, 1); transform: scale(1.01); }
 
         .anime-header { display: flex; align-items: center; width: 100%; }
@@ -298,18 +297,40 @@
             document.body.style.overflow = 'hidden';
         }
 
+        // Helper to convert Unix timestamp to "time ago"
+        function timeAgo(timestamp) {
+            const seconds = Math.floor((new Date() - new Date(timestamp * 1000)) / 1000);
+            let interval = Math.floor(seconds / 31536000);
+            if (interval > 1) return interval + " years ago";
+            interval = Math.floor(seconds / 2592000);
+            if (interval > 1) return interval + " months ago";
+            interval = Math.floor(seconds / 86400);
+            if (interval > 1) return interval + " days ago";
+            interval = Math.floor(seconds / 3600);
+            if (interval > 1) return interval + " hours ago";
+            interval = Math.floor(seconds / 60);
+            if (interval > 1) return interval + " mins ago";
+            return "Just now";
+        }
+
         async function openChess() {
             document.getElementById('chess-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
             
             const username = 'todouro';
+            const cacheBuster = new Date().getTime();
+
             try {
-                const [statsRes, statusRes] = await Promise.all([
+                // Fetch stats, online status, and profile (for last_online timestamp)
+                const [statsRes, statusRes, profileRes] = await Promise.all([
                     fetch(`https://api.chess.com/pub/player/${username}/stats`),
-                    fetch(`https://api.chess.com/pub/player/${username}/is-online`)
+                    fetch(`https://api.chess.com/pub/player/${username}/is-online?t=${cacheBuster}`),
+                    fetch(`https://api.chess.com/pub/player/${username}`)
                 ]);
+
                 const statsData = await statsRes.json();
                 const statusData = await statusRes.json();
+                const profileData = await profileRes.json();
                 
                 if(statsData.chess_rapid) {
                     const rapid = statsData.chess_rapid;
@@ -320,6 +341,7 @@
 
                 const dot = document.getElementById('status-dot');
                 const statusText = document.getElementById('live-status');
+
                 if (statusData.online) {
                     dot.style.background = "#81b64c"; 
                     dot.style.boxShadow = "0 0 12px #81b64c";
@@ -328,7 +350,9 @@
                 } else {
                     dot.style.background = "#444";
                     dot.style.boxShadow = "none";
-                    statusText.innerText = "Offline";
+                    // Calculate relative time from the profile's last_online field
+                    const lastSeen = profileData.last_online ? `Last seen ${timeAgo(profileData.last_online)}` : "Offline";
+                    statusText.innerText = lastSeen;
                     statusText.style.opacity = "0.6";
                 }
             } catch (err) {
