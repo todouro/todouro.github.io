@@ -65,15 +65,19 @@
         .social-text { flex-grow: 1; text-align: left; font-size: 1rem; font-weight: 500; }
         .social-link { font-size: 0.75rem; opacity: 0.4; font-family: monospace; }
 
-        /* Gallery Overlay Style */
+        /* Gallery Overlay Fix */
         #gallery-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5,6,7,0.98); z-index: 1000; overflow-y: auto; padding: 100px 20px;
+            background: rgba(5,6,7,0.98); z-index: 1000; overflow-y: scroll;
+        }
+        .gallery-container {
+            padding: 100px 20px 150px 20px; /* Massive bottom padding */
+            min-height: 100vh;
+            box-sizing: border-box;
         }
         .gallery-grid { 
             display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
             gap: 20px; max-width: 1200px; margin: 0 auto;
-            padding-bottom: 100px; /* Fix for full visibility */
         }
         .gallery-img { width: 100%; height: 400px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: 0.3s; }
         .gallery-img:hover { transform: scale(1.02); border-color: rgba(255,255,255,0.4); }
@@ -91,6 +95,7 @@
             .flashcard { padding: 40px 25px; width: 85%; }
             h1 { font-size: 2.8rem; letter-spacing: -2px; }
             .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-img { height: 300px; } /* Slightly shorter for mobile scroll ease */
         }
     </style>
 </head>
@@ -164,18 +169,20 @@
     </div>
 
     <div id="gallery-overlay">
-        <button class="close-btn" onclick="closeGallery()">CLOSE ✕</button>
-        <h2 style="text-align:center; font-size:3rem; letter-spacing:-2px; margin-bottom:40px;">Photography</h2>
-        <div class="gallery-grid">
-            <img src="https://i.imgur.com/qHixIKi.jpeg" class="gallery-img">
-            <img src="https://i.imgur.com/e91Lyow.jpeg" class="gallery-img">
-            <img src="https://i.imgur.com/HImgOvp.jpeg" class="gallery-img">
-            <img src="https://i.imgur.com/YSK4QJP.jpeg" class="gallery-img">
-            <img src="https://i.imgur.com/oSRWXDW.jpeg" class="gallery-img">
-            <img src="https://i.imgur.com/tV1BaU1.jpeg" class="gallery-img">
-            <img src="https://i.imgur.com/zyuce90.jpeg" class="gallery-img">
-            <img src="https://i.imgur.com/9tCsU47.jpeg" class="gallery-img">
-            <img src="https://i.imgur.com/9tCsU47.jpeg" class="gallery-img"> </div>
+        <div class="gallery-container">
+            <button class="close-btn" onclick="closeGallery()">CLOSE ✕</button>
+            <h2 style="text-align:center; font-size:3rem; letter-spacing:-2px; margin-bottom:40px;">Photography</h2>
+            <div class="gallery-grid">
+                <img src="https://i.imgur.com/qHixIKi.jpeg" class="gallery-img">
+                <img src="https://i.imgur.com/e91Lyow.jpeg" class="gallery-img">
+                <img src="https://i.imgur.com/HImgOvp.jpeg" class="gallery-img">
+                <img src="https://i.imgur.com/YSK4QJP.jpeg" class="gallery-img">
+                <img src="https://i.imgur.com/oSRWXDW.jpeg" class="gallery-img">
+                <img src="https://i.imgur.com/tV1BaU1.jpeg" class="gallery-img">
+                <img src="https://i.imgur.com/zyuce90.jpeg" class="gallery-img">
+                <img src="https://i.imgur.com/9tCsU47.jpeg" class="gallery-img">
+            </div>
+        </div>
     </div>
 
     <script>
