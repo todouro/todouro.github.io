@@ -254,7 +254,7 @@
                 </div>
             </div>
 
-            <button class="back-top" style="margin-top: 40px;" onclick="window.open('https://www.chess.com/member/todouro', '_blank')">View Full Profile</button>
+            <button class="back-top" style="margin-top: 40px;" onclick="window.open('https://www.chess.com/member/chinatsu-lover', '_blank')">View Full Profile</button>
         </div>
     </div>
 
@@ -297,19 +297,18 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // Helper to convert Unix timestamp to "time ago"
         function timeAgo(timestamp) {
             const seconds = Math.floor((new Date() - new Date(timestamp * 1000)) / 1000);
             let interval = Math.floor(seconds / 31536000);
-            if (interval > 1) return interval + " years ago";
+            if (interval > 1) return interval + "y ago";
             interval = Math.floor(seconds / 2592000);
-            if (interval > 1) return interval + " months ago";
+            if (interval > 1) return interval + "mo ago";
             interval = Math.floor(seconds / 86400);
-            if (interval > 1) return interval + " days ago";
+            if (interval > 1) return interval + "d ago";
             interval = Math.floor(seconds / 3600);
-            if (interval > 1) return interval + " hours ago";
+            if (interval > 1) return interval + "h ago";
             interval = Math.floor(seconds / 60);
-            if (interval > 1) return interval + " mins ago";
+            if (interval > 1) return interval + "m ago";
             return "Just now";
         }
 
@@ -317,11 +316,10 @@
             document.getElementById('chess-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
             
-            const username = 'todouro';
+            const username = 'chinatsu-lover'; // UPDATED USERNAME
             const cacheBuster = new Date().getTime();
 
             try {
-                // Fetch stats, online status, and profile (for last_online timestamp)
                 const [statsRes, statusRes, profileRes] = await Promise.all([
                     fetch(`https://api.chess.com/pub/player/${username}/stats`),
                     fetch(`https://api.chess.com/pub/player/${username}/is-online?t=${cacheBuster}`),
@@ -332,12 +330,23 @@
                 const statusData = await statusRes.json();
                 const profileData = await profileRes.json();
                 
-                if(statsData.chess_rapid) {
-                    const rapid = statsData.chess_rapid;
+                // Strictly Rapid Stats
+                const rapid = statsData.chess_rapid;
+                if(rapid) {
                     document.getElementById('rapid-elo').innerText = rapid.last.rating;
                     document.getElementById('rapid-record').innerText = `W: ${rapid.record.win} | L: ${rapid.record.loss} | D: ${rapid.record.draw}`;
-                    document.getElementById('total-matches').innerText = rapid.record.win + rapid.record.loss + rapid.record.draw;
+                } else {
+                    document.getElementById('rapid-elo').innerText = "None";
                 }
+
+                // Sum matches from all main formats
+                let total = 0;
+                ['chess_rapid', 'chess_blitz', 'chess_bullet'].forEach(f => {
+                    if(statsData[f]) {
+                        total += statsData[f].record.win + statsData[f].record.loss + statsData[f].record.draw;
+                    }
+                });
+                document.getElementById('total-matches').innerText = total;
 
                 const dot = document.getElementById('status-dot');
                 const statusText = document.getElementById('live-status');
@@ -350,13 +359,13 @@
                 } else {
                     dot.style.background = "#444";
                     dot.style.boxShadow = "none";
-                    // Calculate relative time from the profile's last_online field
                     const lastSeen = profileData.last_online ? `Last seen ${timeAgo(profileData.last_online)}` : "Offline";
                     statusText.innerText = lastSeen;
                     statusText.style.opacity = "0.6";
                 }
             } catch (err) {
                 console.error("Chess.com API Error:", err);
+                document.getElementById('rapid-elo').innerText = "Error";
             }
         }
 
