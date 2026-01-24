@@ -110,6 +110,51 @@
 
         .arrow-btn:hover { opacity: 1; transform: translateZ(40px) translateY(5px); }
 
+        /* Social List Styling */
+        .social-list {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            transform: translateZ(40px);
+        }
+
+        .social-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-item:hover {
+            padding-left: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .social-name { font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
+        .social-link { font-size: 0.8rem; opacity: 0.4; font-family: monospace; }
+
+        .back-top {
+            margin-top: 40px;
+            background: none;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            transform: translateZ(20px);
+        }
+
+        .back-top:hover { background: white; color: black; }
+
         .tags-right {
             position: absolute;
             right: 50px;
@@ -178,18 +223,30 @@
         <div class="section" id="sec4">
             <div class="flashcard">
                 <h1>Socials</h1>
-                <p>Catch me on Discord or GitHub.</p>
-                <div class="tags-right">
-                    <div class="mini-tag">Discord</div>
-                    <div class="mini-tag">GitHub</div>
+                <p>Todouro on everywhere.</p>
+                
+                <div class="social-list">
+                    <a href="#" target="_blank" class="social-item">
+                        <span class="social-name">Discord</span>
+                        <span class="social-link">@todouro</span>
+                    </a>
+                    <a href="https://github.com/todouro" target="_blank" class="social-item">
+                        <span class="social-name">GitHub</span>
+                        <span class="social-link">/todouro</span>
+                    </a>
+                    <a href="#" target="_blank" class="social-item">
+                        <span class="social-name">Instagram</span>
+                        <span class="social-link">@todouro</span>
+                    </a>
                 </div>
+
+                <button class="back-top" onclick="document.getElementById('sec1').scrollIntoView();">↑ Back to Start</button>
             </div>
         </div>
 
     </div>
 
     <script>
-        // High-Density Starfield
         const stars = document.getElementById('star-container');
         for (let i = 0; i < 600; i++) {
             const s = document.createElement('div');
@@ -203,7 +260,6 @@
             stars.appendChild(s);
         }
 
-        // Interaction Logic
         document.querySelectorAll('.flashcard').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
