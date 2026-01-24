@@ -47,7 +47,6 @@
             position: absolute;
             background: white;
             border-radius: 50%;
-            /* Continuous movement upward */
             animation: moveStar var(--speed) linear infinite;
         }
 
@@ -106,7 +105,6 @@
 
         .arrow-btn:hover { opacity: 1; transform: translateZ(40px) translateY(5px); }
 
-        /* Social Spacing Fixes */
         .social-list {
             margin-top: 40px;
             display: flex;
@@ -117,7 +115,7 @@
 
         .social-item {
             display: flex;
-            justify-content: space-between; /* Logo left, Handle right */
+            justify-content: space-between;
             align-items: center;
             padding: 18px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -146,7 +144,7 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             transition: 0.3s;
-            width: 100%; /* Better button alignment */
+            width: 100%;
         }
 
         .back-top:hover { background: white; color: black; }
@@ -169,6 +167,43 @@
             font-weight: 900;
             letter-spacing: 1px;
             text-align: center;
+        }
+
+        /* --- MOBILE FIXES ADDED HERE --- */
+        @media (max-width: 768px) {
+            nav {
+                padding: 25px 30px;
+            }
+            .nav-left { font-size: 0.6rem; }
+            .nav-right { font-size: 0.45rem; letter-spacing: 2px; }
+
+            .flashcard {
+                padding: 40px 30px;
+                width: 85%;
+            }
+
+            h1 {
+                font-size: 2.8rem; /* Keeps 'Todouro' from cutting off */
+                letter-spacing: -2px;
+            }
+
+            p {
+                font-size: 0.95rem;
+                line-height: 1.4;
+            }
+
+            .tags-right {
+                position: relative; /* Moves tags below text instead of right side */
+                right: auto;
+                top: auto;
+                transform: none;
+                flex-direction: row;
+                margin-top: 25px;
+                gap: 8px;
+            }
+
+            .social-icon { font-size: 1.2rem; }
+            .social-link { font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -248,17 +283,12 @@
             const s = document.createElement('div');
             s.className = 'star';
             s.style.left = Math.random() * 100 + '%';
-            
-            // Starts everywhere on and below screen for continuous flow
             s.style.top = (Math.random() * 200) + '%';
-            
             const size = Math.random() * 1.5;
             s.style.width = size + 'px';
             s.style.height = size + 'px';
-            
             s.style.setProperty('--speed', (Math.random() * 20 + 10) + 's');
             s.style.animationDelay = '0s';
-            
             stars.appendChild(s);
         }
 
