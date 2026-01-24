@@ -7,17 +7,16 @@
     <style>
         body {
             margin: 0;
-            background: #050607; /* Your void black hex */
+            background: #050607; 
             font-family: 'Inter', sans-serif;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            perspective: 1000px; /* Essential for 3D depth */
+            perspective: 1000px; 
         }
 
-        /* Moving Starfield */
         #star-container {
             position: fixed;
             top: 0;
@@ -32,7 +31,7 @@
             position: absolute;
             background: white;
             border-radius: 50%;
-            opacity: 0.5;
+            opacity: 0.4;
             animation: moveStar var(--speed) linear infinite;
         }
 
@@ -41,35 +40,35 @@
             to { transform: translateY(-10vh); }
         }
 
-        /* The Interactive Flashcard */
+        /* 1. The Container - Now handles the interaction area */
         .card-container {
             position: relative;
             z-index: 10;
             width: 90%;
             max-width: 600px;
-            transition: transform 0.1s ease-out;
+            cursor: pointer;
+            transition: transform 0.3s ease-out; /* Smooth return to center */
             transform-style: preserve-3d;
         }
 
+        /* 2. The Flashcard Design */
         .flashcard {
-            background: rgba(255, 255, 255, 0.05); /* 10% Opacity */
+            background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             padding: 50px;
-            border-radius: 2px; /* Sharp corners like the '2Alam' example */
+            border-radius: 2px; 
             border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            box-shadow: 0 0 40px rgba(0,0,0,0.5);
-            /* This creates the slight inner glow */
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
             overflow: hidden;
         }
 
-        /* The 100% Opacity White Text */
         .card-number {
             font-size: 0.8rem;
             font-weight: 700;
             color: white;
-            opacity: 0.4;
+            opacity: 0.3;
             letter-spacing: 2px;
             margin-bottom: 20px;
             display: block;
@@ -82,30 +81,30 @@
             letter-spacing: -3px;
             text-transform: uppercase;
             color: white;
-            transform: translateZ(50px); /* Makes text pop forward */
+            transform: translateZ(40px); /* Subtle text pop */
         }
 
         p {
             color: white;
             font-size: 1.1rem;
             margin-top: 20px;
-            opacity: 0.7;
-            transform: translateZ(30px);
+            opacity: 0.6;
+            transform: translateZ(20px);
         }
 
-        /* The 'UTILITY' style tags from your reference */
+        /* Side Tags */
         .tags-right {
             position: absolute;
             right: 40px;
             top: 50%;
-            transform: translateY(-50%);
+            transform: translateY(-50%) translateZ(30px);
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
         .mini-tag {
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
             border-radius: 20px;
             padding: 4px 12px;
             font-size: 0.6rem;
@@ -113,6 +112,7 @@
             color: white;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-align: center;
         }
     </style>
 </head>
@@ -134,7 +134,7 @@
     </div>
 
     <script>
-        // 1. Generate Stars
+        // Generate Stars
         const stars = document.getElementById('star-container');
         for (let i = 0; i < 150; i++) {
             const s = document.createElement('div');
@@ -148,24 +148,28 @@
             stars.appendChild(s);
         }
 
-        // 2. The 3D Tilt Interaction
+        // 3D Tilt Logic - Now scoped to the CARD only
         const card = document.getElementById('tilt-card');
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX;
-            const y = e.clientY;
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left; // Mouse position within the card
+            const y = e.clientY - rect.top;
             
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
             
-            // Calculate tilt based on mouse position
-            const rotateX = (centerY - y) / 20;
-            const rotateY = (x - centerX) / 20;
+            // Reduced movement (/ 45 makes it much more subtle)
+            const rotateX = (centerY - y) / 45; 
+            const rotateY = (x - centerX) / 45;
             
+            card.style.transition = 'transform 0.1s ease-out'; // Fast tracking
             card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         });
 
-        // Reset tilt when mouse leaves
-        document.addEventListener('mouseleave', () => {
+        // Reset position when mouse leaves the card area
+        card.addEventListener('mouseleave', () => {
+            card.style.transition = 'transform 0.6s ease'; // Smooth reset
             card.style.transform = `rotateX(0deg) rotateY(0deg)`;
         });
     </script>
