@@ -8,8 +8,7 @@
     <style>
         body {
             margin: 0;
-            /* Added radial gradient for "Nebula" depth */
-            background: radial-gradient(circle at center, #0a0c12 0%, #050607 100%); 
+            background: #050607; 
             font-family: 'Inter', sans-serif;
             height: 100vh;
             overflow: hidden;
@@ -46,23 +45,14 @@
 
         .star {
             position: absolute;
+            background: white;
             border-radius: 50%;
-            opacity: 0.8;
-            /* Added box-shadow for star glow */
-            box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
-            /* Combined movement and twinkle animations */
-            animation: moveStar var(--speed) linear infinite, twinkle 3s ease-in-out infinite alternate;
+            animation: moveStar var(--speed) linear infinite;
         }
 
         @keyframes moveStar {
             from { transform: translateY(0); }
             to { transform: translateY(-150vh); }
-        }
-
-        /* Twinkle animation for "living" stars */
-        @keyframes twinkle {
-            from { opacity: 0.3; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1.2); }
         }
 
         .main-scroller {
@@ -84,8 +74,7 @@
         }
 
         .flashcard {
-            /* Upgraded to premium glassmorphism */
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.03) 100%);
+            background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             padding: 60px;
@@ -94,8 +83,7 @@
             border-radius: 2px; 
             border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            /* Added inner glow for depth */
-            box-shadow: 0 50px 100px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out;
         }
@@ -181,16 +169,31 @@
             text-align: center;
         }
 
-        /* Mobile Fixes */
+        /* --- MOBILE FIXES ADDED HERE --- */
         @media (max-width: 768px) {
-            nav { padding: 25px 30px; }
+            nav {
+                padding: 25px 30px;
+            }
             .nav-left { font-size: 0.6rem; }
             .nav-right { font-size: 0.45rem; letter-spacing: 2px; }
-            .flashcard { padding: 40px 30px; width: 85%; }
-            h1 { font-size: 2.8rem; letter-spacing: -2px; }
-            p { font-size: 0.95rem; line-height: 1.4; }
+
+            .flashcard {
+                padding: 40px 30px;
+                width: 85%;
+            }
+
+            h1 {
+                font-size: 2.8rem; /* Keeps 'Todouro' from cutting off */
+                letter-spacing: -2px;
+            }
+
+            p {
+                font-size: 0.95rem;
+                line-height: 1.4;
+            }
+
             .tags-right {
-                position: relative;
+                position: relative; /* Moves tags below text instead of right side */
                 right: auto;
                 top: auto;
                 transform: none;
@@ -198,6 +201,9 @@
                 margin-top: 25px;
                 gap: 8px;
             }
+
+            .social-icon { font-size: 1.2rem; }
+            .social-link { font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -211,12 +217,15 @@
     <div id="star-container"></div>
 
     <div class="main-scroller">
+        
         <div class="section" id="sec1">
             <div class="flashcard">
                 <h1>Todouro</h1>
                 <p>Welcome to the index.</p>
                 <button class="arrow-btn" onclick="document.getElementById('sec2').scrollIntoView();">↓</button>
-                <div class="tags-right"><div class="mini-tag">Identity</div></div>
+                <div class="tags-right">
+                    <div class="mini-tag">Identity</div>
+                </div>
             </div>
         </div>
 
@@ -225,7 +234,9 @@
                 <h1>About Me</h1>
                 <p>Mostly chill, sometimes overthinking, usually doing my own thing.</p>
                 <button class="arrow-btn" onclick="document.getElementById('sec3').scrollIntoView();">↓</button>
-                <div class="tags-right"><div class="mini-tag">Bio</div></div>
+                <div class="tags-right">
+                    <div class="mini-tag">Bio</div>
+                </div>
             </div>
         </div>
 
@@ -234,7 +245,9 @@
                 <h1>Likes</h1>
                 <p>Chess, Anime, and Football.</p>
                 <button class="arrow-btn" onclick="document.getElementById('sec4').scrollIntoView();">↓</button>
-                <div class="tags-right"><div class="mini-tag">Interests</div></div>
+                <div class="tags-right">
+                    <div class="mini-tag">Interests</div>
+                </div>
             </div>
         </div>
 
@@ -242,17 +255,22 @@
             <div class="flashcard">
                 <h1>Socials</h1>
                 <p>Todouro on everywhere.</p>
+                
                 <div class="social-list">
                     <a href="https://discord.com/users/1379090219688525898" target="_blank" class="social-item">
-                        <i class="fab fa-discord social-icon"></i><span class="social-link">@todouro</span>
+                        <i class="fab fa-discord social-icon"></i>
+                        <span class="social-link">@todouro</span>
                     </a>
                     <a href="https://github.com/todouro" target="_blank" class="social-item">
-                        <i class="fab fa-github social-icon"></i><span class="social-link">/todouro</span>
+                        <i class="fab fa-github social-icon"></i>
+                        <span class="social-link">/todouro</span>
                     </a>
                     <a href="https://instagram.com/Todouro" target="_blank" class="social-item">
-                        <i class="fab fa-instagram social-icon"></i><span class="social-link">@Todouro</span>
+                        <i class="fab fa-instagram social-icon"></i>
+                        <span class="social-link">@Todouro</span>
                     </a>
                 </div>
+
                 <button class="back-top" onclick="document.getElementById('sec1').scrollIntoView();">↑ Back to Start</button>
             </div>
         </div>
@@ -260,32 +278,29 @@
 
     <script>
         const stars = document.getElementById('star-container');
-        const starColors = ['#ffffff', '#ffffff', '#e0e7ff', '#ffedd5']; // Added color variety
 
         for (let i = 0; i < 600; i++) {
             const s = document.createElement('div');
             s.className = 'star';
             s.style.left = Math.random() * 100 + '%';
             s.style.top = (Math.random() * 200) + '%';
-            
             const size = Math.random() * 1.5;
             s.style.width = size + 'px';
             s.style.height = size + 'px';
-            
-            // Randomize color for depth
-            s.style.background = starColors[Math.floor(Math.random() * starColors.length)];
-            
             s.style.setProperty('--speed', (Math.random() * 20 + 10) + 's');
-            s.style.animationDelay = (Math.random() * -20) + 's'; // Varied start times
-            
+            s.style.animationDelay = '0s';
             stars.appendChild(s);
         }
 
         document.querySelectorAll('.flashcard').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const rotateX = (rect.height / 2 - (e.clientY - rect.top)) / 80; 
-                const rotateY = ((e.clientX - rect.left) - rect.width / 2) / 80;
+                const x = e.clientX - rect.left; 
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (centerY - y) / 80; 
+                const rotateY = (x - centerX) / 80;
                 card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
             });
             card.addEventListener('mouseleave', () => {
