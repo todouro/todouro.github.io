@@ -13,7 +13,6 @@
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
             --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-            --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
         }
 
         body {
@@ -21,26 +20,16 @@
             font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden;
         }
 
-        /* --- BACKGROUND --- */
-        #starfield {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; pointer-events: none;
-        }
+        #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .noise { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.04; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-        .noise {
-            position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.04;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        }
-
-        /* --- NAV --- */
         nav {
             position: fixed; top: 0; left: 0; width: 100%; padding: 40px 60px;
             display: flex; justify-content: space-between; align-items: center;
             z-index: 100; mix-blend-mode: difference; pointer-events: none;
         }
-        .nav-item { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; opacity: 0.5; }
+        .nav-item { font-family: 'JetBrains Mono'; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; }
 
-        /* --- SCROLLER --- */
         .main-scroller {
             height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory;
             scroll-behavior: smooth; position: relative; z-index: 10;
@@ -52,95 +41,107 @@
             scroll-snap-align: center; perspective: 1200px;
         }
 
-        /* --- FLASHCARD IMPROVEMENTS --- */
+        /* --- SMOOTHED FLASHCARD --- */
         .flashcard {
             background: var(--glass); 
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            padding: 80px; width: 90%; max-width: 700px; border-radius: 2px;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 80px; width: 90%; max-width: 700px; border-radius: 4px;
             border: 1px solid var(--glass-border);
-            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
             transform-style: preserve-3d;
-            transition: transform 0.6s var(--ease-out-expo), opacity 1s var(--ease-out-expo);
-            opacity: 0;
-            transform: translateY(30px) rotateX(10deg);
+            position: relative; overflow: hidden;
+            /* Initial state for scroll animation */
+            opacity: 0; transform: translateY(50px) rotateX(10deg);
+            transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
         }
 
-        /* Intersection Observer Class */
-        .flashcard.visible {
-            opacity: 1;
-            transform: translateY(0) rotateX(0);
+        /* Triggered via JS when section is in view */
+        .flashcard.in-view { opacity: 1; transform: translateY(0) rotateX(0); }
+
+        .flashcard::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: skewX(-20deg); transition: 0.5s; pointer-events: none;
         }
+        .flashcard:hover::after { left: 100%; transition: 0.8s; }
 
         h1 {
-            font-size: clamp(3rem, 8vw, 5rem); margin: 0; font-weight: 900; letter-spacing: -4px;
+            font-size: 5rem; margin: 0; font-weight: 900; letter-spacing: -4px;
             background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            transform: translateZ(50px);
-            transition: 0.8s var(--ease-out-expo);
+            transform: translateZ(40px);
         }
+        p { font-size: 1.2rem; margin-top: 20px; opacity: 0.6; font-weight: 300; transform: translateZ(20px); }
 
-        /* --- BUTTONS & STAGGERING --- */
-        .btn-group { 
-            margin-top: 40px; display: flex; flex-direction: column; gap: 8px; 
-            transform: translateZ(30px);
-        }
-        
+        /* --- BUTTONS --- */
+        .btn-group { margin-top: 40px; display: flex; flex-direction: column; gap: 10px; transform: translateZ(30px); }
         .action-btn {
-            background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);
-            padding: 18px 25px; color: white; cursor: pointer; text-align: left;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            padding: 20px 30px; color: white; cursor: pointer; text-align: left;
             display: flex; justify-content: space-between; align-items: center;
-            transition: all 0.4s var(--ease-out-expo); border-radius: 4px; text-decoration: none;
-            position: relative; overflow: hidden;
+            transition: all 0.3s var(--ease-out-expo); border-radius: 4px; text-decoration: none;
         }
+        .action-btn:hover { background: rgba(255,255,255,0.1); padding-left: 40px; border-color: rgba(255,255,255,0.3); }
+        .btn-label { font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: 15px; }
+        .btn-icon { opacity: 0.5; font-size: 0.9rem; }
+        .btn-arrow { opacity: 0; transform: translateX(-10px); transition: 0.3s; }
+        .action-btn:hover .btn-arrow { opacity: 1; transform: translateX(0); }
 
-        .action-btn:hover {
-            background: rgba(255,255,255,0.08); padding-left: 35px; border-color: rgba(255,255,255,0.4);
-            transform: translateY(-2px);
+        .scroll-down {
+            margin-top: 40px; background: none; border: none; color: rgba(255,255,255,0.3);
+            font-size: 1.5rem; cursor: pointer; animation: bounce 2s infinite;
         }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
         /* --- OVERLAYS --- */
         .overlay {
-            display: none; position: fixed; inset: 0; background: rgba(3, 3, 4, 0.98);
-            z-index: 2000; overflow-y: auto; backdrop-filter: blur(20px);
-            opacity: 0; transition: opacity 0.5s var(--ease-in-out-cubic);
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 2000; overflow-y: auto; backdrop-filter: blur(10px);
+            opacity: 0; transition: opacity 0.4s ease;
         }
-        .overlay.active { display: block; opacity: 1; }
+        .overlay.show { display: block; opacity: 1; }
 
-        .overlay-content {
-            max-width: 1000px; margin: 80px auto; padding: 40px;
-            transform: translateY(40px); transition: transform 0.8s var(--ease-out-expo);
+        .overlay-content { max-width: 1200px; margin: 80px auto; padding: 40px; }
+        .overlay-header {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 60px; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px;
         }
-        .overlay.active .overlay-content { transform: translateY(0); }
+        .overlay-title { font-size: 3rem; font-weight: 800; letter-spacing: -2px; margin: 0; }
+        .close-btn {
+            background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white;
+            padding: 10px 24px; border-radius: 100px; cursor: pointer; font-family: 'JetBrains Mono';
+            font-size: 0.8rem; text-transform: uppercase; transition: 0.3s;
+        }
+        .close-btn:hover { background: white; color: black; }
 
-        /* --- ANIMATING LISTS --- */
-        .anime-item, .stat-card, .photo-item {
+        /* --- LIST ANIMATIONS (STAGGERED) --- */
+        .anime-item, .stat-card {
             opacity: 0; transform: translateY(20px);
-            transition: all 0.6s var(--ease-out-expo);
+            transition: all 0.5s var(--ease-out-expo);
         }
+        .show .anime-item, .show .stat-card { opacity: 1; transform: translateY(0); }
 
-        .overlay.active .anime-item, 
-        .overlay.active .stat-card,
-        .overlay.active .photo-item {
-            opacity: 1; transform: translateY(0);
-        }
-
-        /* Stagger logic via JS injection or manual */
+        /* Stagger Delays */
         .anime-item:nth-child(1) { transition-delay: 0.1s; }
         .anime-item:nth-child(2) { transition-delay: 0.2s; }
         .anime-item:nth-child(3) { transition-delay: 0.3s; }
         .anime-item:nth-child(4) { transition-delay: 0.4s; }
         .anime-item:nth-child(5) { transition-delay: 0.5s; }
 
-        .scroll-down {
-            margin-top: 40px; background: none; border: none; color: rgba(255,255,255,0.2);
-            font-size: 1.2rem; cursor: pointer; transition: 0.3s;
-            animation: floating 3s ease-in-out infinite;
-        }
+        /* Rest of your styles (Chess, Gallery, etc) stay exactly the same */
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .stat-card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 12px; border: 1px solid var(--glass-border); text-align: center; }
+        .big-num { font-size: 4rem; font-weight: 900; line-height: 1; margin: 10px 0; display: block; }
+        .stat-meta { font-family: 'JetBrains Mono'; font-size: 0.8rem; opacity: 0.5; text-transform: uppercase; }
+        .anime-item { display: flex; align-items: center; padding: 30px; border-bottom: 1px solid var(--glass-border); transition: 0.3s; cursor: default; }
+        .anime-item:hover { background: rgba(255,255,255,0.03); padding-left: 40px; }
+        .anime-rank { font-family: 'JetBrains Mono'; font-size: 2rem; opacity: 0.2; width: 80px; font-weight: 700; }
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2px; }
+        .photo-item { aspect-ratio: 1; overflow: hidden; position: relative; cursor: zoom-in; }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        #fullscreen-view { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 3000; justify-content: center; align-items: center; cursor: zoom-out; }
+        #fullscreen-view img { max-width: 95%; max-height: 95%; object-fit: contain; }
 
-        @keyframes floating {
-            0%, 100% { transform: translateY(0); opacity: 0.2; }
-            50% { transform: translateY(10px); opacity: 0.5; }
-        }
-
+        @media (max-width: 768px) { .flashcard { padding: 40px; width: 85%; } h1 { font-size: 3rem; } }
     </style>
 </head>
 <body>
@@ -154,27 +155,39 @@
     </nav>
 
     <div class="main-scroller">
-        <div class="section" id="sec1"><div class="flashcard"><h1>Shan</h1><p>Welcome to the index.</p><button class="scroll-down" onclick="scrollToId('sec2')">↓</button></div></div>
-        <div class="section" id="sec2"><div class="flashcard"><h1>About</h1><p>Mostly chill, sometimes overthinking, usually doing my own thing.</p><button class="scroll-down" onclick="scrollToId('sec3')">↓</button></div></div>
+        <div class="section" id="sec1"><div class="flashcard"><h1>Shan</h1><p>Welcome to the index.</p><button class="scroll-down" onclick="document.getElementById('sec2').scrollIntoView();">↓</button></div></div>
+        <div class="section" id="sec2"><div class="flashcard"><h1>About</h1><p>Mostly chill, sometimes overthinking, usually doing my own thing.</p><button class="scroll-down" onclick="document.getElementById('sec3').scrollIntoView();">↓</button></div></div>
         <div class="section" id="sec3">
             <div class="flashcard">
                 <h1>Modules</h1>
                 <div class="btn-group">
-                    <button class="action-btn" onclick="openOverlay('gallery-overlay')"><span class="btn-label"><i class="fas fa-camera btn-icon"></i> Photography</span><span class="btn-arrow">→</span></button>
-                    <button class="action-btn" onclick="openOverlay('chess-overlay')"><span class="btn-label"><i class="fas fa-chess btn-icon"></i> Chess</span><span class="btn-arrow">→</span></button>
-                    <button class="action-btn" onclick="openOverlay('anime-overlay')"><span class="btn-label"><i class="fas fa-tv btn-icon"></i> Anime</span><span class="btn-arrow">→</span></button>
+                    <button class="action-btn" onclick="openGallery()">
+                        <span class="btn-label"><i class="fas fa-camera btn-icon"></i> Photography</span><span class="btn-arrow">→</span>
+                    </button>
+                    <button class="action-btn" onclick="openChess()">
+                        <span class="btn-label"><i class="fas fa-chess btn-icon"></i> Chess</span><span class="btn-arrow">→</span>
+                    </button>
+                    <button class="action-btn" onclick="openAnime()">
+                        <span class="btn-label"><i class="fas fa-tv btn-icon"></i> Anime</span><span class="btn-arrow">→</span>
+                    </button>
                 </div>
-                <button class="scroll-down" onclick="scrollToId('sec4')">↓</button>
+                <button class="scroll-down" onclick="document.getElementById('sec4').scrollIntoView();">↓</button>
             </div>
         </div>
         <div class="section" id="sec4">
             <div class="flashcard">
                 <h1>Link</h1>
                 <div class="btn-group">
-                    <a href="#" class="action-btn"><span class="btn-label"><i class="fab fa-discord btn-icon"></i> Discord</span></a>
-                    <a href="#" class="action-btn"><span class="btn-label"><i class="fab fa-github btn-icon"></i> GitHub</span></a>
+                    <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn">
+                        <span class="btn-label"><i class="fab fa-discord btn-icon"></i> Discord</span>
+                        <span style="opacity:0.5; font-size:0.8rem;">@todouro</span>
+                    </a>
+                    <a href="https://github.com/todouro" target="_blank" class="action-btn">
+                        <span class="btn-label"><i class="fab fa-github btn-icon"></i> GitHub</span>
+                        <span style="opacity:0.5; font-size:0.8rem;">/todouro</span>
+                    </a>
                 </div>
-                <button class="scroll-down" style="font-size:0.8rem; opacity:0.5;" onclick="scrollToId('sec1')">↑ Return</button>
+                <button class="scroll-down" style="font-size:1rem; opacity:0.5;" onclick="document.getElementById('sec1').scrollIntoView();">↑ Return</button>
             </div>
         </div>
     </div>
@@ -190,88 +203,119 @@
         <div class="overlay-content">
             <div class="overlay-header"><h2 class="overlay-title">Top 5</h2><button class="close-btn" onclick="closeAll()">Close</button></div>
             <div class="anime-list">
-                <div class="anime-item"><span class="anime-rank">01</span><div class="anime-info"><h3>Attack on Titan</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">02</span><div class="anime-info"><h3>Vinland Saga</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">03</span><div class="anime-info"><h3>Frieren</h3></div></div>
+                <div class="anime-item"><span class="anime-rank">01</span><div class="anime-info"><h3>Attack on Titan</h3><p class="anime-meta">Action / Drama</p></div></div>
+                <div class="anime-item"><span class="anime-rank">02</span><div class="anime-info"><h3>Vinland Saga</h3><p class="anime-meta">Historical</p></div></div>
+                <div class="anime-item"><span class="anime-rank">03</span><div class="anime-info"><h3>Frieren</h3><p class="anime-meta">Fantasy</p></div></div>
+                <div class="anime-item"><span class="anime-rank">04</span><div class="anime-info"><h3>Death Note</h3><p class="anime-meta">Psychological</p></div></div>
+                <div class="anime-item"><span class="anime-rank">05</span><div class="anime-info"><h3>Blue Box</h3><p class="anime-meta">Romance / Sports</p></div></div>
             </div>
         </div>
     </div>
 
     <div id="chess-overlay" class="overlay">
         <div class="overlay-content">
-            <div class="overlay-header"><h2 class="overlay-title">Chess</h2><button class="close-btn" onclick="closeAll()">Close</button></div>
+            <div class="overlay-header">
+                <div><h2 class="overlay-title">Chess</h2><div id="status-dot" style="width:8px; height:8px; background:#444; border-radius:50%; display:inline-block;"></div> <span id="live-status" style="font-size:0.8rem; opacity:0.6;">Syncing...</span></div>
+                <button class="close-btn" onclick="closeAll()">Close</button>
+            </div>
             <div class="stat-grid">
-                <div class="stat-card" style="transition-delay: 0.1s;"><span class="stat-meta">Rapid</span><span class="big-num" id="rapid-elo">1200</span></div>
-                <div class="stat-card" style="transition-delay: 0.2s;"><span class="stat-meta">Games</span><span class="big-num" id="total-matches">450</span></div>
+                <div class="stat-card"><span class="stat-meta">Rapid Rating</span><span id="rapid-elo" class="big-num">---</span><span id="rapid-record" style="opacity:0.5;">W:0 L:0 D:0</span></div>
+                <div class="stat-card"><span class="stat-meta">Total Games</span><span id="total-matches" class="big-num">---</span><span style="opacity:0.5;">All Time</span></div>
             </div>
         </div>
     </div>
 
-    <script>
-        // 1. Smooth Scroll Helper
-        function scrollToId(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-        }
+    <div id="fullscreen-view" onclick="toggleFullscreen()"><img src=""></div>
 
-        // 2. Intersection Observer for Sections
-        const observerOptions = { threshold: 0.2 };
+    <script>
+        // --- TILT & STARFIELD MOUSE LOGIC ---
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', e => { 
+            mouseX = e.clientX; mouseY = e.clientY; 
+        });
+
+        // --- INTERSECTION OBSERVER (The "Smooth" part) ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.querySelector('.flashcard').classList.add('visible');
-                }
+                if (entry.isIntersecting) entry.target.querySelector('.flashcard').classList.add('in-view');
             });
-        }, observerOptions);
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.section').forEach(s => observer.observe(s));
 
-        document.querySelectorAll('.section').forEach(section => observer.observe(section));
-
-        // 3. Overlay System
-        function openOverlay(id) {
-            const overlay = document.getElementById(id);
-            overlay.style.display = 'block';
-            setTimeout(() => overlay.classList.add('active'), 10);
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeAll() {
-            document.querySelectorAll('.overlay').forEach(o => {
-                o.classList.remove('active');
-                setTimeout(() => o.style.display = 'none', 500);
-            });
-            document.body.style.overflow = 'auto';
-        }
-
-        // --- STARFIELD (Optimized) ---
+        // --- STARFIELD ---
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
         let width, height, stars = [];
 
         function initStars() {
             width = window.innerWidth; height = window.innerHeight;
-            canvas.width = width; canvas.height = height;
-            stars = Array.from({length: 200}, () => ({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                z: Math.random() * 2,
-                o: Math.random()
-            }));
+            canvas.width = width; canvas.height = height; stars = [];
+            for(let i=0; i<300; i++) stars.push({ x: Math.random() * width, y: Math.random() * height, z: Math.random() * 2 + 0.5, o: Math.random() });
         }
 
         function animateStars() {
-            ctx.clearRect(0,0,width,height);
-            ctx.fillStyle = "white";
-            stars.forEach(s => {
-                s.y -= 0.1 * (s.z + 1);
-                if(s.y < 0) s.y = height;
-                ctx.globalAlpha = s.o;
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.z, 0, Math.PI*2);
-                ctx.fill();
+            ctx.clearRect(0,0,width,height); ctx.fillStyle = "white";
+            stars.forEach(star => {
+                star.y -= 0.2 * star.z;
+                let offsetX = (mouseX - width/2) * 0.0002 * star.z;
+                let offsetY = (mouseY - height/2) * 0.0002 * star.z;
+                if(star.y < 0) { star.y = height; star.x = Math.random() * width; }
+                ctx.globalAlpha = star.o; ctx.beginPath();
+                ctx.arc(star.x - offsetX, star.y - offsetY, star.z * 0.8, 0, Math.PI*2); ctx.fill();
             });
             requestAnimationFrame(animateStars);
         }
         initStars(); animateStars();
         window.addEventListener('resize', initStars);
+
+        // --- TILT ---
+        document.querySelectorAll('.flashcard').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = (e.clientX - rect.left) - rect.width/2;
+                const y = (e.clientY - rect.top) - rect.height/2;
+                card.style.transform = `perspective(1000px) rotateY(${x/50}deg) rotateX(${-y/50}deg)`;
+            });
+            card.addEventListener('mouseleave', () => card.style.transform = `perspective(1000px) rotateY(0) rotateX(0)`);
+        });
+
+        // --- CHESS API ---
+        async function openChess() {
+            const overlay = document.getElementById('chess-overlay');
+            overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            const user = 'chinatsu-lover';
+            try {
+                const [stats, status, profile] = await Promise.all([
+                    fetch(`https://api.chess.com/pub/player/${user}/stats`).then(r=>r.json()),
+                    fetch(`https://api.chess.com/pub/player/${user}/is-online`).then(r=>r.json()),
+                    fetch(`https://api.chess.com/pub/player/${user}`).then(r=>r.json())
+                ]);
+                if(stats.chess_rapid) {
+                    document.getElementById('rapid-elo').innerText = stats.chess_rapid.last.rating;
+                    const r = stats.chess_rapid.record;
+                    document.getElementById('rapid-record').innerText = `W:${r.win} L:${r.loss} D:${r.draw}`;
+                }
+                document.getElementById('total-matches').innerText = (stats.chess_rapid?.record.win || 0) + (stats.chess_blitz?.record.win || 0);
+                document.getElementById('live-status').innerText = status.online ? 'ONLINE' : 'OFFLINE';
+                document.getElementById('status-dot').style.background = status.online ? '#4ade80' : '#444';
+            } catch(e) { console.error(e); }
+        }
+
+        // --- HELPERS ---
+        function openGallery() { document.getElementById('gallery-overlay').classList.add('show'); renderGallery(); }
+        function openAnime() { document.getElementById('anime-overlay').classList.add('show'); }
+        function closeAll() { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('show')); document.body.style.overflow = 'auto'; }
+        
+        function renderGallery() {
+            const photos = ["https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", "https://i.imgur.com/HImgOvp.jpeg"];
+            document.getElementById('photo-grid').innerHTML = photos.map(url => `<div class="photo-item" onclick="toggleFullscreen('${url}')"><img src="${url}"></div>`).join('');
+        }
+        function toggleFullscreen(url) {
+            const v = document.getElementById('fullscreen-view');
+            if(url) { v.querySelector('img').src = url; v.style.display = 'flex'; }
+            else v.style.display = 'none';
+        }
     </script>
 </body>
 </html>
