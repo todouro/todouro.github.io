@@ -148,11 +148,11 @@
         .anime-info h3 { font-size: 1.8rem; margin: 0; }
         .anime-meta { margin-top: 5px; font-family: 'JetBrains Mono'; font-size: 0.8rem; opacity: 0.6; }
 
-        /* --- GALLERY --- */
+        /* --- GALLERY (Grayscale Removed) --- */
         .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2px; }
         .photo-item { aspect-ratio: 1; overflow: hidden; position: relative; cursor: zoom-in; }
-        .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; filter: grayscale(1); }
-        .photo-item:hover img { transform: scale(1.1); filter: grayscale(0); }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .photo-item:hover img { transform: scale(1.1); }
 
         @media (max-width: 768px) {
             .flashcard { padding: 40px; width: 85%; }
@@ -191,7 +191,7 @@
 
         <div class="section" id="sec3">
             <div class="flashcard">
-                <h1>Interests</h1>
+                <h1>Modules</h1>
                 <div class="btn-group">
                     <button class="action-btn" onclick="openGallery()">
                         <span class="btn-label"><i class="fas fa-camera btn-icon"></i> Photography</span>
@@ -338,7 +338,7 @@
         window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
         initStars(); animateStars();
 
-        // --- UPDATED TILT EFFECT (Subtler: 100 divisor) ---
+        // --- SUBTLE TILT EFFECT ---
         document.querySelectorAll('.flashcard').forEach(card => {
             card.addEventListener('mousemove', e => {
                 const rect = card.getBoundingClientRect();
@@ -355,7 +355,7 @@
             document.body.style.overflow = 'auto';
         }
 
-        // --- UPDATED GALLERY & FULLSCREEN ---
+        // --- GALLERY & FULLSCREEN ---
         const photos = [
             "https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", 
             "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg", 
@@ -387,7 +387,7 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // --- UPDATED CHESS API (Last Seen Logic) ---
+        // --- CHESS API & LAST SEEN ---
         function timeAgo(timestamp) {
             const seconds = Math.floor((new Date() - new Date(timestamp * 1000)) / 1000);
             let interval = Math.floor(seconds / 31536000);
@@ -407,7 +407,7 @@
             document.getElementById('chess-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
             
-            const user = 'chinatsu-lover';
+            const user = 'chinatsu-lover'; // Ensure this matches your username
             try {
                 const stats = await fetch(`https://api.chess.com/pub/player/${user}/stats`).then(r=>r.json());
                 const status = await fetch(`https://api.chess.com/pub/player/${user}/is-online`).then(r=>r.json());
