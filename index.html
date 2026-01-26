@@ -47,7 +47,17 @@
             border: 1px solid var(--glass-border);
             box-shadow: 0 40px 100px rgba(0,0,0,0.8);
             transform-style: preserve-3d; transition: transform 0.4s var(--ease);
+            position: relative; overflow: hidden;
         }
+
+        /* Personality: Magnetic Glow */
+        .flashcard::before {
+            content: "";
+            position: absolute; inset: 0;
+            background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%);
+            z-index: -1; opacity: 0; transition: opacity 0.5s;
+        }
+        .flashcard:hover::before { opacity: 1; }
 
         h1 { font-size: 5rem; margin: 0; font-weight: 900; letter-spacing: -4px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         p { font-size: 1.2rem; margin-top: 20px; opacity: 0.6; font-weight: 300; }
@@ -64,7 +74,7 @@
         .scroll-down { margin-top: 40px; background: none; border: none; color: rgba(255,255,255,0.3); font-size: 1.5rem; cursor: pointer; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
-        /* --- MODALS (CENTERED & SCROLLABLE) --- */
+        /* --- MODALS --- */
         .overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8);
             z-index: 2000; opacity: 0; visibility: hidden;
@@ -74,18 +84,28 @@
         .overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(15px); }
 
         .overlay-content { 
-            background: #0a0a0b; width: 85%; max-width: 800px; max-height: 75vh;
+            background: #0a0a0b; width: 85%; max-width: 800px; height: 75vh;
             border: 1px solid var(--glass-border); border-radius: 20px;
-            padding: 40px; overflow-y: auto; position: relative;
+            position: relative; overflow: hidden; 
             transform: scale(0.9) translateY(30px); transition: 0.4s var(--ease);
+            display: flex; flex-direction: column;
         }
         .overlay.active .overlay-content { transform: scale(1) translateY(0); }
 
-        /* Custom Scrollbar for Modals */
-        .overlay-content::-webkit-scrollbar { width: 4px; }
-        .overlay-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .modal-body {
+            flex: 1; overflow-y: auto; padding: 40px; padding-top: 0;
+            scrollbar-gutter: stable;
+        }
 
-        .overlay-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; }
+        /* Floating Scrollbar */
+        .modal-body::-webkit-scrollbar { width: 10px; }
+        .modal-body::-webkit-scrollbar-track { background: transparent; }
+        .modal-body::-webkit-scrollbar-thumb { 
+            background: rgba(255,255,255,0.1); 
+            border-radius: 20px; border: 3px solid #0a0a0b; background-clip: padding-box;
+        }
+
+        .overlay-header { display: flex; justify-content: space-between; align-items: center; padding: 40px; padding-bottom: 20px; background: #0a0a0b; z-index: 10; }
         .close-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 18px; border-radius: 100px; cursor: pointer; font-family: 'JetBrains Mono'; font-size: 0.7rem; }
         .close-btn:hover { background: white; color: black; }
 
@@ -95,30 +115,21 @@
         .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .photo-item:hover img { transform: scale(1.1); }
 
-        /* --- FULLSCREEN PHOTO ANIMATION --- */
+        /* --- FULLSCREEN --- */
         #fullscreen-view {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             z-index: 3000; justify-content: center; align-items: center;
             opacity: 0; transition: opacity 0.3s ease;
         }
         #fullscreen-view.active { display: flex; opacity: 1; }
-        #fullscreen-view img { 
-            max-width: 90%; max-height: 90%; object-fit: contain; 
-            transform: scale(0.8); transition: transform 0.4s var(--ease);
-        }
+        #fullscreen-view img { max-width: 90%; max-height: 90%; object-fit: contain; transform: scale(0.8); transition: 0.4s var(--ease); }
         #fullscreen-view.active img { transform: scale(1); }
 
-        /* --- ANIME LIST --- */
+        /* --- ANIME --- */
         .anime-item { display: flex; align-items: center; padding: 25px; border-bottom: 1px solid var(--glass-border); }
         .anime-rank { font-family: 'JetBrains Mono'; font-size: 1.5rem; opacity: 0.2; width: 60px; font-weight: 700; }
 
-        /* --- CHESS STATS --- */
-        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .stat-card { background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; border: 1px solid var(--glass-border); text-align: center; }
-        .big-num { font-size: 3rem; font-weight: 900; display: block; }
-        .stat-meta { font-family: 'JetBrains Mono'; font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; }
-
-        @media (max-width: 768px) { .flashcard { padding: 40px; } h1 { font-size: 3.5rem; } .overlay-content { width: 95%; padding: 25px; } }
+        @media (max-width: 768px) { .flashcard { padding: 40px; } h1 { font-size: 3.5rem; } .overlay-content { width: 95%; height: 80vh; } }
     </style>
 </head>
 <body>
@@ -130,8 +141,8 @@
         
         <div class="section" id="sec1">
             <div class="flashcard">
-                <h1>Shan</h1>
-                <p>Welcome to the index.</p>
+                <h1>Index</h1>
+                <p id="personality-text">Welcome to the index.</p>
                 <button class="scroll-down" onclick="scrollToId('sec2')">↓</button>
             </div>
         </div>
@@ -193,7 +204,9 @@
                 <h2 class="overlay-title">Visuals</h2>
                 <button class="close-btn" onclick="closeAll()">Close</button>
             </div>
-            <div class="photo-grid" id="photo-grid"></div>
+            <div class="modal-body">
+                <div class="photo-grid" id="photo-grid"></div>
+            </div>
         </div>
     </div>
 
@@ -203,12 +216,12 @@
                 <h2 class="overlay-title">Top Picks</h2>
                 <button class="close-btn" onclick="closeAll()">Close</button>
             </div>
-            <div class="anime-list">
-                <div class="anime-item"><span class="anime-rank">01</span><div><h3>Attack on Titan</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">02</span><div><h3>Vinland Saga</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">03</span><div><h3>Frieren</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">04</span><div><h3>Death Note</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">05</span><div><h3>Blue Box</h3></div></div>
+            <div class="modal-body">
+                <div class="anime-list">
+                    <div class="anime-item"><span class="anime-rank">01</span><div><h3>Attack on Titan</h3></div></div>
+                    <div class="anime-item"><span class="anime-rank">02</span><div><h3>Vinland Saga</h3></div></div>
+                    <div class="anime-item"><span class="anime-rank">03</span><div><h3>Frieren</h3></div></div>
+                </div>
             </div>
         </div>
     </div>
@@ -225,15 +238,16 @@
                 </div>
                 <button class="close-btn" onclick="closeAll()">Close</button>
             </div>
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <span class="stat-meta">Rapid Rating</span>
-                    <span id="rapid-elo" class="big-num">---</span>
-                    <span id="rapid-record" style="opacity:0.4; font-size:0.8rem;">W:0 L:0 D:0</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-meta">Rapid Games</span>
-                    <span id="total-matches" class="big-num">---</span>
+            <div class="modal-body">
+                <div class="stat-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: center;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; border: 1px solid var(--glass-border);">
+                        <span style="font-family: 'JetBrains Mono'; font-size: 0.7rem; opacity: 0.5;">RAPID</span>
+                        <span id="rapid-elo" style="font-size: 3rem; font-weight: 900; display: block;">---</span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; border: 1px solid var(--glass-border);">
+                        <span style="font-family: 'JetBrains Mono'; font-size: 0.7rem; opacity: 0.5;">TOTAL WINS</span>
+                        <span id="total-matches" style="font-size: 3rem; font-weight: 900; display: block;">---</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -244,10 +258,8 @@
     </div>
 
     <script>
-        // --- NAVIGATION ---
         function scrollToId(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
 
-        // --- OVERLAY LOGIC ---
         function openOverlay(id) {
             document.getElementById(id).classList.add('active');
             document.getElementById('scroller').style.overflowY = 'hidden';
@@ -263,7 +275,6 @@
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
         let width, height, stars = [];
-
         function initStars() {
             width = window.innerWidth; height = window.innerHeight;
             canvas.width = width; canvas.height = height; stars = [];
@@ -279,50 +290,36 @@
         }
         window.addEventListener('resize', initStars); initStars(); animateStars();
 
-        // --- SUBTLE TILT ---
+        // --- MAGNETIC GLOW & TILT ---
         document.querySelectorAll('.flashcard').forEach(card => {
             card.addEventListener('mousemove', e => {
                 const rect = card.getBoundingClientRect();
                 const x = (e.clientX - rect.left) - rect.width/2;
                 const y = (e.clientY - rect.top) - rect.height/2;
+                card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+                card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
                 card.style.transform = `perspective(1500px) rotateY(${x/120}deg) rotateX(${-y/120}deg)`;
             });
             card.addEventListener('mouseleave', () => card.style.transform = `perspective(1500px) rotateY(0) rotateX(0)`);
         });
 
-        // --- GALLERY & FULLSCREEN ANIMATION ---
+        // --- GALLERY ---
         function loadGallery() {
-            const photos = [
-                "https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", 
-                "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg",
-                "https://i.imgur.com/oSRWXDW.jpeg", "https://i.imgur.com/tV1BaU1.jpeg",
-                "https://i.imgur.com/zyuce90.jpeg", "https://i.imgur.com/9tCsU47.jpeg"
-            ];
+            const photos = ["https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg"];
             document.getElementById('photo-grid').innerHTML = photos.map(url => 
                 `<div class="photo-item" onclick="showFull('${url}')"><img src="${url}"></div>`).join('');
         }
-
         function showFull(url) {
             const v = document.getElementById('fullscreen-view');
             document.getElementById('full-img').src = url;
-            v.style.display = 'flex';
-            setTimeout(() => v.classList.add('active'), 10);
+            v.style.display = 'flex'; setTimeout(() => v.classList.add('active'), 10);
         }
-
         function closeFull() {
             const v = document.getElementById('fullscreen-view');
-            v.classList.remove('active');
-            setTimeout(() => v.style.display = 'none', 300);
+            v.classList.remove('active'); setTimeout(() => v.style.display = 'none', 300);
         }
 
         // --- CHESS API ---
-        function timeAgo(ts) {
-            const diff = Math.floor((new Date() - new Date(ts * 1000)) / 1000);
-            if (diff < 3600) return Math.floor(diff/60) + "m ago";
-            if (diff < 86400) return Math.floor(diff/3600) + "h ago";
-            return Math.floor(diff/86400) + "d ago";
-        }
-
         async function openChess() {
             openOverlay('chess-overlay');
             const user = 'chinatsu-lover';
@@ -333,19 +330,13 @@
                 ]);
                 const stats = await sRes.json();
                 const profile = await pRes.json();
-
                 if(stats.chess_rapid) {
-                    const r = stats.chess_rapid;
-                    document.getElementById('rapid-elo').innerText = r.last.rating;
-                    document.getElementById('rapid-record').innerText = `W:${r.record.win} L:${r.record.loss} D:${r.record.draw}`;
-                    document.getElementById('total-matches').innerText = r.record.win + r.record.loss + r.record.draw;
+                    document.getElementById('rapid-elo').innerText = stats.chess_rapid.last.rating;
+                    document.getElementById('total-matches').innerText = (stats.chess_rapid?.record.win || 0) + (stats.chess_blitz?.record.win || 0);
                 }
-
                 const isOnline = (Date.now() / 1000) - profile.last_online < 300;
-                const dot = document.getElementById('status-dot');
-                const txt = document.getElementById('live-status');
-                dot.style.background = isOnline ? '#4ade80' : '#666';
-                txt.innerText = isOnline ? 'ONLINE' : `Last seen ${timeAgo(profile.last_online)}`;
+                document.getElementById('status-dot').style.background = isOnline ? '#4ade80' : '#444';
+                document.getElementById('live-status').innerText = isOnline ? 'ONLINE' : 'OFFLINE';
             } catch(e) { console.error(e); }
         }
     </script>
