@@ -5,275 +5,403 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shan | Index</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <style>
-        body {
-            margin: 0;
-            background: radial-gradient(circle at center, #0a0c12 0%, #050607 100%); 
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            color: white;
+        :root {
+            --bg-deep: #030304;
+            --accent: #ffffff;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --ease: cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        /* Navigation */
+        body {
+            margin: 0; background-color: var(--bg-deep); color: white;
+            font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden;
+        }
+
+        /* --- BACKGROUND --- */
+        #starfield {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
+        }
+
+        .noise {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* --- NAV --- */
         nav {
             position: fixed; top: 0; left: 0; width: 100%; padding: 40px 60px;
             display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; box-sizing: border-box; text-transform: uppercase; pointer-events: none;
+            z-index: 100; mix-blend-mode: difference; pointer-events: none;
         }
-        .nav-left { font-weight: 900; letter-spacing: 2px; font-size: 0.8rem; }
-        .nav-right { font-weight: 400; letter-spacing: 4px; font-size: 0.6rem; opacity: 0.4; }
+        .nav-item { font-family: 'JetBrains Mono'; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; }
 
-        /* ACTIVE MOVING STARS */
-        #star-container { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            z-index: 0; pointer-events: none; 
+        /* --- SCROLLER --- */
+        .main-scroller {
+            height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory;
+            scroll-behavior: smooth; position: relative; z-index: 10;
         }
-        
-        .star {
-            position: absolute; border-radius: 50%; background: white;
-            /* Infinite upward movement + twinkle */
-            animation: drift var(--speed) linear infinite, twinkle var(--twinkle) ease-in-out infinite alternate;
-        }
+        /* Hide Scrollbar */
+        .main-scroller::-webkit-scrollbar { width: 0; }
 
-        @keyframes drift {
-            from { transform: translateY(0); }
-            to { transform: translateY(-100vh); }
+        .section {
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+            scroll-snap-align: center; perspective: 1200px;
         }
 
-        @keyframes twinkle {
-            from { opacity: 0.2; transform: scale(0.8); }
-            to { opacity: 0.8; transform: scale(1.2); }
-        }
-
-        /* Main Layout */
-        .main-scroller { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; position: relative; z-index: 10; }
-        .section { height: 100vh; display: flex; justify-content: center; align-items: center; scroll-snap-align: center; perspective: 1000px; }
-
+        /* --- FLASHCARD (UI) --- */
         .flashcard {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.03) 100%);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            padding: 60px; width: 90%; max-width: 650px; border-radius: 2px; 
-            border: 1px solid rgba(255, 255, 255, 0.1); position: relative;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            background: var(--glass); 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 80px; width: 90%; max-width: 700px; border-radius: 4px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
             transform-style: preserve-3d; transition: transform 0.1s ease-out;
+            position: relative; overflow: hidden;
         }
 
-        h1 { font-size: 4.5rem; margin: 0; font-weight: 900; letter-spacing: -4px; transform: translateZ(50px); }
-        p { font-size: 1.1rem; margin-top: 15px; opacity: 0.6; transform: translateZ(30px); }
+        /* Card Sheen Effect */
+        .flashcard::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: skewX(-20deg); transition: 0.5s; pointer-events: none;
+        }
+        .flashcard:hover::after { left: 100%; transition: 0.8s; }
 
-        /* Buttons Style */
-        .social-list { margin-top: 30px; display: flex; flex-direction: column; width: 100%; transform: translateZ(40px); }
-        .social-item {
+        h1 {
+            font-size: 5rem; margin: 0; font-weight: 900; letter-spacing: -4px;
+            background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            transform: translateZ(40px);
+        }
+        p { font-size: 1.2rem; margin-top: 20px; opacity: 0.6; font-weight: 300; transform: translateZ(20px); }
+
+        /* --- BUTTONS --- */
+        .btn-group { margin-top: 40px; display: flex; flex-direction: column; gap: 10px; transform: translateZ(30px); }
+        
+        .action-btn {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            padding: 20px 30px; color: white; cursor: pointer; text-align: left;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 18px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            text-decoration: none; color: white; transition: all 0.3s ease;
-            background: transparent; border: none; cursor: pointer; font-family: inherit; width: 100%; box-sizing: border-box;
+            transition: all 0.3s var(--ease); border-radius: 4px; text-decoration: none;
         }
-        .social-item:hover { padding-left: 30px; background: rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.5); }
-        .social-text { flex-grow: 1; text-align: left; font-size: 1rem; font-weight: 500; }
-        .social-link { font-size: 0.75rem; opacity: 0.4; font-family: monospace; }
+        .action-btn:hover {
+            background: rgba(255,255,255,0.1); padding-left: 40px; border-color: rgba(255,255,255,0.3);
+        }
+        .btn-label { font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: 15px; }
+        .btn-icon { opacity: 0.5; font-size: 0.9rem; }
+        .btn-arrow { opacity: 0; transform: translateX(-10px); transition: 0.3s; }
+        .action-btn:hover .btn-arrow { opacity: 1; transform: translateX(0); }
 
-        .arrow-btn { margin-top: 30px; background: none; border: none; color: white; font-size: 2rem; cursor: pointer; opacity: 0.5; transition: 0.3s; transform: translateZ(40px); }
-        .arrow-btn:hover { opacity: 1; transform: translateZ(40px) translateY(5px); }
+        .scroll-down {
+            margin-top: 40px; background: none; border: none; color: rgba(255,255,255,0.3);
+            font-size: 1.5rem; cursor: pointer; transition: 0.3s; animation: bounce 2s infinite;
+        }
+        .scroll-down:hover { color: white; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
-        .back-top { margin-top: 40px; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px 24px; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; width: 100%; }
-        .back-top:hover { background: white; color: black; }
+        /* --- OVERLAYS --- */
+        .overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 2000; overflow-y: auto; backdrop-filter: blur(10px);
+            animation: fadeIn 0.4s var(--ease);
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        /* Overlays */
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,6,7,0.95); z-index: 1000; overflow-y: auto; }
-        .gallery-window { margin: 50px auto; width: 95%; max-width: 1100px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 60px 40px; border-radius: 4px; position: relative; }
+        .overlay-content {
+            max-width: 1200px; margin: 80px auto; padding: 40px;
+        }
+        .overlay-header {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 60px; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px;
+        }
+        .overlay-title { font-size: 3rem; font-weight: 800; letter-spacing: -2px; margin: 0; }
+        .close-btn {
+            background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white;
+            padding: 10px 24px; border-radius: 100px; cursor: pointer; font-family: 'JetBrains Mono';
+            font-size: 0.8rem; text-transform: uppercase; transition: 0.3s;
+        }
+        .close-btn:hover { background: white; color: black; }
 
-        /* Chess Cards */
-        .chess-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
-        .chess-card { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
-        .elo-text { font-size: 3rem; font-weight: 900; margin: 10px 0; display: block; }
-        .stat-label { text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; opacity: 0.5; }
+        /* --- CHESS --- */
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .stat-card {
+            background: rgba(255,255,255,0.05); padding: 40px; border-radius: 12px;
+            border: 1px solid var(--glass-border); text-align: center;
+        }
+        .big-num { font-size: 4rem; font-weight: 900; line-height: 1; margin: 10px 0; display: block; }
+        .stat-meta { font-family: 'JetBrains Mono'; font-size: 0.8rem; opacity: 0.5; text-transform: uppercase; }
 
-        /* Anime/Gallery Styles */
-        .anime-card { display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 8px; transition: 0.3s; margin-bottom: 20px; flex-direction: column; }
-        .anime-card:hover { border-color: white; transform: scale(1.01); }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding-bottom: 100px; }
-        .gallery-item { cursor: pointer; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; height: 450px; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-        .close-window-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; cursor: pointer; font-size: 0.8rem; border-radius: 4px; }
-        .close-window-btn:hover { background: white; color: black; }
+        /* --- ANIME --- */
+        .anime-item {
+            display: flex; align-items: center; padding: 30px; border-bottom: 1px solid var(--glass-border);
+            transition: 0.3s; cursor: default;
+        }
+        .anime-item:hover { background: rgba(255,255,255,0.03); padding-left: 40px; }
+        .anime-rank { font-family: 'JetBrains Mono'; font-size: 2rem; opacity: 0.2; width: 80px; font-weight: 700; }
+        .anime-info h3 { font-size: 1.8rem; margin: 0; }
+        .anime-meta { margin-top: 5px; font-family: 'JetBrains Mono'; font-size: 0.8rem; opacity: 0.6; }
 
-        #preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
-        .preview-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 25px; border-radius: 8px; display: flex; flex-direction: column; max-width: 900px; width: 90%; position: relative; }
-        .preview-img { width: 100%; max-height: 70vh; object-fit: contain; border-radius: 4px; }
+        /* --- GALLERY --- */
+        .photo-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2px;
+        }
+        .photo-item {
+            aspect-ratio: 1; overflow: hidden; position: relative; cursor: pointer;
+        }
+        .photo-item img {
+            width: 100%; height: 100%; object-fit: cover; transition: 0.5s; filter: grayscale(1);
+        }
+        .photo-item:hover img { transform: scale(1.1); filter: grayscale(0); }
 
+        /* Mobile */
         @media (max-width: 768px) {
-            .gallery-window { padding: 20px; width: 90%; margin-top: 80px; }
-            h1 { font-size: 2.8rem; letter-spacing: -2px; }
+            .flashcard { padding: 40px; width: 85%; }
+            h1 { font-size: 3rem; }
+            .overlay-content { padding: 20px; margin-top: 20px; }
         }
     </style>
 </head>
 <body>
 
+    <canvas id="starfield"></canvas>
+    <div class="noise"></div>
+
     <nav>
-        <div class="nav-left">Index</div>
-        <div class="nav-right">Selected Works / 2026</div>
+        <div class="nav-item">Shan</div>
+        <div class="nav-item">Index / 2026</div>
     </nav>
 
-    <div id="star-container"></div>
-
     <div class="main-scroller">
+        
         <div class="section" id="sec1">
             <div class="flashcard">
                 <h1>Shan</h1>
                 <p>Welcome to the index.</p>
-                <button class="arrow-btn" onclick="document.getElementById('sec2').scrollIntoView();">↓</button>
+                <button class="scroll-down" onclick="document.getElementById('sec2').scrollIntoView();">↓</button>
             </div>
         </div>
 
         <div class="section" id="sec2">
             <div class="flashcard">
-                <h1>About Me</h1>
+                <h1>About</h1>
                 <p>Mostly chill, sometimes overthinking, usually doing my own thing.</p>
-                <button class="arrow-btn" onclick="document.getElementById('sec3').scrollIntoView();">↓</button>
+                <button class="scroll-down" onclick="document.getElementById('sec3').scrollIntoView();">↓</button>
             </div>
         </div>
 
         <div class="section" id="sec3">
             <div class="flashcard">
-                <h1>Interests</h1>
-                <div class="social-list">
-                    <button class="social-item" onclick="openGallery()">
-                        <span class="social-text"><i class="fas fa-camera social-icon"></i> Photography</span>
-                        <span class="social-link">View Gallery →</span>
+                <h1>Modules</h1>
+                <div class="btn-group">
+                    <button class="action-btn" onclick="openGallery()">
+                        <span class="btn-label"><i class="fas fa-camera btn-icon"></i> Photography</span>
+                        <span class="btn-arrow">→</span>
                     </button>
-                    <button class="social-item" onclick="openChess()">
-                        <span class="social-text"><i class="fas fa-chess social-icon"></i> Chess</span>
-                        <span class="social-link">Live Stats →</span>
+                    <button class="action-btn" onclick="openChess()">
+                        <span class="btn-label"><i class="fas fa-chess btn-icon"></i> Chess</span>
+                        <span class="btn-arrow">→</span>
                     </button>
-                    <button class="social-item" onclick="openAnime()">
-                        <span class="social-text"><i class="fas fa-tv social-icon"></i> Anime</span>
-                        <span class="social-link">My Top 5 →</span>
+                    <button class="action-btn" onclick="openAnime()">
+                        <span class="btn-label"><i class="fas fa-tv btn-icon"></i> Anime</span>
+                        <span class="btn-arrow">→</span>
                     </button>
                 </div>
-                <button class="arrow-btn" onclick="document.getElementById('sec4').scrollIntoView();">↓</button>
+                <button class="scroll-down" onclick="document.getElementById('sec4').scrollIntoView();">↓</button>
             </div>
         </div>
 
         <div class="section" id="sec4">
             <div class="flashcard">
-                <h1>Socials</h1>
-                <div class="social-list">
-                    <a href="https://discord.com/users/1379090219688525898" target="_blank" class="social-item">
-                        <span class="social-text"><i class="fab fa-discord social-icon"></i> Discord</span>
-                        <span class="social-link">@todouro</span>
+                <h1>Link</h1>
+                <div class="btn-group">
+                    <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn">
+                        <span class="btn-label"><i class="fab fa-discord btn-icon"></i> Discord</span>
+                        <span style="opacity:0.5; font-size:0.8rem;">@todouro</span>
                     </a>
-                    <a href="https://github.com/todouro" target="_blank" class="social-item">
-                        <span class="social-text"><i class="fab fa-github social-icon"></i> GitHub</span>
-                        <span class="social-link">/todouro</span>
+                    <a href="https://github.com/todouro" target="_blank" class="action-btn">
+                        <span class="btn-label"><i class="fab fa-github btn-icon"></i> GitHub</span>
+                        <span style="opacity:0.5; font-size:0.8rem;">/todouro</span>
                     </a>
-                    <a href="https://instagram.com/Theodore_Schawn" target="_blank" class="social-item">
-                        <span class="social-text"><i class="fab fa-instagram social-icon"></i> Instagram</span>
-                        <span class="social-link">@Theodore_Schawn</span>
+                    <a href="https://instagram.com/Theodore_Schawn" target="_blank" class="action-btn">
+                        <span class="btn-label"><i class="fab fa-instagram btn-icon"></i> Instagram</span>
+                        <span style="opacity:0.5; font-size:0.8rem;">@Theodore_Schawn</span>
                     </a>
                 </div>
-                <button class="back-top" onclick="document.getElementById('sec1').scrollIntoView();">↑ Back to Start</button>
+                <button class="scroll-down" style="font-size:1rem; opacity:0.5;" onclick="document.getElementById('sec1').scrollIntoView();">↑ Return</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="gallery-overlay" class="overlay">
+        <div class="overlay-content">
+            <div class="overlay-header">
+                <h2 class="overlay-title">Visuals</h2>
+                <button class="close-btn" onclick="closeAll()">Close</button>
+            </div>
+            <div class="photo-grid" id="photo-grid"></div>
+        </div>
+    </div>
+
+    <div id="anime-overlay" class="overlay">
+        <div class="overlay-content">
+            <div class="overlay-header">
+                <h2 class="overlay-title">Top 5</h2>
+                <button class="close-btn" onclick="closeAll()">Close</button>
+            </div>
+            <div class="anime-list">
+                <div class="anime-item">
+                    <span class="anime-rank">01</span>
+                    <div class="anime-info"><h3>Attack on Titan</h3><p class="anime-meta">Action / Drama / Dark Fantasy</p></div>
+                </div>
+                <div class="anime-item">
+                    <span class="anime-rank">02</span>
+                    <div class="anime-info"><h3>Vinland Saga</h3><p class="anime-meta">Historical / Seinen</p></div>
+                </div>
+                <div class="anime-item">
+                    <span class="anime-rank">03</span>
+                    <div class="anime-info"><h3>Frieren</h3><p class="anime-meta">Fantasy / Adventure</p></div>
+                </div>
+                <div class="anime-item">
+                    <span class="anime-rank">04</span>
+                    <div class="anime-info"><h3>Death Note</h3><p class="anime-meta">Psychological / Thriller</p></div>
+                </div>
+                <div class="anime-item">
+                    <span class="anime-rank">05</span>
+                    <div class="anime-info"><h3>Blue Box</h3><p class="anime-meta">Romance / Sports</p></div>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="chess-overlay" class="overlay">
-        <div class="gallery-window">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+        <div class="overlay-content">
+            <div class="overlay-header">
                 <div>
-                    <h2 style="font-size:2.5rem; letter-spacing:-1.5px; margin:0;">Chess Stats</h2>
-                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
-                        <div id="status-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #444; transition: 0.3s;"></div>
-                        <span id="live-status" style="font-size: 0.75rem; letter-spacing: 2px; opacity: 0.6; text-transform: uppercase;">Checking Status...</span>
+                    <h2 class="overlay-title">Chess</h2>
+                    <div style="margin-top:10px; display:flex; align-items:center; gap:10px;">
+                        <div id="status-dot" style="width:8px; height:8px; background:#444; border-radius:50%;"></div>
+                        <span id="live-status" style="font-family:'JetBrains Mono'; font-size:0.8rem; opacity:0.6; text-transform:uppercase;">Syncing...</span>
                     </div>
                 </div>
-                <button class="close-window-btn" onclick="closeAllOverlays()">CLOSE ✕</button>
+                <button class="close-btn" onclick="closeAll()">Close</button>
             </div>
-            <div class="chess-container">
-                <div class="chess-card">
-                    <span class="stat-label">Rapid ELO</span>
-                    <span id="rapid-elo" class="elo-text">...</span>
-                    <span id="rapid-record" class="stat-label">Wins: 0 | Losses: 0</span>
+            
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <span class="stat-meta">Rapid Rating</span>
+                    <span id="rapid-elo" class="big-num">---</span>
+                    <span id="rapid-record" style="opacity:0.5; font-size:0.9rem;">W:0 L:0 D:0</span>
                 </div>
-                <div class="chess-card">
-                    <span class="stat-label">Total Matches</span>
-                    <span id="total-matches" class="elo-text">...</span>
-                    <span class="stat-label">All-time games</span>
+                <div class="stat-card">
+                    <span class="stat-meta">Total Games</span>
+                    <span id="total-matches" class="big-num">---</span>
+                    <span style="opacity:0.5; font-size:0.9rem;">All Time</span>
                 </div>
             </div>
-            <button class="back-top" style="margin-top: 40px;" onclick="window.open('https://www.chess.com/member/chinatsu-lover', '_blank')">View Full Profile</button>
         </div>
     </div>
 
-    <div id="gallery-overlay" class="overlay"><div class="gallery-window"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;"><h2>Photography</h2><button class="close-window-btn" onclick="closeAllOverlays()">CLOSE ✕</button></div><div class="gallery-grid" id="photo-grid"></div></div></div>
-    <div id="anime-overlay" class="overlay"><div class="gallery-window"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;"><h2>Top 5 Anime</h2><button class="close-window-btn" onclick="closeAllOverlays()">CLOSE ✕</button></div><div class="anime-card"><h3>Attack on Titan</h3><p>"Amazing watch. 100% recommend."</p></div></div></div>
-
     <script>
-        const photos = [
-            { url: "https://i.imgur.com/qHixIKi.jpeg", title: "Bonsai", date: "Dec 2024" },
-            { url: "https://i.imgur.com/e91Lyow.jpeg", title: "Tower", date: "Nov 2024" },
-            { url: "https://i.imgur.com/HImgOvp.jpeg", title: "Ride", date: "Dec 2024" },
-            { url: "https://i.imgur.com/YSK4QJP.jpeg", title: "Walk", date: "Oct 2025" }
-        ];
+        // --- HIGH-PERFORMANCE CANVAS STARS ---
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let stars = [];
+        let mouseX = 0, mouseY = 0;
 
-        function closeAllOverlays() {
-            document.querySelectorAll('.overlay').forEach(el => el.style.display = 'none');
+        function initStars() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            stars = [];
+            // Create 300 stars
+            for(let i=0; i<300; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    z: Math.random() * 2 + 0.5, // Depth (affects speed)
+                    o: Math.random(), // Opacity
+                    s: Math.random() * 0.05 + 0.02 // Blink speed
+                });
+            }
+        }
+
+        function animateStars() {
+            ctx.clearRect(0,0,width,height);
+            ctx.fillStyle = "white";
+            
+            stars.forEach(star => {
+                // Vertical Drift (Floating up)
+                star.y -= 0.2 * star.z; 
+                
+                // Mouse Parallax (Moves opposite to mouse)
+                let offsetX = (mouseX - width/2) * 0.0002 * star.z;
+                let offsetY = (mouseY - height/2) * 0.0002 * star.z;
+                
+                // Infinite Loop Logic
+                if(star.y < 0) { 
+                    star.y = height; 
+                    star.x = Math.random() * width; 
+                }
+                
+                // Twinkle Logic
+                star.o += (Math.random() - 0.5) * 0.05;
+                if(star.o < 0.2) star.o = 0.2; 
+                if(star.o > 1) star.o = 1;
+
+                ctx.globalAlpha = star.o;
+                ctx.beginPath();
+                // Draw star (position - parallax offset)
+                ctx.arc(star.x - offsetX, star.y - offsetY, star.z * 0.8, 0, Math.PI*2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animateStars);
+        }
+
+        window.addEventListener('resize', initStars);
+        window.addEventListener('mousemove', e => { 
+            mouseX = e.clientX; 
+            mouseY = e.clientY; 
+        });
+        
+        initStars(); 
+        animateStars();
+
+        // --- TILT EFFECT ---
+        document.querySelectorAll('.flashcard').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = (e.clientX - rect.left) - rect.width/2;
+                const y = (e.clientY - rect.top) - rect.height/2;
+                card.style.transform = `perspective(1000px) rotateY(${x/40}deg) rotateX(${-y/40}deg)`;
+            });
+            card.addEventListener('mouseleave', () => card.style.transform = `perspective(1000px) rotateY(0) rotateX(0)`);
+        });
+
+        // --- OVERLAY LOGIC ---
+        function closeAll() {
+            document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none');
             document.body.style.overflow = 'auto';
         }
 
+        // --- GALLERY ---
+        const photos = [
+            "https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", 
+            "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg", 
+            "https://i.imgur.com/oSRWXDW.jpeg", "https://i.imgur.com/tV1BaU1.jpeg", 
+            "https://i.imgur.com/zyuce90.jpeg", "https://i.imgur.com/9tCsU47.jpeg"
+        ];
         function openGallery() {
-            const grid = document.getElementById('photo-grid');
-            grid.innerHTML = photos.map((p, i) => `<div class="gallery-item"><img src="${p.url}"></div>`).join('');
+            document.getElementById('photo-grid').innerHTML = photos.map(url => 
+                `<div class="photo-item"><img src="${url}"></div>`
+            ).join('');
             document.getElementById('gallery-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
-        }
-
-        function timeAgo(timestamp) {
-            const seconds = Math.floor((new Date() - new Date(timestamp * 1000)) / 1000);
-            if (seconds < 60) return "Just now";
-            const m = Math.floor(seconds / 60);
-            if (m < 60) return m + "m ago";
-            const h = Math.floor(m / 60);
-            if (h < 24) return h + "h ago";
-            return Math.floor(h / 24) + "d ago";
-        }
-
-        async function openChess() {
-            document.getElementById('chess-overlay').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            const username = 'chinatsu-lover';
-            try {
-                const [statsRes, statusRes, profileRes] = await Promise.all([
-                    fetch(`https://api.chess.com/pub/player/${username}/stats`),
-                    fetch(`https://api.chess.com/pub/player/${username}/is-online?t=${Date.now()}`),
-                    fetch(`https://api.chess.com/pub/player/${username}`)
-                ]);
-                const statsData = await statsRes.json();
-                const statusData = await statusRes.json();
-                const profileData = await profileRes.json();
-
-                if(statsData.chess_rapid) {
-                    document.getElementById('rapid-elo').innerText = statsData.chess_rapid.last.rating;
-                    document.getElementById('rapid-record').innerText = `W: ${statsData.chess_rapid.record.win} | L: ${statsData.chess_rapid.record.loss}`;
-                }
-                
-                let total = 0;
-                ['chess_rapid', 'chess_blitz', 'chess_bullet'].forEach(f => {
-                    if(statsData[f]) total += statsData[f].record.win + statsData[f].record.loss + statsData[f].record.draw;
-                });
-                document.getElementById('total-matches').innerText = total;
-
-                const dot = document.getElementById('status-dot');
-                const statusText = document.getElementById('live-status');
-                if (statusData.online) {
-                    dot.style.background = "#81b64c"; 
-                    statusText.innerText = "Online Now";
-                } else {
-                    dot.style.background = "#444";
-                    statusText.innerText = profileData.last_online ? `Last seen ${timeAgo(profileData.last_online)}` : "Offline";
-                }
-            } catch (err) { console.error(err); }
         }
 
         function openAnime() {
@@ -281,38 +409,40 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // STAR MOVEMENT LOGIC
-        const starContainer = document.getElementById('star-container');
-        for (let i = 0; i < 200; i++) {
-            const s = document.createElement('div');
-            s.className = 'star';
-            s.style.left = Math.random() * 100 + '%';
-            s.style.top = Math.random() * 100 + '%';
+        // --- CHESS API ---
+        async function openChess() {
+            document.getElementById('chess-overlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
             
-            const size = Math.random() * 2 + 1;
-            s.style.width = size + 'px';
-            s.style.height = size + 'px';
-            
-            // Random speed (10s to 30s) to create parallax depth
-            s.style.setProperty('--speed', (Math.random() * 20 + 10) + 's');
-            // Random twinkle speed
-            s.style.setProperty('--twinkle', (Math.random() * 3 + 2) + 's');
-            // Offset the start time so they don't all move at once
-            s.style.animationDelay = -(Math.random() * 30) + 's';
-            
-            starContainer.appendChild(s);
+            const user = 'chinatsu-lover';
+            try {
+                const stats = await fetch(`https://api.chess.com/pub/player/${user}/stats`).then(r=>r.json());
+                const status = await fetch(`https://api.chess.com/pub/player/${user}/is-online`).then(r=>r.json());
+                
+                if(stats.chess_rapid) {
+                    document.getElementById('rapid-elo').innerText = stats.chess_rapid.last.rating;
+                    const r = stats.chess_rapid.record;
+                    document.getElementById('rapid-record').innerText = `W:${r.win} L:${r.loss} D:${r.draw}`;
+                }
+
+                let total = 0;
+                ['chess_rapid','chess_blitz','chess_bullet'].forEach(k => {
+                    if(stats[k]) total += (stats[k].record.win + stats[k].record.loss + stats[k].record.draw);
+                });
+                document.getElementById('total-matches').innerText = total;
+
+                if(status.online) {
+                    document.getElementById('status-dot').style.background = '#4ade80';
+                    document.getElementById('status-dot').style.boxShadow = '0 0 10px #4ade80';
+                    document.getElementById('live-status').innerText = 'ONLINE';
+                } else {
+                    document.getElementById('status-dot').style.background = '#444';
+                    document.getElementById('live-status').innerText = 'OFFLINE';
+                }
+
+            } catch(e) { console.error(e); }
         }
 
-        // TILT
-        document.querySelectorAll('.flashcard').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = (e.clientX - rect.left) / rect.width - 0.5;
-                const y = (e.clientY - rect.top) / rect.height - 0.5;
-                card.style.transform = `rotateY(${x * 10}deg) rotateX(${y * -10}deg)`;
-            });
-            card.addEventListener('mouseleave', () => card.style.transform = `rotate(0)`);
-        });
     </script>
 </body>
 </html>
