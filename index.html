@@ -9,6 +9,7 @@
     <style>
         :root {
             --bg-deep: #030304;
+            --accent: #ffffff;
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
             --ease: cubic-bezier(0.23, 1, 0.32, 1);
@@ -19,42 +20,30 @@
             font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden;
         }
 
-        /* --- BACKGROUND & VIGNETTE --- */
+        /* --- BACKGROUND --- */
         #starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
         .noise {
             position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.04;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
-        body::after {
-            content: ""; position: fixed; inset: 0;
-            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.7) 100%);
-            pointer-events: none; z-index: 2;
-        }
 
         /* --- SCROLLER --- */
         .main-scroller {
             height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory;
-            scroll-behavior: smooth; position: relative; z-index: 10; scrollbar-width: none;
+            scroll-behavior: smooth; position: relative; z-index: 10;
+            scrollbar-width: none;
         }
         .main-scroller::-webkit-scrollbar { display: none; }
 
         .section {
             height: 100vh; display: flex; justify-content: center; align-items: center;
-            scroll-snap-align: center; perspective: 1500px; position: relative;
-        }
-
-        /* --- TYPOGRAPHY AS ART (Idea #3) --- */
-        .bg-outline {
-            position: absolute; font-size: 15rem; font-weight: 900;
-            -webkit-text-stroke: 1px rgba(255,255,255,0.04);
-            color: transparent; z-index: -1; letter-spacing: -5px;
-            user-select: none; pointer-events: none;
+            scroll-snap-align: center; perspective: 1500px;
         }
 
         /* --- FLASHCARD --- */
         .flashcard {
-            background: var(--glass); backdrop-filter: blur(15px);
-            padding: 80px; width: 90%; max-width: 700px; border-radius: 20px;
+            background: var(--glass); backdrop-filter: blur(12px);
+            padding: 80px; width: 90%; max-width: 700px; border-radius: 12px;
             border: 1px solid var(--glass-border);
             box-shadow: 0 40px 100px rgba(0,0,0,0.8);
             transform-style: preserve-3d; transition: transform 0.4s var(--ease);
@@ -63,30 +52,19 @@
         h1 { font-size: 5rem; margin: 0; font-weight: 900; letter-spacing: -4px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         p { font-size: 1.2rem; margin-top: 20px; opacity: 0.6; font-weight: 300; }
 
-        /* --- BENTO GRID (Idea #1) --- */
-        .bento-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 180px); gap: 15px;
-            width: 90%; max-width: 850px;
-        }
-        .bento-item {
-            background: var(--glass); backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border); border-radius: 20px;
-            padding: 30px; display: flex; flex-direction: column; justify-content: center;
-        }
-        .bento-main { grid-column: span 2; grid-row: span 2; }
-        .bento-stat { text-align: center; }
-        .bento-stat span { font-family: 'JetBrains Mono'; font-size: 0.7rem; opacity: 0.5; display: block; margin-bottom: 5px; }
-        .bento-stat h2 { margin: 0; font-size: 2.5rem; font-weight: 900; }
-
         .btn-group { margin-top: 40px; display: flex; flex-direction: column; gap: 10px; }
         .action-btn {
             background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
-            padding: 20px 30px; color: white; cursor: pointer; display: flex; 
-            justify-content: space-between; align-items: center; border-radius: 12px; text-decoration: none;
+            padding: 20px 30px; color: white; cursor: pointer; text-align: left;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: 0.3s var(--ease); border-radius: 8px; text-decoration: none;
         }
+        .action-btn:hover { background: rgba(255,255,255,0.1); padding-left: 40px; border-color: rgba(255,255,255,0.3); }
 
-        /* --- MODALS & SCROLLBAR LEAK FIX --- */
+        .scroll-down { margin-top: 40px; background: none; border: none; color: rgba(255,255,255,0.3); font-size: 1.5rem; cursor: pointer; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+
+        /* --- MODALS (CENTERED & SCROLLABLE) --- */
         .overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8);
             z-index: 2000; opacity: 0; visibility: hidden;
@@ -96,44 +74,51 @@
         .overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(15px); }
 
         .overlay-content { 
-            background: #0a0a0b; width: 85%; max-width: 800px; height: 75vh;
-            border: 1px solid var(--glass-border); border-radius: 24px;
-            position: relative; overflow: hidden; /* Clips the scrollbar leak */
-            display: flex; flex-direction: column;
+            background: #0a0a0b; width: 85%; max-width: 800px; max-height: 75vh;
+            border: 1px solid var(--glass-border); border-radius: 20px;
+            padding: 40px; overflow-y: auto; position: relative;
+            transform: scale(0.9) translateY(30px); transition: 0.4s var(--ease);
         }
-        .modal-body {
-            flex: 1; overflow-y: auto; padding: 0 40px 40px 40px;
-            scrollbar-gutter: stable;
-        }
-        /* Custom Inset Scrollbar */
-        .modal-body::-webkit-scrollbar { width: 12px; }
-        .modal-body::-webkit-scrollbar-thumb { 
-            background: rgba(255,255,255,0.1); border-radius: 10px;
-            border: 4px solid #0a0a0b; background-clip: padding-box;
-        }
+        .overlay.active .overlay-content { transform: scale(1) translateY(0); }
 
-        .overlay-header { display: flex; justify-content: space-between; align-items: center; padding: 40px; background: #0a0a0b; }
-        .close-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 18px; border-radius: 100px; cursor: pointer; }
+        /* Custom Scrollbar for Modals */
+        .overlay-content::-webkit-scrollbar { width: 4px; }
+        .overlay-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .overlay-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; }
+        .close-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 18px; border-radius: 100px; cursor: pointer; font-family: 'JetBrains Mono'; font-size: 0.7rem; }
+        .close-btn:hover { background: white; color: black; }
 
         /* --- PHOTO GRID --- */
-        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
-        .photo-item { aspect-ratio: 1; overflow: hidden; border-radius: 12px; cursor: zoom-in; }
-        .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+        .photo-item { aspect-ratio: 1; overflow: hidden; border-radius: 10px; cursor: zoom-in; background: #111; }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .photo-item:hover img { transform: scale(1.1); }
 
-        /* --- FULLSCREEN --- */
+        /* --- FULLSCREEN PHOTO ANIMATION --- */
         #fullscreen-view {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            z-index: 3000; justify-content: center; align-items: center; opacity: 0; transition: 0.3s;
+            z-index: 3000; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
         }
         #fullscreen-view.active { display: flex; opacity: 1; }
-        #fullscreen-view img { max-width: 90%; max-height: 90%; transform: scale(0.8); transition: 0.4s var(--ease); }
+        #fullscreen-view img { 
+            max-width: 90%; max-height: 90%; object-fit: contain; 
+            transform: scale(0.8); transition: transform 0.4s var(--ease);
+        }
         #fullscreen-view.active img { transform: scale(1); }
 
-        /* --- ANIME --- */
+        /* --- ANIME LIST --- */
         .anime-item { display: flex; align-items: center; padding: 25px; border-bottom: 1px solid var(--glass-border); }
-        .anime-rank { font-family: 'JetBrains Mono'; font-size: 1.5rem; opacity: 0.2; width: 60px; }
+        .anime-rank { font-family: 'JetBrains Mono'; font-size: 1.5rem; opacity: 0.2; width: 60px; font-weight: 700; }
 
-        @media (max-width: 768px) { .bento-grid { grid-template-columns: 1fr; grid-template-rows: auto; } .bg-outline { font-size: 8rem; } }
+        /* --- CHESS STATS --- */
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .stat-card { background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; border: 1px solid var(--glass-border); text-align: center; }
+        .big-num { font-size: 3rem; font-weight: 900; display: block; }
+        .stat-meta { font-family: 'JetBrains Mono'; font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; }
+
+        @media (max-width: 768px) { .flashcard { padding: 40px; } h1 { font-size: 3.5rem; } .overlay-content { width: 95%; padding: 25px; } }
     </style>
 </head>
 <body>
@@ -144,46 +129,39 @@
     <div class="main-scroller" id="scroller">
         
         <div class="section" id="sec1">
-            <div class="bg-outline">SHAN</div>
             <div class="flashcard">
-                <h1>Index</h1>
+                <h1>Shan</h1>
                 <p>Welcome to the index.</p>
+                <button class="scroll-down" onclick="scrollToId('sec2')">↓</button>
             </div>
         </div>
 
         <div class="section" id="sec2">
-            <div class="bg-outline" style="left: 10%;">PROFILE</div>
-            <div class="bento-grid">
-                <div class="bento-item bento-main">
-                    <h1 style="font-size: 3rem;">About</h1>
-                    <p>Exploring photography and building minimal web experiences. Currently focused on visual storytelling.</p>
-                </div>
-                <div class="bento-item bento-stat">
-                    <span>AGE</span>
-                    <h2>15</h2>
-                </div>
-                <div class="bento-item bento-stat">
-                    <span>FROM</span>
-                    <h2 style="font-size: 1.5rem;">BAHRAIN</h2>
-                </div>
+            <div class="flashcard">
+                <h1>Profile</h1>
+                <p>15, based in Bahrain. Exploring photography and building projects.</p>
+                <button class="scroll-down" onclick="scrollToId('sec3')">↓</button>
             </div>
         </div>
 
         <div class="section" id="sec3">
-            <div class="bg-outline" style="right: 5%;">WORKS</div>
             <div class="flashcard">
                 <h1>Interests</h1>
                 <div class="btn-group">
                     <button class="action-btn" onclick="openOverlay('gallery-overlay')">
-                        <span><i class="fas fa-camera"></i> Photography</span><span>→</span>
+                        <span class="btn-label"><i class="fas fa-camera"></i> Photography</span>
+                        <span class="btn-arrow">→</span>
                     </button>
                     <button class="action-btn" onclick="openChess()">
-                        <span><i class="fas fa-chess"></i> Chess</span><span>→</span>
+                        <span class="btn-label"><i class="fas fa-chess"></i> Chess</span>
+                        <span class="btn-arrow">→</span>
                     </button>
                     <button class="action-btn" onclick="openOverlay('anime-overlay')">
-                        <span><i class="fas fa-tv"></i> Anime</span><span>→</span>
+                        <span class="btn-label"><i class="fas fa-tv"></i> Anime</span>
+                        <span class="btn-arrow">→</span>
                     </button>
                 </div>
+                <button class="scroll-down" onclick="scrollToId('sec4')">↓</button>
             </div>
         </div>
 
@@ -192,32 +170,45 @@
                 <h1>Contact</h1>
                 <div class="btn-group">
                     <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn">
-                        <span><i class="fab fa-discord"></i> Discord</span><span style="opacity:0.5; font-size:0.8rem;">@todouro</span>
+                        <span class="btn-label"><i class="fab fa-discord"></i> Discord</span>
+                        <span style="opacity:0.5; font-size:0.8rem;">@todouro</span>
                     </a>
                     <a href="https://instagram.com/Theodore_Schawn" target="_blank" class="action-btn">
-                        <span><i class="fab fa-instagram"></i> Instagram</span><span style="opacity:0.5; font-size:0.8rem;">@Theodore_Schawn</span>
+                        <span class="btn-label"><i class="fab fa-instagram"></i> Instagram</span>
+                        <span style="opacity:0.5; font-size:0.8rem;">@Theodore_Schawn</span>
+                    </a>
+                    <a href="https://github.com/todouro" target="_blank" class="action-btn">
+                        <span class="btn-label"><i class="fab fa-github"></i> GitHub</span>
+                        <span style="opacity:0.5; font-size:0.8rem;">/todouro</span>
                     </a>
                 </div>
+                <button class="scroll-down" style="font-size:1rem; opacity:0.5;" onclick="scrollToId('sec1')">↑ Return</button>
             </div>
         </div>
     </div>
 
     <div id="gallery-overlay" class="overlay">
         <div class="overlay-content">
-            <div class="overlay-header"><h2>Visuals</h2><button class="close-btn" onclick="closeAll()">Close</button></div>
-            <div class="modal-body"><div class="photo-grid" id="photo-grid"></div></div>
+            <div class="overlay-header">
+                <h2 class="overlay-title">Visuals</h2>
+                <button class="close-btn" onclick="closeAll()">Close</button>
+            </div>
+            <div class="photo-grid" id="photo-grid"></div>
         </div>
     </div>
 
     <div id="anime-overlay" class="overlay">
         <div class="overlay-content">
-            <div class="overlay-header"><h2>Top Picks</h2><button class="close-btn" onclick="closeAll()">Close</button></div>
-            <div class="modal-body">
-                <div class="anime-list">
-                    <div class="anime-item"><span class="anime-rank">01</span><div><h3>Attack on Titan</h3></div></div>
-                    <div class="anime-item"><span class="anime-rank">02</span><div><h3>Vinland Saga</h3></div></div>
-                    <div class="anime-item"><span class="anime-rank">03</span><div><h3>Frieren</h3></div></div>
-                </div>
+            <div class="overlay-header">
+                <h2 class="overlay-title">Top Picks</h2>
+                <button class="close-btn" onclick="closeAll()">Close</button>
+            </div>
+            <div class="anime-list">
+                <div class="anime-item"><span class="anime-rank">01</span><div><h3>Attack on Titan</h3></div></div>
+                <div class="anime-item"><span class="anime-rank">02</span><div><h3>Vinland Saga</h3></div></div>
+                <div class="anime-item"><span class="anime-rank">03</span><div><h3>Frieren</h3></div></div>
+                <div class="anime-item"><span class="anime-rank">04</span><div><h3>Death Note</h3></div></div>
+                <div class="anime-item"><span class="anime-rank">05</span><div><h3>Blue Box</h3></div></div>
             </div>
         </div>
     </div>
@@ -226,69 +217,135 @@
         <div class="overlay-content">
             <div class="overlay-header">
                 <div>
-                    <h2>Chess</h2>
-                    <div style="display:flex; align-items:center; gap:8px; margin-top:5px;">
-                        <div id="status-dot" style="width:8px; height:8px; background:#444; border-radius:50%;"></div>
-                        <span id="live-status" style="font-size:0.7rem; opacity:0.5;">SYNCING...</span>
+                    <h2 class="overlay-title">Chess</h2>
+                    <div style="margin-top:5px; display:flex; align-items:center; gap:8px;">
+                        <div id="status-dot" style="width:7px; height:7px; background:#444; border-radius:50%;"></div>
+                        <span id="live-status" style="font-family:'JetBrains Mono'; font-size:0.7rem; opacity:0.5; text-transform:uppercase;">Syncing...</span>
                     </div>
                 </div>
                 <button class="close-btn" onclick="closeAll()">Close</button>
             </div>
-            <div class="modal-body">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                    <div style="background:rgba(255,255,255,0.03); padding:30px; border-radius:15px; text-align:center;">
-                        <span style="font-size:0.7rem; opacity:0.5;">RAPID</span>
-                        <h2 id="rapid-elo" style="font-size:3rem; margin:0;">---</h2>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.03); padding:30px; border-radius:15px; text-align:center;">
-                        <span style="font-size:0.7rem; opacity:0.5;">TOTAL WINS</span>
-                        <h2 id="total-matches" style="font-size:3rem; margin:0;">---</h2>
-                    </div>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <span class="stat-meta">Rapid Rating</span>
+                    <span id="rapid-elo" class="big-num">---</span>
+                    <span id="rapid-record" style="opacity:0.4; font-size:0.8rem;">W:0 L:0 D:0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-meta">Rapid Games</span>
+                    <span id="total-matches" class="big-num">---</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="fullscreen-view" onclick="closeFull()"><img src="" id="full-img"></div>
+    <div id="fullscreen-view" onclick="closeFull()">
+        <img src="" id="full-img">
+    </div>
 
     <script>
+        // --- NAVIGATION ---
         function scrollToId(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
-        function openOverlay(id) { document.getElementById(id).classList.add('active'); document.getElementById('scroller').style.overflowY = 'hidden'; if(id === 'gallery-overlay') loadGallery(); }
-        function closeAll() { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active')); document.getElementById('scroller').style.overflowY = 'auto'; }
+
+        // --- OVERLAY LOGIC ---
+        function openOverlay(id) {
+            document.getElementById(id).classList.add('active');
+            document.getElementById('scroller').style.overflowY = 'hidden';
+            if(id === 'gallery-overlay') loadGallery();
+        }
+
+        function closeAll() {
+            document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active'));
+            document.getElementById('scroller').style.overflowY = 'auto';
+        }
 
         // --- STARFIELD ---
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
         let width, height, stars = [];
-        function initStars() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; stars = []; for(let i=0; i<150; i++) stars.push({ x: Math.random() * width, y: Math.random() * height, z: Math.random() * 1.5, o: Math.random() }); }
-        function animateStars() { ctx.clearRect(0,0,width,height); ctx.fillStyle = "white"; stars.forEach(star => { star.y -= 0.1 * star.z; if(star.y < 0) star.y = height; ctx.globalAlpha = star.o; ctx.beginPath(); ctx.arc(star.x, star.y, star.z, 0, Math.PI*2); ctx.fill(); }); requestAnimationFrame(animateStars); }
+
+        function initStars() {
+            width = window.innerWidth; height = window.innerHeight;
+            canvas.width = width; canvas.height = height; stars = [];
+            for(let i=0; i<150; i++) stars.push({ x: Math.random() * width, y: Math.random() * height, z: Math.random() * 1.5, o: Math.random() });
+        }
+        function animateStars() {
+            ctx.clearRect(0,0,width,height); ctx.fillStyle = "white";
+            stars.forEach(star => {
+                star.y -= 0.1 * star.z; if(star.y < 0) star.y = height;
+                ctx.globalAlpha = star.o; ctx.beginPath(); ctx.arc(star.x, star.y, star.z, 0, Math.PI*2); ctx.fill();
+            });
+            requestAnimationFrame(animateStars);
+        }
         window.addEventListener('resize', initStars); initStars(); animateStars();
 
-        // --- GALLERY ---
-        function loadGallery() {
-            const photos = ["https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg", "https://i.imgur.com/oSRWXDW.jpeg", "https://i.imgur.com/tV1BaU1.jpeg"];
-            document.getElementById('photo-grid').innerHTML = photos.map(url => `<div class="photo-item" onclick="showFull('${url}')"><img src="${url}"></div>`).join('');
-        }
-        function showFull(url) { const v = document.getElementById('fullscreen-view'); document.getElementById('full-img').src = url; v.style.display = 'flex'; setTimeout(() => v.classList.add('active'), 10); }
-        function closeFull() { const v = document.getElementById('fullscreen-view'); v.classList.remove('active'); setTimeout(() => v.style.display = 'none', 300); }
+        // --- SUBTLE TILT ---
+        document.querySelectorAll('.flashcard').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = (e.clientX - rect.left) - rect.width/2;
+                const y = (e.clientY - rect.top) - rect.height/2;
+                card.style.transform = `perspective(1500px) rotateY(${x/120}deg) rotateX(${-y/120}deg)`;
+            });
+            card.addEventListener('mouseleave', () => card.style.transform = `perspective(1500px) rotateY(0) rotateX(0)`);
+        });
 
-        // --- CHESS (UNTOUCHED LOGIC) ---
+        // --- GALLERY & FULLSCREEN ANIMATION ---
+        function loadGallery() {
+            const photos = [
+                "https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", 
+                "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg",
+                "https://i.imgur.com/oSRWXDW.jpeg", "https://i.imgur.com/tV1BaU1.jpeg",
+                "https://i.imgur.com/zyuce90.jpeg", "https://i.imgur.com/9tCsU47.jpeg"
+            ];
+            document.getElementById('photo-grid').innerHTML = photos.map(url => 
+                `<div class="photo-item" onclick="showFull('${url}')"><img src="${url}"></div>`).join('');
+        }
+
+        function showFull(url) {
+            const v = document.getElementById('fullscreen-view');
+            document.getElementById('full-img').src = url;
+            v.style.display = 'flex';
+            setTimeout(() => v.classList.add('active'), 10);
+        }
+
+        function closeFull() {
+            const v = document.getElementById('fullscreen-view');
+            v.classList.remove('active');
+            setTimeout(() => v.style.display = 'none', 300);
+        }
+
+        // --- CHESS API ---
+        function timeAgo(ts) {
+            const diff = Math.floor((new Date() - new Date(ts * 1000)) / 1000);
+            if (diff < 3600) return Math.floor(diff/60) + "m ago";
+            if (diff < 86400) return Math.floor(diff/3600) + "h ago";
+            return Math.floor(diff/86400) + "d ago";
+        }
+
         async function openChess() {
             openOverlay('chess-overlay');
+            const user = 'chinatsu-lover';
             try {
                 const [sRes, pRes] = await Promise.all([
-                    fetch(`https://api.chess.com/pub/player/chinatsu-lover/stats`),
-                    fetch(`https://api.chess.com/pub/player/chinatsu-lover`)
+                    fetch(`https://api.chess.com/pub/player/${user}/stats`),
+                    fetch(`https://api.chess.com/pub/player/${user}`)
                 ]);
                 const stats = await sRes.json();
                 const profile = await pRes.json();
+
                 if(stats.chess_rapid) {
-                    document.getElementById('rapid-elo').innerText = stats.chess_rapid.last.rating;
-                    document.getElementById('total-matches').innerText = (stats.chess_rapid?.record.win || 0) + (stats.chess_blitz?.record.win || 0);
+                    const r = stats.chess_rapid;
+                    document.getElementById('rapid-elo').innerText = r.last.rating;
+                    document.getElementById('rapid-record').innerText = `W:${r.record.win} L:${r.record.loss} D:${r.record.draw}`;
+                    document.getElementById('total-matches').innerText = r.record.win + r.record.loss + r.record.draw;
                 }
+
                 const isOnline = (Date.now() / 1000) - profile.last_online < 300;
-                document.getElementById('status-dot').style.background = isOnline ? '#4ade80' : '#444';
-                document.getElementById('live-status').innerText = isOnline ? 'ONLINE' : 'OFFLINE';
+                const dot = document.getElementById('status-dot');
+                const txt = document.getElementById('live-status');
+                dot.style.background = isOnline ? '#4ade80' : '#666';
+                txt.innerText = isOnline ? 'ONLINE' : `Last seen ${timeAgo(profile.last_online)}`;
             } catch(e) { console.error(e); }
         }
     </script>
