@@ -3,300 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | 2026</title>
+    <title>Shan | Index 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #030304;
-            --accent: #ffffff;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            /* This bezier gives it the "Game UI" pop/overshoot */
-            --pop-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --neon: #00F2FF;
+            --neon-dim: rgba(0, 242, 255, 0.15);
+            --bg: #030304;
+            --expo: cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         body {
-            margin: 0; background-color: var(--bg-deep); color: white;
-            font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden;
+            margin: 0; background-color: var(--bg); color: white;
+            font-family: 'JetBrains Mono', monospace; height: 100vh; overflow: hidden;
         }
 
-        /* --- BACKGROUND --- */
-        #starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-        .noise {
-            position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.04;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        /* --- SHADER OVERLAYS --- */
+        .hud-vignette {
+            position: fixed; inset: 0; pointer-events: none; z-index: 100;
+            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 150%);
         }
 
-        /* --- SCROLLER --- */
-        .main-scroller { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; position: relative; z-index: 10; }
-        .main-scroller::-webkit-scrollbar { width: 0; }
-        .section { height: 100vh; display: flex; justify-content: center; align-items: center; scroll-snap-align: center; perspective: 1200px; }
+        .scanlines {
+            position: fixed; inset: 0; pointer-events: none; z-index: 101; opacity: 0.15;
+            background: repeating-linear-gradient(0deg, transparent, transparent 1px, #000 2px);
+        }
 
-        /* --- FLASHCARD --- */
+        /* --- VIEWPORT SYSTEM --- */
+        .viewport {
+            position: relative; width: 100vw; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10; perspective: 1000px;
+        }
+
+        .section {
+            position: absolute; visibility: hidden; pointer-events: none;
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; height: 100%;
+        }
+
+        .section.active { visibility: visible; pointer-events: all; z-index: 20; }
+
+        /* --- THE SLICE-OPEN CARD --- */
         .flashcard {
-            background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            padding: 80px; width: 90%; max-width: 700px; border-radius: 4px; border: 1px solid var(--glass-border);
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8); transform-style: preserve-3d; transition: transform 0.1s ease-out;
-            position: relative; overflow: hidden;
+            position: relative; width: 90%; max-width: 650px;
+            background: rgba(0, 15, 20, 0.7);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--neon-dim);
+            border-left: 2px solid var(--neon);
+            border-right: 2px solid var(--neon);
+            padding: 60px;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.05);
+            /* Initial State: Horizontal Line */
+            clip-path: inset(50% 0 50% 0);
+            transition: transform 0.2s ease-out; /* For Idle Parallax */
         }
 
-        h1 { font-size: 5rem; margin: 0; font-weight: 900; letter-spacing: -4px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        p { font-size: 1.2rem; margin-top: 20px; opacity: 0.6; font-weight: 300; line-height: 1.6; }
+        .section.active .flashcard {
+            animation: sliceOpen 0.8s var(--expo) forwards;
+        }
 
-        .btn-group { margin-top: 40px; display: flex; flex-direction: column; gap: 10px; }
+        .section.exit .flashcard {
+            animation: sliceCollapse 0.4s var(--expo) forwards;
+        }
+
+        @keyframes sliceOpen {
+            0% { clip-path: inset(50% 0 50% 0); filter: brightness(10); }
+            20% { clip-path: inset(49.8% 0 49.8% 0); filter: brightness(5); }
+            100% { clip-path: inset(0 0 0 0); filter: brightness(1); }
+        }
+
+        @keyframes sliceCollapse {
+            0% { clip-path: inset(0 0 0 0); opacity: 1; }
+            100% { clip-path: inset(50% 0 50% 0); opacity: 0; }
+        }
+
+        /* --- HUD CONTENT --- */
+        h1 { font-size: 3.5rem; margin: 0; font-weight: 700; letter-spacing: -2px; color: var(--neon); text-shadow: 0 0 15px var(--neon-dim); }
+        p { font-size: 1rem; margin-top: 20px; opacity: 0.7; line-height: 1.6; border-left: 1px solid var(--neon); padding-left: 20px; }
+
+        .btn-group { margin-top: 40px; display: flex; flex-direction: column; gap: 12px; }
         .action-btn {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 20px 30px; color: white; 
-            cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center;
-            transition: 0.3s; border-radius: 4px; text-decoration: none;
+            background: rgba(0, 242, 255, 0.03); border: 1px solid var(--neon-dim);
+            padding: 18px 25px; color: var(--neon); cursor: pointer; text-align: left;
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: 'JetBrains Mono'; transition: 0.3s;
         }
-        .action-btn:hover { background: rgba(255,255,255,0.1); padding-left: 40px; border-color: rgba(255,255,255,0.3); }
+        .action-btn:hover { background: var(--neon-dim); padding-left: 35px; border-color: var(--neon); }
 
-        /* --- OVERLAYS (GAME UI POP UP) --- */
+        .nav-hint { 
+            margin-top: 40px; background: none; border: none; color: var(--neon); 
+            font-family: 'JetBrains Mono'; font-size: 0.7rem; letter-spacing: 4px; 
+            cursor: pointer; opacity: 0.4; transition: 0.3s;
+        }
+        .nav-hint:hover { opacity: 1; letter-spacing: 6px; }
+
+        /* --- MODULE OVERLAYS --- */
         .overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-            z-index: 2000; overflow-y: auto; backdrop-filter: blur(15px);
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 2000; overflow-y: auto; backdrop-filter: blur(20px);
         }
-
         .overlay-content {
-            max-width: 1000px; margin: 5vh auto; padding: 40px;
-            /* Expansion animation */
-            animation: uiPop 0.45s var(--pop-ease) forwards;
-            transform-origin: center;
+            max-width: 900px; margin: 5vh auto; padding: 40px;
+            animation: sliceOpen 0.6s var(--expo) forwards;
         }
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+        .photo-item { aspect-ratio: 1; border: 1px solid var(--neon-dim); overflow: hidden; }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.5s; }
+        .photo-item:hover img { opacity: 1; transform: scale(1.05); }
 
-        @keyframes uiPop {
-            0% { opacity: 0; transform: scale(0.7) translateY(20px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
+        /* --- BACKGROUND STYLES --- */
+        #starfield { position: fixed; inset: 0; z-index: 0; opacity: 0.3; }
 
-        .overlay-header {
-            display: flex; justify-content: space-between; align-items: flex-end;
-            margin-bottom: 60px; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px;
-        }
-        .close-btn {
-            background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white;
-            padding: 10px 24px; border-radius: 100px; cursor: pointer; font-family: 'JetBrains Mono';
-            font-size: 0.8rem; text-transform: uppercase; transition: 0.3s;
-        }
-        .close-btn:hover { background: white; color: black; transform: scale(1.05); }
-
-        /* --- MODULE STYLES --- */
-        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 4px; }
-        .photo-item { aspect-ratio: 1; overflow: hidden; cursor: zoom-in; }
-        .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .photo-item:hover img { transform: scale(1.05); }
-
-        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .stat-card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 4px; border: 1px solid var(--glass-border); text-align: center; }
-        .big-num { font-size: 4rem; font-weight: 900; display: block; }
-
-        .anime-item { display: flex; align-items: center; padding: 25px; border-bottom: 1px solid var(--glass-border); transition: 0.3s; }
-        .anime-item:hover { background: rgba(255,255,255,0.03); padding-left: 35px; }
-        .anime-rank { font-family: 'JetBrains Mono'; font-size: 1.5rem; opacity: 0.3; width: 60px; }
-
-        #fullscreen-view {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98);
-            z-index: 3000; justify-content: center; align-items: center;
-        }
-        #fullscreen-view img { max-width: 90%; max-height: 90%; animation: uiPop 0.4s var(--pop-ease); }
-
-        .scroll-down { margin-top: 40px; background: none; border: none; color: rgba(255,255,255,0.3); font-size: 1.5rem; cursor: pointer; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
-
-        @media (max-width: 768px) { .flashcard { padding: 40px; } h1 { font-size: 3rem; } }
+        @media (max-width: 768px) { h1 { font-size: 2.2rem; } .flashcard { padding: 30px; } }
     </style>
 </head>
 <body>
 
+    <div class="hud-vignette"></div>
+    <div class="scanlines"></div>
     <canvas id="starfield"></canvas>
-    <div class="noise"></div>
 
-    <div class="main-scroller">
-        
-        <div class="section" id="sec1">
+    <div class="viewport">
+        <div class="section active" id="sec-0">
             <div class="flashcard">
-                <h1>Hello.</h1>
-                <p>Welcome to my personal index.</p>
-                <button class="scroll-down" onclick="document.getElementById('sec2').scrollIntoView();">↓</button>
+                <div style="font-size: 0.7rem; color: var(--neon); margin-bottom: 10px; opacity: 0.5;">[ TERMINAL_INIT ]</div>
+                <h1>Shan</h1>
+                <p>Establishing link to personal index...<br>System status: CALM / OBSERVE</p>
+                <button class="nav-hint" onclick="nav(1)">[ ACCESS_IDENTITY ]</button>
             </div>
         </div>
 
-        <div class="section" id="sec2">
+        <div class="section" id="sec-1">
             <div class="flashcard">
-                <h1>About</h1>
-                <p>15. Bahrain-based.<br>A calm observer navigating the space between logical systems and visual storytelling.</p>
-                <button class="scroll-down" onclick="document.getElementById('sec3').scrollIntoView();">↓</button>
+                <h1>ABOUT</h1>
+                <p>Age: 15<br>Origin: Bahrain<br>Synthesizing logic and visual narrative through code and lenses.</p>
+                <button class="nav-hint" onclick="nav(2)">[ VIEW_MODULES ]</button>
             </div>
         </div>
 
-        <div class="section" id="sec3">
+        <div class="section" id="sec-2">
             <div class="flashcard">
-                <h1>Modules</h1>
+                <h1>MODULES</h1>
                 <div class="btn-group">
-                    <button class="action-btn" onclick="openGallery()">
-                        <span><i class="fas fa-camera"></i> Photography</span>
-                        <span>→</span>
-                    </button>
-                    <button class="action-btn" onclick="openChess()">
-                        <span><i class="fas fa-chess"></i> Chess</span>
-                        <span>→</span>
-                    </button>
-                    <button class="action-btn" onclick="openAnime()">
-                        <span><i class="fas fa-tv"></i> Anime</span>
-                        <span>→</span>
-                    </button>
+                    <button class="action-btn" onclick="openGallery()"><span>PHOTOGRAPHY.IMG</span><span>[01]</span></button>
+                    <button class="action-btn" onclick="openChess()"><span>CHESS_ENGINE.EXE</span><span>[02]</span></button>
+                    <button class="action-btn" onclick="openAnime()"><span>ARCHIVE_TOP_5.DB</span><span>[03]</span></button>
                 </div>
-                <button class="scroll-down" onclick="document.getElementById('sec4').scrollIntoView();">↓</button>
+                <button class="nav-hint" onclick="nav(3)">[ NETWORK_LINKS ]</button>
             </div>
         </div>
 
-        <div class="section" id="sec4">
+        <div class="section" id="sec-3">
             <div class="flashcard">
-                <h1>Links</h1>
+                <h1>LINKS</h1>
                 <div class="btn-group">
-                    <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn">
-                        <span><i class="fab fa-discord"></i> Discord</span>
-                        <span style="opacity:0.4; font-size:0.8rem;">@todouro</span>
-                    </a>
-                    <a href="https://github.com/todouro" target="_blank" class="action-btn">
-                        <span><i class="fab fa-github"></i> GitHub</span>
-                        <span style="opacity:0.4; font-size:0.8rem;">/todouro</span>
-                    </a>
-                    <a href="https://instagram.com/Theodore_Schawn" target="_blank" class="action-btn">
-                        <span><i class="fab fa-instagram"></i> Instagram</span>
-                        <span style="opacity:0.4; font-size:0.8rem;">@Theodore_Schawn</span>
-                    </a>
+                    <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn"><span>DISCORD</span><span>@todouro</span></a>
+                    <a href="https://github.com/todouro" target="_blank" class="action-btn"><span>GITHUB</span><span>/todouro</span></a>
+                    <a href="https://instagram.com/Theodore_Schawn" target="_blank" class="action-btn"><span>INSTAGRAM</span><span>@theodore</span></a>
                 </div>
-                <button class="scroll-down" style="font-size:1rem; opacity:0.5;" onclick="document.getElementById('sec1').scrollIntoView();">↑ Return</button>
+                <button class="nav-hint" onclick="nav(0)">[ TERMINATE_SESSION ]</button>
             </div>
         </div>
-
     </div>
 
     <div id="gallery-overlay" class="overlay">
         <div class="overlay-content">
-            <div class="overlay-header">
-                <h2 style="font-size: 3rem; margin:0;">Visuals</h2>
-                <button class="close-btn" onclick="closeAll()">Close</button>
-            </div>
+            <h2 style="color: var(--neon); border-bottom: 1px solid var(--neon-dim); padding-bottom: 20px;">VISUAL_DATABASE</h2>
             <div class="photo-grid" id="photo-grid"></div>
-        </div>
-    </div>
-
-    <div id="anime-overlay" class="overlay">
-        <div class="overlay-content">
-            <div class="overlay-header">
-                <h2 style="font-size: 3rem; margin:0;">Top 5</h2>
-                <button class="close-btn" onclick="closeAll()">Close</button>
-            </div>
-            <div class="anime-list">
-                <div class="anime-item"><span class="anime-rank">01</span><div><h3>Attack on Titan</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">02</span><div><h3>Vinland Saga</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">03</span><div><h3>Frieren</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">04</span><div><h3>Death Note</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">05</span><div><h3>Blue Box</h3></div></div>
-            </div>
+            <button class="nav-hint" onclick="closeAll()" style="margin-top:40px;">[ CLOSE_OVERLAY ]</button>
         </div>
     </div>
 
     <div id="chess-overlay" class="overlay">
         <div class="overlay-content">
-            <div class="overlay-header">
-                <div>
-                    <h2 style="font-size: 3rem; margin:0;">Chess</h2>
-                    <div style="margin-top:10px; display:flex; align-items:center; gap:10px;">
-                        <div id="status-dot" style="width:8px; height:8px; background:#444; border-radius:50%;"></div>
-                        <span id="live-status" style="font-family:'JetBrains Mono'; font-size:0.8rem; opacity:0.6;">SYNCING...</span>
-                    </div>
+            <h2 style="color: var(--neon); margin:0;">CHESS_STATS</h2>
+            <div style="display:flex; align-items:center; gap:10px; margin: 20px 0;">
+                <div id="status-dot" style="width:10px; height:10px; background:#444; border-radius:50%;"></div>
+                <span id="live-status" style="font-size:0.8rem; opacity:0.6;">SYNCING...</span>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                <div style="border:1px solid var(--neon-dim); padding:20px;">
+                    <span style="display:block; font-size:0.7rem; opacity:0.5;">RAPID_ELO</span>
+                    <span id="rapid-elo" style="font-size:3rem; font-weight:700; color:var(--neon);">---</span>
                 </div>
-                <button class="close-btn" onclick="closeAll()">Close</button>
+                <div style="border:1px solid var(--neon-dim); padding:20px;">
+                    <span style="display:block; font-size:0.7rem; opacity:0.5;">TOTAL_GAMES</span>
+                    <span id="total-matches" style="font-size:3rem; font-weight:700;">---</span>
+                </div>
             </div>
-            <div class="stat-grid">
-                <div class="stat-card"><span style="opacity:0.5">Rapid Rating</span><span id="rapid-elo" class="big-num">---</span></div>
-                <div class="stat-card"><span style="opacity:0.5">Total Matches</span><span id="total-matches" class="big-num">---</span></div>
-            </div>
+            <button class="nav-hint" onclick="closeAll()" style="margin-top:40px;">[ CLOSE_OVERLAY ]</button>
         </div>
     </div>
 
-    <div id="fullscreen-view" onclick="this.style.display='none'">
-        <img src="" id="fs-img">
+    <div id="anime-overlay" class="overlay">
+        <div class="overlay-content">
+            <h2 style="color: var(--neon);">WATCHLIST_TOP_5</h2>
+            <div id="anime-list">
+                <div style="padding:15px; border-bottom:1px solid var(--neon-dim);">01. Attack on Titan</div>
+                <div style="padding:15px; border-bottom:1px solid var(--neon-dim);">02. Vinland Saga</div>
+                <div style="padding:15px; border-bottom:1px solid var(--neon-dim);">03. Frieren</div>
+                <div style="padding:15px; border-bottom:1px solid var(--neon-dim);">04. Death Note</div>
+                <div style="padding:15px;">05. Blue Box</div>
+            </div>
+            <button class="nav-hint" onclick="closeAll()" style="margin-top:40px;">[ CLOSE_OVERLAY ]</button>
+        </div>
     </div>
 
     <script>
-        // Stars
-        const canvas = document.getElementById('starfield');
-        const ctx = canvas.getContext('2d');
-        let width, height, stars = [];
-        function initStars() {
-            width = window.innerWidth; height = window.innerHeight;
-            canvas.width = width; canvas.height = height; stars = [];
-            for(let i=0; i<200; i++) stars.push({ x: Math.random()*width, y: Math.random()*height, z: Math.random()*2, o: Math.random() });
-        }
-        function animate() {
-            ctx.clearRect(0,0,width,height); ctx.fillStyle = "white";
-            stars.forEach(s => {
-                s.y -= 0.2 * s.z; if(s.y<0) s.y=height;
-                ctx.globalAlpha = s.o; ctx.beginPath(); ctx.arc(s.x, s.y, s.z, 0, Math.PI*2); ctx.fill();
-            });
-            requestAnimationFrame(animate);
-        }
-        initStars(); animate();
+        let currentIdx = 0;
+        let isMoving = false;
 
-        // Tilt
-        document.querySelectorAll('.flashcard').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = (e.clientX - rect.left) - rect.width/2;
-                const y = (e.clientY - rect.top) - rect.height/2;
-                card.style.transform = `rotateY(${x/100}deg) rotateX(${-y/100}deg)`;
-            });
-            card.addEventListener('mouseleave', () => card.style.transform = `rotateY(0) rotateX(0)`);
+        // Navigation Engine
+        function nav(index) {
+            if (isMoving || index === currentIdx) return;
+            isMoving = true;
+            const current = document.getElementById(`sec-${currentIdx}`);
+            const next = document.getElementById(`sec-${index}`);
+            current.classList.add('exit');
+            setTimeout(() => {
+                current.classList.remove('active', 'exit');
+                next.classList.add('active');
+                currentIdx = index;
+                isMoving = false;
+            }, 400);
+        }
+
+        window.addEventListener('wheel', (e) => {
+            if (document.querySelector('.overlay[style*="block"]')) return;
+            if (e.deltaY > 0 && currentIdx < 3) nav(currentIdx + 1);
+            else if (e.deltaY < 0 && currentIdx > 0) nav(currentIdx - 1);
         });
 
-        // Overlay Logic
-        function closeAll() { document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none'); }
-        
-        const photos = [
-            "https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", 
-            "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg", 
-            "https://i.imgur.com/oSRWXDW.jpeg", "https://i.imgur.com/tV1BaU1.jpeg", 
-            "https://i.imgur.com/zyuce90.jpeg", "https://i.imgur.com/9tCsU47.jpeg"
-        ];
+        // Living HUD (Parallax)
+        document.addEventListener('mousemove', (e) => {
+            const card = document.querySelector('.section.active .flashcard');
+            if (!card) return;
+            const x = (window.innerWidth / 2 - e.pageX) / 50;
+            const y = (window.innerHeight / 2 - e.pageY) / 50;
+            card.style.transform = `translateX(${x}px) translateY(${y}px) rotateY(${-x/2}deg) rotateX(${y/2}deg)`;
+        });
 
-        function openGallery() {
-            const grid = document.getElementById('photo-grid');
-            grid.innerHTML = photos.map(p => `<div class="photo-item" onclick="showFS('${p}')"><img src="${p}"></div>`).join('');
-            document.getElementById('gallery-overlay').style.display = 'block';
-        }
-
-        function showFS(url) {
-            document.getElementById('fs-img').src = url;
-            document.getElementById('fullscreen-view').style.display = 'flex';
-        }
-
-        function openAnime() { document.getElementById('anime-overlay').style.display = 'block'; }
-
+        // Chess API logic
         async function openChess() {
             document.getElementById('chess-overlay').style.display = 'block';
-            const user = 'chinatsu-lover';
             try {
+                const user = 'chinatsu-lover';
                 const stats = await fetch(`https://api.chess.com/pub/player/${user}/stats`).then(r=>r.json());
                 const status = await fetch(`https://api.chess.com/pub/player/${user}/is-online`).then(r=>r.json());
-                const profile = await fetch(`https://api.chess.com/pub/player/${user}`).then(r=>r.json());
                 
                 document.getElementById('rapid-elo').innerText = stats.chess_rapid?.last?.rating || 'N/A';
                 document.getElementById('total-matches').innerText = (stats.chess_rapid?.record?.win || 0) + (stats.chess_rapid?.record?.loss || 0);
                 
                 const dot = document.getElementById('status-dot');
-                const text = document.getElementById('live-status');
-                if(status.online) {
-                    dot.style.background = '#4ade80'; text.innerText = 'ONLINE';
-                } else {
-                    dot.style.background = '#444'; text.innerText = 'OFFLINE';
-                }
-            } catch(e) {}
+                dot.style.background = status.online ? '#00F2FF' : '#444';
+                dot.style.boxShadow = status.online ? '0 0 10px #00F2FF' : 'none';
+                document.getElementById('live-status').innerText = status.online ? 'SYSTEM_ONLINE' : 'SYSTEM_OFFLINE';
+            } catch(e) { console.error("Chess API Error"); }
         }
+
+        // Gallery & Anime logic
+        const photos = ["https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg", "https://i.imgur.com/oSRWXDW.jpeg", "https://i.imgur.com/tV1BaU1.jpeg"];
+        function openGallery() {
+            document.getElementById('photo-grid').innerHTML = photos.map(p => `<div class="photo-item"><img src="${p}"></div>`).join('');
+            document.getElementById('gallery-overlay').style.display = 'block';
+        }
+        function openAnime() { document.getElementById('anime-overlay').style.display = 'block'; }
+        function closeAll() { document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none'); }
+
+        // Starfield Background
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        function init() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            stars = Array(150).fill().map(() => ({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2 }));
+        }
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#00F2FF";
+            stars.forEach(s => {
+                s.y -= 0.1 * s.s; if(s.y < 0) s.y = canvas.height;
+                ctx.globalAlpha = 0.1; ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
+            });
+            requestAnimationFrame(draw);
+        }
+        init(); draw();
+        window.onresize = init;
     </script>
 </body>
 </html>
