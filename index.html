@@ -64,7 +64,7 @@
         .scroll-down { margin-top: 40px; background: none; border: none; color: rgba(255,255,255,0.3); font-size: 1.5rem; cursor: pointer; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
-        /* --- MODALS (CENTERED & SCROLLABLE) --- */
+        /* --- FIXED MODALS (LEAK PROOF) --- */
         .overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8);
             z-index: 2000; opacity: 0; visibility: hidden;
@@ -74,18 +74,35 @@
         .overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(15px); }
 
         .overlay-content { 
-            background: #0a0a0b; width: 85%; max-width: 800px; max-height: 75vh;
+            background: #0a0a0b; width: 85%; max-width: 800px; height: 75vh;
             border: 1px solid var(--glass-border); border-radius: 20px;
-            padding: 40px; overflow-y: auto; position: relative;
+            position: relative; overflow: hidden; /* Clips the inner scrollbar */
             transform: scale(0.9) translateY(30px); transition: 0.4s var(--ease);
+            display: flex; flex-direction: column;
         }
         .overlay.active .overlay-content { transform: scale(1) translateY(0); }
 
-        /* Custom Scrollbar for Modals */
-        .overlay-content::-webkit-scrollbar { width: 4px; }
-        .overlay-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        /* Inner Scrollable Container */
+        .modal-body {
+            flex: 1; overflow-y: auto; padding: 40px; padding-top: 0;
+            scrollbar-gutter: stable;
+        }
 
-        .overlay-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; }
+        /* --- CUSTOM FLOATING SCROLLBAR (Fixes "Leak") --- */
+        .modal-body::-webkit-scrollbar { width: 10px; }
+        .modal-body::-webkit-scrollbar-track { background: transparent; }
+        .modal-body::-webkit-scrollbar-thumb { 
+            background: rgba(255,255,255,0.1); 
+            border-radius: 20px;
+            border: 3px solid #0a0a0b; /* Creates an inset/floating effect */
+            background-clip: padding-box;
+        }
+        .modal-body::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); background-clip: padding-box; }
+
+        .overlay-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 40px; padding-bottom: 20px; background: #0a0a0b; z-index: 10;
+        }
         .close-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 18px; border-radius: 100px; cursor: pointer; font-family: 'JetBrains Mono'; font-size: 0.7rem; }
         .close-btn:hover { background: white; color: black; }
 
@@ -118,7 +135,7 @@
         .big-num { font-size: 3rem; font-weight: 900; display: block; }
         .stat-meta { font-family: 'JetBrains Mono'; font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; }
 
-        @media (max-width: 768px) { .flashcard { padding: 40px; } h1 { font-size: 3.5rem; } .overlay-content { width: 95%; padding: 25px; } }
+        @media (max-width: 768px) { .flashcard { padding: 40px; } h1 { font-size: 3.5rem; } .overlay-content { width: 95%; height: 80vh; } }
     </style>
 </head>
 <body>
@@ -193,7 +210,9 @@
                 <h2 class="overlay-title">Visuals</h2>
                 <button class="close-btn" onclick="closeAll()">Close</button>
             </div>
-            <div class="photo-grid" id="photo-grid"></div>
+            <div class="modal-body">
+                <div class="photo-grid" id="photo-grid"></div>
+            </div>
         </div>
     </div>
 
@@ -203,12 +222,16 @@
                 <h2 class="overlay-title">Top Picks</h2>
                 <button class="close-btn" onclick="closeAll()">Close</button>
             </div>
-            <div class="anime-list">
-                <div class="anime-item"><span class="anime-rank">01</span><div><h3>Attack on Titan</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">02</span><div><h3>Vinland Saga</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">03</span><div><h3>Frieren</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">04</span><div><h3>Death Note</h3></div></div>
-                <div class="anime-item"><span class="anime-rank">05</span><div><h3>Blue Box</h3></div></div>
+            <div class="modal-body">
+                <div class="anime-list">
+                    <div class="anime-item"><span class="anime-rank">01</span><div><h3>Attack on Titan</h3></div></div>
+                    <div class="anime-item"><span class="anime-rank">02</span><div><h3>Vinland Saga</h3></div></div>
+                    <div class="anime-item"><span class="anime-rank">03</span><div><h3>Frieren</h3></div></div>
+                    <div class="anime-item"><span class="anime-rank">04</span><div><h3>Death Note</h3></div></div>
+                    <div class="anime-item"><span class="anime-rank">05</span><div><h3>Blue Box</h3></div></div>
+                    <div class="anime-item"><span class="anime-rank">06</span><div><h3>Haikyuu!!</h3></div></div>
+                    <div class="anime-item"><span class="anime-rank">07</span><div><h3>Monster</h3></div></div>
+                </div>
             </div>
         </div>
     </div>
@@ -225,15 +248,17 @@
                 </div>
                 <button class="close-btn" onclick="closeAll()">Close</button>
             </div>
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <span class="stat-meta">Rapid Rating</span>
-                    <span id="rapid-elo" class="big-num">---</span>
-                    <span id="rapid-record" style="opacity:0.4; font-size:0.8rem;">W:0 L:0 D:0</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-meta">Rapid Games</span>
-                    <span id="total-matches" class="big-num">---</span>
+            <div class="modal-body">
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <span class="stat-meta">Rapid Rating</span>
+                        <span id="rapid-elo" class="big-num">---</span>
+                        <span id="rapid-record" style="opacity:0.4; font-size:0.8rem;">W:0 L:0 D:0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-meta">Rapid Games</span>
+                        <span id="total-matches" class="big-num">---</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -290,7 +315,7 @@
             card.addEventListener('mouseleave', () => card.style.transform = `perspective(1500px) rotateY(0) rotateX(0)`);
         });
 
-        // --- GALLERY & FULLSCREEN ANIMATION ---
+        // --- GALLERY ---
         function loadGallery() {
             const photos = [
                 "https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", 
