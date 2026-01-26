@@ -44,7 +44,6 @@
             height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory;
             scroll-behavior: smooth; position: relative; z-index: 10;
         }
-        /* Hide Scrollbar */
         .main-scroller::-webkit-scrollbar { width: 0; }
 
         .section {
@@ -63,7 +62,6 @@
             position: relative; overflow: hidden;
         }
 
-        /* Card Sheen Effect */
         .flashcard::after {
             content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
@@ -99,7 +97,6 @@
             margin-top: 40px; background: none; border: none; color: rgba(255,255,255,0.3);
             font-size: 1.5rem; cursor: pointer; transition: 0.3s; animation: bounce 2s infinite;
         }
-        .scroll-down:hover { color: white; }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
         /* --- OVERLAYS --- */
@@ -125,6 +122,13 @@
         }
         .close-btn:hover { background: white; color: black; }
 
+        /* --- FULLSCREEN VIEWER --- */
+        #fullscreen-view {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98);
+            z-index: 3000; justify-content: center; align-items: center; cursor: zoom-out;
+        }
+        #fullscreen-view img { max-width: 95%; max-height: 95%; object-fit: contain; animation: fadeIn 0.3s ease; }
+
         /* --- CHESS --- */
         .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .stat-card {
@@ -144,19 +148,12 @@
         .anime-info h3 { font-size: 1.8rem; margin: 0; }
         .anime-meta { margin-top: 5px; font-family: 'JetBrains Mono'; font-size: 0.8rem; opacity: 0.6; }
 
-        /* --- GALLERY --- */
-        .photo-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2px;
-        }
-        .photo-item {
-            aspect-ratio: 1; overflow: hidden; position: relative; cursor: pointer;
-        }
-        .photo-item img {
-            width: 100%; height: 100%; object-fit: cover; transition: 0.5s; filter: grayscale(1);
-        }
-        .photo-item:hover img { transform: scale(1.1); filter: grayscale(0); }
+        /* --- GALLERY (Grayscale Removed) --- */
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2px; }
+        .photo-item { aspect-ratio: 1; overflow: hidden; position: relative; cursor: zoom-in; }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .photo-item:hover img { transform: scale(1.1); }
 
-        /* Mobile */
         @media (max-width: 768px) {
             .flashcard { padding: 40px; width: 85%; }
             h1 { font-size: 3rem; }
@@ -246,6 +243,10 @@
         </div>
     </div>
 
+    <div id="fullscreen-view" onclick="toggleFullscreen()">
+        <img src="" alt="Fullscreen view">
+    </div>
+
     <div id="anime-overlay" class="overlay">
         <div class="overlay-content">
             <div class="overlay-header">
@@ -306,79 +307,44 @@
     </div>
 
     <script>
-        // --- HIGH-PERFORMANCE CANVAS STARS ---
+        // --- STARFIELD ---
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
-        let width, height;
-        let stars = [];
-        let mouseX = 0, mouseY = 0;
+        let width, height, stars = [], mouseX = 0, mouseY = 0;
 
         function initStars() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-            stars = [];
-            // Create 300 stars
+            width = window.innerWidth; height = window.innerHeight;
+            canvas.width = width; canvas.height = height; stars = [];
             for(let i=0; i<300; i++) {
-                stars.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    z: Math.random() * 2 + 0.5, // Depth (affects speed)
-                    o: Math.random(), // Opacity
-                    s: Math.random() * 0.05 + 0.02 // Blink speed
-                });
+                stars.push({ x: Math.random() * width, y: Math.random() * height, z: Math.random() * 2 + 0.5, o: Math.random() });
             }
         }
 
         function animateStars() {
-            ctx.clearRect(0,0,width,height);
-            ctx.fillStyle = "white";
-            
+            ctx.clearRect(0,0,width,height); ctx.fillStyle = "white";
             stars.forEach(star => {
-                // Vertical Drift (Floating up)
-                star.y -= 0.2 * star.z; 
-                
-                // Mouse Parallax (Moves opposite to mouse)
+                star.y -= 0.2 * star.z;
                 let offsetX = (mouseX - width/2) * 0.0002 * star.z;
                 let offsetY = (mouseY - height/2) * 0.0002 * star.z;
-                
-                // Infinite Loop Logic
-                if(star.y < 0) { 
-                    star.y = height; 
-                    star.x = Math.random() * width; 
-                }
-                
-                // Twinkle Logic
+                if(star.y < 0) { star.y = height; star.x = Math.random() * width; }
                 star.o += (Math.random() - 0.5) * 0.05;
-                if(star.o < 0.2) star.o = 0.2; 
-                if(star.o > 1) star.o = 1;
-
-                ctx.globalAlpha = star.o;
-                ctx.beginPath();
-                // Draw star (position - parallax offset)
-                ctx.arc(star.x - offsetX, star.y - offsetY, star.z * 0.8, 0, Math.PI*2);
-                ctx.fill();
+                if(star.o < 0.2) star.o = 0.2; if(star.o > 1) star.o = 1;
+                ctx.globalAlpha = star.o; ctx.beginPath();
+                ctx.arc(star.x - offsetX, star.y - offsetY, star.z * 0.8, 0, Math.PI*2); ctx.fill();
             });
             requestAnimationFrame(animateStars);
         }
-
         window.addEventListener('resize', initStars);
-        window.addEventListener('mousemove', e => { 
-            mouseX = e.clientX; 
-            mouseY = e.clientY; 
-        });
-        
-        initStars(); 
-        animateStars();
+        window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+        initStars(); animateStars();
 
-        // --- TILT EFFECT ---
+        // --- SUBTLE TILT EFFECT ---
         document.querySelectorAll('.flashcard').forEach(card => {
             card.addEventListener('mousemove', e => {
                 const rect = card.getBoundingClientRect();
                 const x = (e.clientX - rect.left) - rect.width/2;
                 const y = (e.clientY - rect.top) - rect.height/2;
-                card.style.transform = `perspective(1000px) rotateY(${x/40}deg) rotateX(${-y/40}deg)`;
+                card.style.transform = `perspective(1000px) rotateY(${x/100}deg) rotateX(${-y/100}deg)`;
             });
             card.addEventListener('mouseleave', () => card.style.transform = `perspective(1000px) rotateY(0) rotateX(0)`);
         });
@@ -389,19 +355,31 @@
             document.body.style.overflow = 'auto';
         }
 
-        // --- GALLERY ---
+        // --- GALLERY & FULLSCREEN ---
         const photos = [
             "https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", 
             "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg", 
             "https://i.imgur.com/oSRWXDW.jpeg", "https://i.imgur.com/tV1BaU1.jpeg", 
             "https://i.imgur.com/zyuce90.jpeg", "https://i.imgur.com/9tCsU47.jpeg"
         ];
+
         function openGallery() {
             document.getElementById('photo-grid').innerHTML = photos.map(url => 
-                `<div class="photo-item"><img src="${url}"></div>`
+                `<div class="photo-item" onclick="toggleFullscreen('${url}')"><img src="${url}"></div>`
             ).join('');
             document.getElementById('gallery-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
+        }
+
+        function toggleFullscreen(url) {
+            const viewer = document.getElementById('fullscreen-view');
+            const img = viewer.querySelector('img');
+            if (url) {
+                img.src = url;
+                viewer.style.display = 'flex';
+            } else {
+                viewer.style.display = 'none';
+            }
         }
 
         function openAnime() {
@@ -409,15 +387,31 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // --- CHESS API ---
+        // --- CHESS API & LAST SEEN ---
+        function timeAgo(timestamp) {
+            const seconds = Math.floor((new Date() - new Date(timestamp * 1000)) / 1000);
+            let interval = Math.floor(seconds / 31536000);
+            if (interval > 1) return interval + " years ago";
+            interval = Math.floor(seconds / 2592000);
+            if (interval > 1) return interval + " months ago";
+            interval = Math.floor(seconds / 86400);
+            if (interval > 1) return interval + " days ago";
+            interval = Math.floor(seconds / 3600);
+            if (interval > 1) return interval + " hours ago";
+            interval = Math.floor(seconds / 60);
+            if (interval > 1) return interval + " minutes ago";
+            return Math.floor(seconds) + " seconds ago";
+        }
+
         async function openChess() {
             document.getElementById('chess-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
             
-            const user = 'chinatsu-lover';
+            const user = 'chinatsu-lover'; // Ensure this matches your username
             try {
                 const stats = await fetch(`https://api.chess.com/pub/player/${user}/stats`).then(r=>r.json());
                 const status = await fetch(`https://api.chess.com/pub/player/${user}/is-online`).then(r=>r.json());
+                const profile = await fetch(`https://api.chess.com/pub/player/${user}`).then(r=>r.json());
                 
                 if(stats.chess_rapid) {
                     document.getElementById('rapid-elo').innerText = stats.chess_rapid.last.rating;
@@ -431,18 +425,21 @@
                 });
                 document.getElementById('total-matches').innerText = total;
 
+                const dot = document.getElementById('status-dot');
+                const text = document.getElementById('live-status');
+
                 if(status.online) {
-                    document.getElementById('status-dot').style.background = '#4ade80';
-                    document.getElementById('status-dot').style.boxShadow = '0 0 10px #4ade80';
-                    document.getElementById('live-status').innerText = 'ONLINE';
+                    dot.style.background = '#4ade80';
+                    dot.style.boxShadow = '0 0 10px #4ade80';
+                    text.innerText = 'ONLINE';
                 } else {
-                    document.getElementById('status-dot').style.background = '#444';
-                    document.getElementById('live-status').innerText = 'OFFLINE';
+                    dot.style.background = '#444';
+                    dot.style.boxShadow = 'none';
+                    text.innerText = `LAST SEEN ${timeAgo(profile.last_online).toUpperCase()}`;
                 }
 
             } catch(e) { console.error(e); }
         }
-
     </script>
 </body>
 </html>
