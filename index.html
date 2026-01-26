@@ -24,22 +24,26 @@
         .nav-left { font-weight: 900; letter-spacing: 2px; font-size: 0.8rem; }
         .nav-right { font-weight: 400; letter-spacing: 4px; font-size: 0.6rem; opacity: 0.4; }
 
-        /* Animated Stars */
-        #star-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-        .star {
-            position: absolute; border-radius: 50%; background: white;
-            /* Core animation: movement + twinkling */
-            animation: moveStar var(--speed) linear infinite, twinkle var(--twinkle-duration) ease-in-out infinite alternate;
-        }
-
-        @keyframes moveStar { 
-            from { transform: translateY(0); } 
-            to { transform: translateY(-100vh); } 
+        /* ACTIVE MOVING STARS */
+        #star-container { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 0; pointer-events: none; 
         }
         
-        @keyframes twinkle { 
-            from { opacity: 0.2; transform: scale(0.7); } 
-            to { opacity: 1; transform: scale(1.3); } 
+        .star {
+            position: absolute; border-radius: 50%; background: white;
+            /* Infinite upward movement + twinkle */
+            animation: drift var(--speed) linear infinite, twinkle var(--twinkle) ease-in-out infinite alternate;
+        }
+
+        @keyframes drift {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100vh); }
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.2; transform: scale(0.8); }
+            to { opacity: 0.8; transform: scale(1.2); }
         }
 
         /* Main Layout */
@@ -86,20 +90,12 @@
         .elo-text { font-size: 3rem; font-weight: 900; margin: 10px 0; display: block; }
         .stat-label { text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; opacity: 0.5; }
 
-        /* Gallery/Anime Card Styles */
+        /* Anime/Gallery Styles */
         .anime-card { display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 8px; transition: 0.3s; margin-bottom: 20px; flex-direction: column; }
         .anime-card:hover { border-color: white; transform: scale(1.01); }
-        .anime-header { display: flex; align-items: center; width: 100%; }
-        .rank-num { font-size: 2rem; font-weight: 900; opacity: 0.2; width: 60px; }
-        .anime-name { margin: 0; font-size: 1.4rem; }
-        .anime-genre { margin: 5px 0 0 0; font-size: 0.8rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
-        .anime-desc { margin: 15px 0 0 60px; font-size: 0.9rem; opacity: 0.7; line-height: 1.5; font-style: italic; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 15px; }
-
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding-bottom: 100px; }
         .gallery-item { cursor: pointer; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; height: 450px; }
-        .gallery-item:hover { border-color: white; transform: scale(1.02); }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-
         .close-window-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; cursor: pointer; font-size: 0.8rem; border-radius: 4px; }
         .close-window-btn:hover { background: white; color: black; }
 
@@ -210,20 +206,15 @@
         </div>
     </div>
 
-    <div id="gallery-overlay" class="overlay"><div class="gallery-window"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;"><h2 style="font-size:2.5rem; letter-spacing:-1.5px; margin:0;">Photography</h2><button class="close-window-btn" onclick="closeAllOverlays()">CLOSE ✕</button></div><div class="gallery-grid" id="photo-grid"></div></div></div>
-    <div id="anime-overlay" class="overlay"><div class="gallery-window"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;"><div><h2 style="font-size:2.5rem; letter-spacing:-1.5px; margin:0;">Top 5 Anime</h2><p style="opacity:0.5; margin:5px 0 0 0; font-size:0.9rem;">Watching since 2023/2024</p></div><button class="close-window-btn" onclick="closeAllOverlays()">CLOSE ✕</button></div><div class="anime-card"><div class="anime-header"><span class="rank-num">01</span><div><h3 class="anime-name">Attack on Titan</h3><p class="anime-genre">Action / Drama / Dark Fantasy</p></div></div><p class="anime-desc">"This was one of my very first anime, it was an amazing watch. 100% recommend."</p></div><div class="anime-card"><div class="anime-header"><span class="rank-num">02</span><div><h3 class="anime-name">Vinland Saga</h3><p class="anime-genre">Historical / Seinen</p></div></div></div><div class="anime-card"><div class="anime-header"><span class="rank-num">03</span><div><h3 class="anime-name">Frieren</h3><p class="anime-genre">Fantasy / Adventure</p></div></div></div><div class="anime-card"><div class="anime-header"><span class="rank-num">04</span><div><h3 class="anime-name">Death Note</h3><p class="anime-genre">Psychological / Thriller</p></div></div></div><div class="anime-card"><div class="anime-header"><span class="rank-num">05</span><div><h3 class="anime-name">Blue Box</h3><p class="anime-genre">Romance / Sports</p></div></div></div></div></div>
-    <div id="preview-modal" onclick="closePreview()"><div class="preview-card" onclick="event.stopPropagation()"><img id="modal-img" src="" class="preview-img"><div class="preview-info"><p id="modal-title" class="preview-title"></p><p id="modal-meta" class="preview-meta"></p></div></div></div>
+    <div id="gallery-overlay" class="overlay"><div class="gallery-window"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;"><h2>Photography</h2><button class="close-window-btn" onclick="closeAllOverlays()">CLOSE ✕</button></div><div class="gallery-grid" id="photo-grid"></div></div></div>
+    <div id="anime-overlay" class="overlay"><div class="gallery-window"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;"><h2>Top 5 Anime</h2><button class="close-window-btn" onclick="closeAllOverlays()">CLOSE ✕</button></div><div class="anime-card"><h3>Attack on Titan</h3><p>"Amazing watch. 100% recommend."</p></div></div></div>
 
     <script>
         const photos = [
-            { url: "https://i.imgur.com/qHixIKi.jpeg", title: "Cool bonsai in a restaurant I once ate at.", date: "Dec 2024" },
-            { url: "https://i.imgur.com/e91Lyow.jpeg", title: "Cool network tower thing", date: "Nov 2024" },
-            { url: "https://i.imgur.com/HImgOvp.jpeg", title: "Had a peaceful ride on one of these.", date: "Dec 2024" },
-            { url: "https://i.imgur.com/YSK4QJP.jpeg", title: "A walk during Vacation.", date: "Oct 2025" },
-            { url: "https://i.imgur.com/oSRWXDW.jpeg", title: "Cool river", date: "Oct 2025" },
-            { url: "https://i.imgur.com/tV1BaU1.jpeg", title: "Cute cat", date: "Dec 2024" },
-            { url: "https://i.imgur.com/zyuce90.jpeg", title: "Nice road", date: "Aug 2024" },
-            { url: "https://i.imgur.com/9tCsU47.jpeg", title: "Rowing by myself.", date: "July 2025" }
+            { url: "https://i.imgur.com/qHixIKi.jpeg", title: "Bonsai", date: "Dec 2024" },
+            { url: "https://i.imgur.com/e91Lyow.jpeg", title: "Tower", date: "Nov 2024" },
+            { url: "https://i.imgur.com/HImgOvp.jpeg", title: "Ride", date: "Dec 2024" },
+            { url: "https://i.imgur.com/YSK4QJP.jpeg", title: "Walk", date: "Oct 2025" }
         ];
 
         function closeAllOverlays() {
@@ -233,9 +224,56 @@
 
         function openGallery() {
             const grid = document.getElementById('photo-grid');
-            grid.innerHTML = photos.map((p, i) => `<div class="gallery-item" onclick="openPreview(${i})"><img src="${p.url}"></div>`).join('');
+            grid.innerHTML = photos.map((p, i) => `<div class="gallery-item"><img src="${p.url}"></div>`).join('');
             document.getElementById('gallery-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
+        }
+
+        function timeAgo(timestamp) {
+            const seconds = Math.floor((new Date() - new Date(timestamp * 1000)) / 1000);
+            if (seconds < 60) return "Just now";
+            const m = Math.floor(seconds / 60);
+            if (m < 60) return m + "m ago";
+            const h = Math.floor(m / 60);
+            if (h < 24) return h + "h ago";
+            return Math.floor(h / 24) + "d ago";
+        }
+
+        async function openChess() {
+            document.getElementById('chess-overlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            const username = 'chinatsu-lover';
+            try {
+                const [statsRes, statusRes, profileRes] = await Promise.all([
+                    fetch(`https://api.chess.com/pub/player/${username}/stats`),
+                    fetch(`https://api.chess.com/pub/player/${username}/is-online?t=${Date.now()}`),
+                    fetch(`https://api.chess.com/pub/player/${username}`)
+                ]);
+                const statsData = await statsRes.json();
+                const statusData = await statusRes.json();
+                const profileData = await profileRes.json();
+
+                if(statsData.chess_rapid) {
+                    document.getElementById('rapid-elo').innerText = statsData.chess_rapid.last.rating;
+                    document.getElementById('rapid-record').innerText = `W: ${statsData.chess_rapid.record.win} | L: ${statsData.chess_rapid.record.loss}`;
+                }
+                
+                let total = 0;
+                ['chess_rapid', 'chess_blitz', 'chess_bullet'].forEach(f => {
+                    if(statsData[f]) total += statsData[f].record.win + statsData[f].record.loss + statsData[f].record.draw;
+                });
+                document.getElementById('total-matches').innerText = total;
+
+                const dot = document.getElementById('status-dot');
+                const statusText = document.getElementById('live-status');
+                if (statusData.online) {
+                    dot.style.background = "#81b64c"; 
+                    statusText.innerText = "Online Now";
+                } else {
+                    dot.style.background = "#444";
+                    statusText.innerText = profileData.last_online ? `Last seen ${timeAgo(profileData.last_online)}` : "Offline";
+                }
+            } catch (err) { console.error(err); }
         }
 
         function openAnime() {
@@ -243,124 +281,37 @@
             document.body.style.overflow = 'hidden';
         }
 
-        function timeAgo(timestamp) {
-            const seconds = Math.floor((new Date() - new Date(timestamp * 1000)) / 1000);
-            let interval = Math.floor(seconds / 31536000);
-            if (interval > 1) return interval + "y ago";
-            interval = Math.floor(seconds / 2592000);
-            if (interval > 1) return interval + "mo ago";
-            interval = Math.floor(seconds / 86400);
-            if (interval > 1) return interval + "d ago";
-            interval = Math.floor(seconds / 3600);
-            if (interval > 1) return interval + "h ago";
-            interval = Math.floor(seconds / 60);
-            if (interval > 1) return interval + "m ago";
-            return "Just now";
+        // STAR MOVEMENT LOGIC
+        const starContainer = document.getElementById('star-container');
+        for (let i = 0; i < 200; i++) {
+            const s = document.createElement('div');
+            s.className = 'star';
+            s.style.left = Math.random() * 100 + '%';
+            s.style.top = Math.random() * 100 + '%';
+            
+            const size = Math.random() * 2 + 1;
+            s.style.width = size + 'px';
+            s.style.height = size + 'px';
+            
+            // Random speed (10s to 30s) to create parallax depth
+            s.style.setProperty('--speed', (Math.random() * 20 + 10) + 's');
+            // Random twinkle speed
+            s.style.setProperty('--twinkle', (Math.random() * 3 + 2) + 's');
+            // Offset the start time so they don't all move at once
+            s.style.animationDelay = -(Math.random() * 30) + 's';
+            
+            starContainer.appendChild(s);
         }
 
-        async function openChess() {
-            document.getElementById('chess-overlay').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            
-            const username = 'chinatsu-lover';
-            const cacheBuster = new Date().getTime();
-
-            try {
-                const [statsRes, statusRes, profileRes] = await Promise.all([
-                    fetch(`https://api.chess.com/pub/player/${username}/stats`),
-                    fetch(`https://api.chess.com/pub/player/${username}/is-online?t=${cacheBuster}`),
-                    fetch(`https://api.chess.com/pub/player/${username}`)
-                ]);
-
-                const statsData = await statsRes.json();
-                const statusData = await statusRes.json();
-                const profileData = await profileRes.json();
-                
-                const rapid = statsData.chess_rapid;
-                if(rapid) {
-                    document.getElementById('rapid-elo').innerText = rapid.last.rating;
-                    document.getElementById('rapid-record').innerText = `W: ${rapid.record.win} | L: ${rapid.record.loss} | D: ${rapid.record.draw}`;
-                } else {
-                    document.getElementById('rapid-elo').innerText = "None";
-                }
-
-                let total = 0;
-                ['chess_rapid', 'chess_blitz', 'chess_bullet'].forEach(f => {
-                    if(statsData[f]) {
-                        total += statsData[f].record.win + statsData[f].record.loss + statsData[f].record.draw;
-                    }
-                });
-                document.getElementById('total-matches').innerText = total;
-
-                const dot = document.getElementById('status-dot');
-                const statusText = document.getElementById('live-status');
-
-                if (statusData.online) {
-                    dot.style.background = "#81b64c"; 
-                    dot.style.boxShadow = "0 0 12px #81b64c";
-                    statusText.innerText = "Online Now";
-                    statusText.style.opacity = "1";
-                } else {
-                    dot.style.background = "#444";
-                    dot.style.boxShadow = "none";
-                    const lastSeen = profileData.last_online ? `Last seen ${timeAgo(profileData.last_online)}` : "Offline";
-                    statusText.innerText = lastSeen;
-                    statusText.style.opacity = "0.6";
-                }
-            } catch (err) {
-                console.error("Chess.com API Error:", err);
-                document.getElementById('rapid-elo').innerText = "Error";
-            }
-        }
-
-        function openPreview(index) {
-            const p = photos[index];
-            document.getElementById('modal-img').src = p.url;
-            document.getElementById('modal-title').innerText = p.title;
-            document.getElementById('modal-meta').innerText = p.date;
-            document.getElementById('preview-modal').style.display = 'flex';
-        }
-
-        function closePreview() { document.getElementById('preview-modal').style.display = 'none'; }
-
-        // ANIMATED STARS LOGIC
-        const starsContainer = document.getElementById('star-container');
-        const starCount = 400;
-
-        for (let i = 0; i < starCount; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            
-            // Randomly position stars
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            
-            // Randomly size stars
-            const size = Math.random() * 2 + 0.5;
-            star.style.width = size + 'px';
-            star.style.height = size + 'px';
-            
-            // Random speeds for parallax effect
-            const speed = (Math.random() * 20 + 15) + 's';
-            star.style.setProperty('--speed', speed);
-            
-            // Random twinkle timing
-            const twinkleDur = (Math.random() * 3 + 2) + 's';
-            star.style.setProperty('--twinkle-duration', twinkleDur);
-            star.style.animationDelay = (Math.random() * 5) + 's';
-            
-            starsContainer.appendChild(star);
-        }
-
-        // Tilt effect for cards
+        // TILT
         document.querySelectorAll('.flashcard').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const rotateX = (rect.height / 2 - (e.clientY - rect.top)) / 80; 
-                const rotateY = ((e.clientX - rect.left) - rect.width / 2) / 80;
-                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                card.style.transform = `rotateY(${x * 10}deg) rotateX(${y * -10}deg)`;
             });
-            card.addEventListener('mouseleave', () => card.style.transform = `rotateX(0deg) rotateY(0deg)`);
+            card.addEventListener('mouseleave', () => card.style.transform = `rotate(0)`);
         });
     </script>
 </body>
