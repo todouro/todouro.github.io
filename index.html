@@ -10,42 +10,38 @@
         :root {
             --neon: #00F2FF;
             --neon-dim: rgba(0, 242, 255, 0.15);
-            --bg: #030304;
+            --bg-deep: #030304;
+            /* Ease-Out Expo for the "Unzip" feel */
             --expo: cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         body {
-            margin: 0; background-color: var(--bg); color: white;
+            margin: 0; background-color: var(--bg-deep); color: white;
             font-family: 'JetBrains Mono', monospace; height: 100vh; overflow: hidden;
         }
 
-        /* --- SHADER OVERLAYS --- */
-        .hud-vignette {
-            position: fixed; inset: 0; pointer-events: none; z-index: 100;
-            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.8) 150%);
-        }
-
+        /* --- HUD SHADERS --- */
         .scanlines {
-            position: fixed; inset: 0; pointer-events: none; z-index: 101; opacity: 0.15;
-            background: repeating-linear-gradient(0deg, transparent, transparent 1px, #000 2px);
+            position: fixed; inset: 0; pointer-events: none; z-index: 101; opacity: 0.1;
+            background: repeating-linear-gradient(0deg, transparent, transparent 1px, #00F2FF 2px);
+            background-size: 100% 3px;
         }
 
-        /* --- VIEWPORT SYSTEM --- */
+        /* --- VIEWPORT --- */
         .viewport {
             position: relative; width: 100vw; height: 100vh;
             display: flex; justify-content: center; align-items: center;
-            z-index: 10; perspective: 1000px;
+            z-index: 10; perspective: 1200px;
         }
 
         .section {
             position: absolute; visibility: hidden; pointer-events: none;
-            display: flex; justify-content: center; align-items: center;
-            width: 100%; height: 100%;
+            width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
         }
 
         .section.active { visibility: visible; pointer-events: all; z-index: 20; }
 
-        /* --- THE SLICE-OPEN CARD --- */
+        /* --- 1. THE SLICE-OPEN FLASHCARD --- */
         .flashcard {
             position: relative; width: 90%; max-width: 650px;
             background: rgba(0, 15, 20, 0.7);
@@ -54,24 +50,25 @@
             border-left: 2px solid var(--neon);
             border-right: 2px solid var(--neon);
             padding: 60px;
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.05);
-            /* Initial State: Horizontal Line */
+            /* Start as a 1px horizontal line in center */
             clip-path: inset(50% 0 50% 0);
-            transition: transform 0.2s ease-out; /* For Idle Parallax */
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
         }
 
+        /* Entrance: Line Expand -> Vertical Unroll */
         .section.active .flashcard {
             animation: sliceOpen 0.8s var(--expo) forwards;
         }
 
-        .section.exit .flashcard {
-            animation: sliceCollapse 0.4s var(--expo) forwards;
+        @keyframes sliceOpen {
+            0% { clip-path: inset(50% 0 50% 0); filter: brightness(5); }
+            25% { clip-path: inset(49.8% 0 49.8% 0); filter: brightness(2); } /* The "Line" phase */
+            100% { clip-path: inset(0 0 0 0); filter: brightness(1); }       /* The "Unroll" phase */
         }
 
-        @keyframes sliceOpen {
-            0% { clip-path: inset(50% 0 50% 0); filter: brightness(10); }
-            20% { clip-path: inset(49.8% 0 49.8% 0); filter: brightness(5); }
-            100% { clip-path: inset(0 0 0 0); filter: brightness(1); }
+        /* Exit: The Collapse (Data-Stream Exit) */
+        .section.exit .flashcard {
+            animation: sliceCollapse 0.4s var(--expo) forwards;
         }
 
         @keyframes sliceCollapse {
@@ -79,67 +76,65 @@
             100% { clip-path: inset(50% 0 50% 0); opacity: 0; }
         }
 
+        /* --- 2. THE MATERIAL (Light Sweep & Glow) --- */
+        .flashcard::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: translateX(-100%);
+        }
+        .section.active .flashcard::after { animation: lightSweep 1.5s var(--expo) 0.4s forwards; }
+        
+        @keyframes lightSweep { 100% { transform: translateX(100%); } }
+
         /* --- HUD CONTENT --- */
-        h1 { font-size: 3.5rem; margin: 0; font-weight: 700; letter-spacing: -2px; color: var(--neon); text-shadow: 0 0 15px var(--neon-dim); }
-        p { font-size: 1rem; margin-top: 20px; opacity: 0.7; line-height: 1.6; border-left: 1px solid var(--neon); padding-left: 20px; }
+        h1 { font-size: 4rem; color: var(--neon); letter-spacing: -2px; margin: 0; text-shadow: 0 0 15px var(--neon-dim); }
+        p { font-size: 1rem; opacity: 0.7; border-left: 2px solid var(--neon); padding-left: 20px; margin-top: 20px; }
 
         .btn-group { margin-top: 40px; display: flex; flex-direction: column; gap: 12px; }
         .action-btn {
             background: rgba(0, 242, 255, 0.03); border: 1px solid var(--neon-dim);
             padding: 18px 25px; color: var(--neon); cursor: pointer; text-align: left;
             display: flex; justify-content: space-between; align-items: center;
-            font-family: 'JetBrains Mono'; transition: 0.3s;
+            font-family: 'JetBrains Mono'; transition: 0.3s; text-decoration: none;
         }
         .action-btn:hover { background: var(--neon-dim); padding-left: 35px; border-color: var(--neon); }
 
-        .nav-hint { 
+        .scroll-hint { 
             margin-top: 40px; background: none; border: none; color: var(--neon); 
             font-family: 'JetBrains Mono'; font-size: 0.7rem; letter-spacing: 4px; 
-            cursor: pointer; opacity: 0.4; transition: 0.3s;
+            cursor: pointer; opacity: 0.4;
         }
-        .nav-hint:hover { opacity: 1; letter-spacing: 6px; }
 
         /* --- MODULE OVERLAYS --- */
         .overlay {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             z-index: 2000; overflow-y: auto; backdrop-filter: blur(20px);
         }
-        .overlay-content {
-            max-width: 900px; margin: 5vh auto; padding: 40px;
-            animation: sliceOpen 0.6s var(--expo) forwards;
-        }
-        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
-        .photo-item { aspect-ratio: 1; border: 1px solid var(--neon-dim); overflow: hidden; }
-        .photo-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.5s; }
-        .photo-item:hover img { opacity: 1; transform: scale(1.05); }
+        .overlay-content { max-width: 900px; margin: 5vh auto; padding: 40px; animation: sliceOpen 0.6s var(--expo) forwards; }
 
-        /* --- BACKGROUND STYLES --- */
-        #starfield { position: fixed; inset: 0; z-index: 0; opacity: 0.3; }
-
-        @media (max-width: 768px) { h1 { font-size: 2.2rem; } .flashcard { padding: 30px; } }
+        #starfield { position: fixed; inset: 0; z-index: 0; opacity: 0.4; }
     </style>
 </head>
 <body>
 
-    <div class="hud-vignette"></div>
     <div class="scanlines"></div>
     <canvas id="starfield"></canvas>
 
     <div class="viewport">
         <div class="section active" id="sec-0">
             <div class="flashcard">
-                <div style="font-size: 0.7rem; color: var(--neon); margin-bottom: 10px; opacity: 0.5;">[ TERMINAL_INIT ]</div>
-                <h1>Shan</h1>
-                <p>Establishing link to personal index...<br>System status: CALM / OBSERVE</p>
-                <button class="nav-hint" onclick="nav(1)">[ ACCESS_IDENTITY ]</button>
+                <div style="font-size: 0.7rem; color: var(--neon); opacity: 0.5;">[ ACCESS_LOG_2026 ]</div>
+                <h1>SHAN</h1>
+                <p>Establishing link to personal index...<br>Status: ACTIVE</p>
+                <button class="scroll-hint" onclick="nav(1)">[ INITIATE_SCAN ]</button>
             </div>
         </div>
 
         <div class="section" id="sec-1">
             <div class="flashcard">
                 <h1>ABOUT</h1>
-                <p>Age: 15<br>Origin: Bahrain<br>Synthesizing logic and visual narrative through code and lenses.</p>
-                <button class="nav-hint" onclick="nav(2)">[ VIEW_MODULES ]</button>
+                <p>15. Bahrain-based.<br>Navigating the space between logic and visual storytelling.</p>
+                <button class="scroll-hint" onclick="nav(2)">[ ACCESS_MODULES ]</button>
             </div>
         </div>
 
@@ -147,11 +142,11 @@
             <div class="flashcard">
                 <h1>MODULES</h1>
                 <div class="btn-group">
-                    <button class="action-btn" onclick="openGallery()"><span>PHOTOGRAPHY.IMG</span><span>[01]</span></button>
-                    <button class="action-btn" onclick="openChess()"><span>CHESS_ENGINE.EXE</span><span>[02]</span></button>
-                    <button class="action-btn" onclick="openAnime()"><span>ARCHIVE_TOP_5.DB</span><span>[03]</span></button>
+                    <button class="action-btn" onclick="openGallery()"><span>PHOTOGRAPHY.DAT</span><span>[01]</span></button>
+                    <button class="action-btn" onclick="openChess()"><span>CHESS_STATS.EXE</span><span>[02]</span></button>
+                    <button class="action-btn" onclick="openAnime()"><span>WATCHLIST.DB</span><span>[03]</span></button>
                 </div>
-                <button class="nav-hint" onclick="nav(3)">[ NETWORK_LINKS ]</button>
+                <button class="scroll-hint" onclick="nav(3)">[ NETWORK_LINKS ]</button>
             </div>
         </div>
 
@@ -161,53 +156,26 @@
                 <div class="btn-group">
                     <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn"><span>DISCORD</span><span>@todouro</span></a>
                     <a href="https://github.com/todouro" target="_blank" class="action-btn"><span>GITHUB</span><span>/todouro</span></a>
-                    <a href="https://instagram.com/Theodore_Schawn" target="_blank" class="action-btn"><span>INSTAGRAM</span><span>@theodore</span></a>
                 </div>
-                <button class="nav-hint" onclick="nav(0)">[ TERMINATE_SESSION ]</button>
+                <button class="scroll-hint" onclick="nav(0)">[ RESET_TERMINAL ]</button>
             </div>
-        </div>
-    </div>
-
-    <div id="gallery-overlay" class="overlay">
-        <div class="overlay-content">
-            <h2 style="color: var(--neon); border-bottom: 1px solid var(--neon-dim); padding-bottom: 20px;">VISUAL_DATABASE</h2>
-            <div class="photo-grid" id="photo-grid"></div>
-            <button class="nav-hint" onclick="closeAll()" style="margin-top:40px;">[ CLOSE_OVERLAY ]</button>
         </div>
     </div>
 
     <div id="chess-overlay" class="overlay">
         <div class="overlay-content">
-            <h2 style="color: var(--neon); margin:0;">CHESS_STATS</h2>
-            <div style="display:flex; align-items:center; gap:10px; margin: 20px 0;">
-                <div id="status-dot" style="width:10px; height:10px; background:#444; border-radius:50%;"></div>
-                <span id="live-status" style="font-size:0.8rem; opacity:0.6;">SYNCING...</span>
-            </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                <div style="border:1px solid var(--neon-dim); padding:20px;">
-                    <span style="display:block; font-size:0.7rem; opacity:0.5;">RAPID_ELO</span>
-                    <span id="rapid-elo" style="font-size:3rem; font-weight:700; color:var(--neon);">---</span>
+            <h2 style="color: var(--neon);">CHESS_LINK_ESTABLISHED</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin: 30px 0;">
+                <div style="border:1px solid var(--neon-dim); padding:30px; text-align:center;">
+                    <span style="font-size:0.7rem; opacity:0.5;">RAPID_RATING</span>
+                    <div id="rapid-elo" style="font-size:4rem; color:var(--neon); font-weight:700;">---</div>
                 </div>
-                <div style="border:1px solid var(--neon-dim); padding:20px;">
-                    <span style="display:block; font-size:0.7rem; opacity:0.5;">TOTAL_GAMES</span>
-                    <span id="total-matches" style="font-size:3rem; font-weight:700;">---</span>
+                <div style="border:1px solid var(--neon-dim); padding:30px; text-align:center;">
+                    <span style="font-size:0.7rem; opacity:0.5;">TOTAL_MATCHES</span>
+                    <div id="total-matches" style="font-size:4rem; font-weight:700;">---</div>
                 </div>
             </div>
-            <button class="nav-hint" onclick="closeAll()" style="margin-top:40px;">[ CLOSE_OVERLAY ]</button>
-        </div>
-    </div>
-
-    <div id="anime-overlay" class="overlay">
-        <div class="overlay-content">
-            <h2 style="color: var(--neon);">WATCHLIST_TOP_5</h2>
-            <div id="anime-list">
-                <div style="padding:15px; border-bottom:1px solid var(--neon-dim);">01. Attack on Titan</div>
-                <div style="padding:15px; border-bottom:1px solid var(--neon-dim);">02. Vinland Saga</div>
-                <div style="padding:15px; border-bottom:1px solid var(--neon-dim);">03. Frieren</div>
-                <div style="padding:15px; border-bottom:1px solid var(--neon-dim);">04. Death Note</div>
-                <div style="padding:15px;">05. Blue Box</div>
-            </div>
-            <button class="nav-hint" onclick="closeAll()" style="margin-top:40px;">[ CLOSE_OVERLAY ]</button>
+            <button class="scroll-hint" onclick="closeAll()">[ TERMINATE_LINK ]</button>
         </div>
     </div>
 
@@ -215,64 +183,51 @@
         let currentIdx = 0;
         let isMoving = false;
 
-        // Navigation Engine
+        // --- 3. IDLE BEHAVIOR (Floating/Parallax) ---
+        document.addEventListener('mousemove', (e) => {
+            const card = document.querySelector('.section.active .flashcard');
+            if (!card) return;
+            const x = (window.innerWidth / 2 - e.pageX) / 40;
+            const y = (window.innerHeight / 2 - e.pageY) / 40;
+            // Adds slight "weight" to the UI following the cursor
+            card.style.transform = `translateX(${x}px) translateY(${y}px) rotateY(${-x/2}deg) rotateX(${y/2}deg)`;
+        });
+
+        // Navigation (Slice Logic)
         function nav(index) {
             if (isMoving || index === currentIdx) return;
             isMoving = true;
             const current = document.getElementById(`sec-${currentIdx}`);
             const next = document.getElementById(`sec-${index}`);
+
             current.classList.add('exit');
             setTimeout(() => {
                 current.classList.remove('active', 'exit');
                 next.classList.add('active');
                 currentIdx = index;
                 isMoving = false;
-            }, 400);
+            }, 450); // Collapse duration
         }
 
         window.addEventListener('wheel', (e) => {
-            if (document.querySelector('.overlay[style*="block"]')) return;
             if (e.deltaY > 0 && currentIdx < 3) nav(currentIdx + 1);
             else if (e.deltaY < 0 && currentIdx > 0) nav(currentIdx - 1);
         });
 
-        // Living HUD (Parallax)
-        document.addEventListener('mousemove', (e) => {
-            const card = document.querySelector('.section.active .flashcard');
-            if (!card) return;
-            const x = (window.innerWidth / 2 - e.pageX) / 50;
-            const y = (window.innerHeight / 2 - e.pageY) / 50;
-            card.style.transform = `translateX(${x}px) translateY(${y}px) rotateY(${-x/2}deg) rotateX(${y/2}deg)`;
-        });
-
-        // Chess API logic
+        // Chess API Integration [cite: 109, 110, 111, 113]
         async function openChess() {
             document.getElementById('chess-overlay').style.display = 'block';
+            const user = 'chinatsu-lover';
             try {
-                const user = 'chinatsu-lover';
                 const stats = await fetch(`https://api.chess.com/pub/player/${user}/stats`).then(r=>r.json());
-                const status = await fetch(`https://api.chess.com/pub/player/${user}/is-online`).then(r=>r.json());
-                
                 document.getElementById('rapid-elo').innerText = stats.chess_rapid?.last?.rating || 'N/A';
                 document.getElementById('total-matches').innerText = (stats.chess_rapid?.record?.win || 0) + (stats.chess_rapid?.record?.loss || 0);
-                
-                const dot = document.getElementById('status-dot');
-                dot.style.background = status.online ? '#00F2FF' : '#444';
-                dot.style.boxShadow = status.online ? '0 0 10px #00F2FF' : 'none';
-                document.getElementById('live-status').innerText = status.online ? 'SYSTEM_ONLINE' : 'SYSTEM_OFFLINE';
-            } catch(e) { console.error("Chess API Error"); }
+            } catch(e) { console.error("Chess API Link Failed"); }
         }
 
-        // Gallery & Anime logic
-        const photos = ["https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg", "https://i.imgur.com/oSRWXDW.jpeg", "https://i.imgur.com/tV1BaU1.jpeg"];
-        function openGallery() {
-            document.getElementById('photo-grid').innerHTML = photos.map(p => `<div class="photo-item"><img src="${p}"></div>`).join('');
-            document.getElementById('gallery-overlay').style.display = 'block';
-        }
-        function openAnime() { document.getElementById('anime-overlay').style.display = 'block'; }
         function closeAll() { document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none'); }
 
-        // Starfield Background
+        // Starfield Logic [cite: 91, 92, 93, 100]
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
         let stars = [];
@@ -290,7 +245,6 @@
             requestAnimationFrame(draw);
         }
         init(); draw();
-        window.onresize = init;
     </script>
 </body>
 </html>
