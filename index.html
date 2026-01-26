@@ -9,11 +9,10 @@
     <style>
         :root {
             --bg-deep: #030304;
-            --accent: #ffffff;
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
-            /* Crisp Game UI Pop with overshoot */
-            --pop-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* High-energy game pop easing */
+            --game-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         body {
@@ -21,65 +20,68 @@
             font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden;
         }
 
-        /* --- BACKGROUND --- */
         #starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
         .noise {
             position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.04;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        /* --- SCREEN MANAGEMENT --- */
         .viewport {
             position: relative; width: 100vw; height: 100vh;
             display: flex; justify-content: center; align-items: center;
             z-index: 10;
         }
 
+        /* --- SECTION LOGIC --- */
         .section {
             position: absolute; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            visibility: hidden; pointer-events: none;
+            visibility: hidden;
             perspective: 1200px;
         }
 
-        /* The Animation State */
+        /* The Reveal Animation */
         .section.active {
-            visibility: visible; pointer-events: all;
+            visibility: visible;
+            z-index: 20;
         }
 
         .section.active .flashcard {
-            animation: cardPopIn 0.6s var(--pop-ease) forwards;
+            animation: burstIn 0.5s var(--game-pop) forwards;
         }
 
+        @keyframes burstIn {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.1) rotateX(30deg); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) rotateX(0deg); 
+            }
+        }
+
+        /* Quick hide for the previous card */
         .section.exit .flashcard {
-            animation: cardPopOut 0.4s ease-in forwards;
+            animation: shrinkOut 0.2s ease-in forwards;
         }
 
-        @keyframes cardPopIn {
-            0% { opacity: 0; transform: scale(0.5) rotateX(20deg); }
-            100% { opacity: 1; transform: scale(1) rotateX(0); }
-        }
-
-        @keyframes cardPopOut {
-            0% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1.2); }
+        @keyframes shrinkOut {
+            to { opacity: 0; transform: scale(1.5); }
         }
 
         /* --- FLASHCARD UI --- */
         .flashcard {
-            background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             padding: 80px; width: 90%; max-width: 700px; border-radius: 4px;
             border: 1px solid var(--glass-border);
             box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-            transform-style: preserve-3d; transition: transform 0.1s ease-out;
-            position: relative; overflow: hidden;
-            text-align: left;
+            transform-origin: center center; /* Pops from center */
         }
 
         h1 { font-size: 5rem; margin: 0; font-weight: 900; letter-spacing: -4px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         p { font-size: 1.2rem; margin-top: 20px; opacity: 0.6; font-weight: 300; line-height: 1.6; }
 
-        /* --- ACTION BUTTONS --- */
         .btn-group { margin-top: 40px; display: flex; flex-direction: column; gap: 10px; }
         .action-btn {
             background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
@@ -87,34 +89,16 @@
             display: flex; justify-content: space-between; align-items: center;
             transition: 0.3s; border-radius: 4px; text-decoration: none;
         }
-        .action-btn:hover { background: rgba(255,255,255,0.1); padding-left: 40px; border-color: rgba(255,255,255,0.3); }
+        .action-btn:hover { background: rgba(255,255,255,0.1); padding-left: 40px; }
 
-        .nav-trigger {
-            margin-top: 40px; background: none; border: none; color: rgba(255,255,255,0.3);
-            font-size: 1.5rem; cursor: pointer; transition: 0.3s;
-        }
-        .nav-trigger:hover { color: white; transform: translateY(5px); }
+        .nav-hint { margin-top: 40px; background: none; border: none; color: rgba(255,255,255,0.3); font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; font-family: 'JetBrains Mono'; }
 
         /* --- OVERLAYS --- */
-        .overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
-            z-index: 2000; overflow-y: auto; backdrop-filter: blur(20px);
-        }
-        .overlay-content {
-            max-width: 1000px; margin: 5vh auto; padding: 40px;
-            animation: cardPopIn 0.5s var(--pop-ease);
-        }
-
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; backdrop-filter: blur(20px); }
+        .overlay-content { max-width: 1000px; margin: 5vh auto; padding: 40px; animation: burstIn 0.4s var(--game-pop); }
         .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 4px; }
-        .photo-item { aspect-ratio: 1; overflow: hidden; cursor: zoom-in; }
-        .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .photo-item:hover img { transform: scale(1.05); }
-
-        .stat-card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 4px; border: 1px solid var(--glass-border); text-align: center; }
-        .big-num { font-size: 4rem; font-weight: 900; }
-
-        .close-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 24px; border-radius: 100px; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
-        .close-btn:hover { background: white; color: black; }
+        .photo-item { aspect-ratio: 1; overflow: hidden; }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; }
 
         @media (max-width: 768px) { .flashcard { padding: 40px; } h1 { font-size: 3rem; } }
     </style>
@@ -130,7 +114,7 @@
             <div class="flashcard">
                 <h1>Hello.</h1>
                 <p>Welcome to my personal index.</p>
-                <button class="nav-trigger" onclick="nextSection()">↓</button>
+                <button class="nav-hint" onclick="next()">Scroll or Click to Begin</button>
             </div>
         </div>
 
@@ -138,28 +122,19 @@
             <div class="flashcard">
                 <h1>About</h1>
                 <p>15. Bahrain-based.<br>A calm observer navigating the space between logical systems and visual storytelling.</p>
-                <button class="nav-trigger" onclick="nextSection()">↓</button>
+                <button class="nav-hint" onclick="next()">Continue</button>
             </div>
         </div>
 
         <div class="section" id="sec-2">
             <div class="flashcard">
-                <h1>Interests</h1>
+                <h1>Modules</h1>
                 <div class="btn-group">
-                    <button class="action-btn" onclick="openGallery()">
-                        <span><i class="fas fa-camera"></i> Photography</span>
-                        <span>→</span>
-                    </button>
-                    <button class="action-btn" onclick="openChess()">
-                        <span><i class="fas fa-chess"></i> Chess</span>
-                        <span>→</span>
-                    </button>
-                    <button class="action-btn" onclick="openAnime()">
-                        <span><i class="fas fa-tv"></i> Anime</span>
-                        <span>→</span>
-                    </button>
+                    <button class="action-btn" onclick="openMod('gallery')"><span>Photography</span><span>→</span></button>
+                    <button class="action-btn" onclick="openMod('chess')"><span>Chess</span><span>→</span></button>
+                    <button class="action-btn" onclick="openMod('anime')"><span>Anime</span><span>→</span></button>
                 </div>
-                <button class="nav-trigger" onclick="nextSection()">↓</button>
+                <button class="nav-hint" onclick="next()">Links</button>
             </div>
         </div>
 
@@ -167,155 +142,87 @@
             <div class="flashcard">
                 <h1>Links</h1>
                 <div class="btn-group">
-                    <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn">
-                        <span><i class="fab fa-discord"></i> Discord</span>
-                        <span style="opacity:0.4; font-size:0.8rem;">@todouro</span>
-                    </a>
-                    <a href="https://github.com/todouro" target="_blank" class="action-btn">
-                        <span><i class="fab fa-github"></i> GitHub</span>
-                        <span style="opacity:0.4; font-size:0.8rem;">/todouro</span>
-                    </a>
-                    <a href="https://instagram.com/Theodore_Schawn" target="_blank" class="action-btn">
-                        <span><i class="fab fa-instagram"></i> Instagram</span>
-                        <span style="opacity:0.4; font-size:0.8rem;">@Theodore_Schawn</span>
-                    </a>
+                    <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn"><span>Discord</span><span style="opacity:0.4;">@todouro</span></a>
+                    <a href="https://github.com/todouro" target="_blank" class="action-btn"><span>GitHub</span><span style="opacity:0.4;">/todouro</span></a>
+                    <a href="https://instagram.com/Theodore_Schawn" target="_blank" class="action-btn"><span>Instagram</span><span style="opacity:0.4;">@Theodore_Schawn</span></a>
                 </div>
-                <button class="nav-trigger" style="font-size:0.9rem;" onclick="resetToFirst()">↑ Return</button>
+                <button class="nav-hint" onclick="goTo(0)">Back to Start</button>
             </div>
         </div>
 
     </div>
 
-    <div id="gallery-overlay" class="overlay">
-        <div class="overlay-content">
-            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:40px; border-bottom:1px solid var(--glass-border); padding-bottom:20px;">
-                <h2 style="font-size:3rem; margin:0;">Visuals</h2>
-                <button class="close-btn" onclick="closeAll()">Close</button>
-            </div>
-            <div class="photo-grid" id="photo-grid"></div>
-        </div>
-    </div>
-
-    <div id="anime-overlay" class="overlay">
-        <div class="overlay-content">
-            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:40px; border-bottom:1px solid var(--glass-border); padding-bottom:20px;">
-                <h2 style="font-size:3rem; margin:0;">Top 5</h2>
-                <button class="close-btn" onclick="closeAll()">Close</button>
-            </div>
-            <div class="anime-list">
-                <div style="padding:20px; border-bottom:1px solid var(--glass-border);"><h3>Attack on Titan</h3></div>
-                <div style="padding:20px; border-bottom:1px solid var(--glass-border);"><h3>Vinland Saga</h3></div>
-                <div style="padding:20px; border-bottom:1px solid var(--glass-border);"><h3>Frieren</h3></div>
-                <div style="padding:20px; border-bottom:1px solid var(--glass-border);"><h3>Death Note</h3></div>
-                <div style="padding:20px;"><h3>Blue Box</h3></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="chess-overlay" class="overlay">
-        <div class="overlay-content">
-            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:40px; border-bottom:1px solid var(--glass-border); padding-bottom:20px;">
-                <h2 style="font-size:3rem; margin:0;">Chess</h2>
-                <button class="close-btn" onclick="closeAll()">Close</button>
-            </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                <div class="stat-card"><span style="opacity:0.5">Rapid</span><span id="rapid-elo" class="big-num">---</span></div>
-                <div class="stat-card"><span style="opacity:0.5">Games</span><span id="total-matches" class="big-num">---</span></div>
-            </div>
+    <div id="overlay" class="overlay" onclick="closeMod()">
+        <div class="overlay-content" onclick="event.stopPropagation()">
+            <h2 id="ov-title" style="font-size:3rem; border-bottom:1px solid var(--glass-border); padding-bottom:20px;"></h2>
+            <div id="ov-body"></div>
+            <button class="nav-hint" onclick="closeMod()" style="margin-top:40px;">[ Close ]</button>
         </div>
     </div>
 
     <script>
-        // --- NAVIGATION LOGIC ---
-        let currentIdx = 0;
-        const totalSections = 4;
-        let isAnimating = false;
+        let current = 0;
+        let busy = false;
 
-        function showSection(index) {
-            if (isAnimating || index === currentIdx) return;
-            isAnimating = true;
+        function goTo(idx) {
+            if (busy || idx === current) return;
+            busy = true;
+            
+            const oldSec = document.getElementById(`sec-${current}`);
+            const newSec = document.getElementById(`sec-${idx}`);
 
-            const current = document.getElementById(`sec-${currentIdx}`);
-            const next = document.getElementById(`sec-${index}`);
-
-            current.classList.add('exit');
+            oldSec.classList.add('exit');
             
             setTimeout(() => {
-                current.classList.remove('active', 'exit');
-                next.classList.add('active');
-                currentIdx = index;
-                isAnimating = false;
-            }, 400);
+                oldSec.classList.remove('active', 'exit');
+                newSec.classList.add('active');
+                current = idx;
+                busy = false;
+            }, 300);
         }
 
-        function nextSection() {
-            if (currentIdx < totalSections - 1) showSection(currentIdx + 1);
-        }
+        function next() { if (current < 3) goTo(current + 1); }
 
-        function resetToFirst() {
-            showSection(0);
-        }
-
-        // Scroll Wheel Support
         window.addEventListener('wheel', (e) => {
-            if (document.querySelector('.overlay[style*="block"]')) return;
-            if (e.deltaY > 0) nextSection();
-            else if (e.deltaY < 0 && currentIdx > 0) showSection(currentIdx - 1);
+            if (document.getElementById('overlay').style.display === 'block') return;
+            if (e.deltaY > 0) next();
+            else if (e.deltaY < 0 && current > 0) goTo(current - 1);
         });
 
-        // --- BACKGROUND & TILT ---
+        // Background
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
-        let width, height, stars = [];
-        function initStars() {
-            width = window.innerWidth; height = window.innerHeight;
-            canvas.width = width; canvas.height = height; stars = [];
-            for(let i=0; i<200; i++) stars.push({ x: Math.random()*width, y: Math.random()*height, z: Math.random()*2, o: Math.random() });
+        let stars = [];
+        function init() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            stars = Array(200).fill().map(() => ({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, z: Math.random()*2 }));
         }
-        function animate() {
-            ctx.clearRect(0,0,width,height); ctx.fillStyle = "white";
-            stars.forEach(s => {
-                s.y -= 0.2 * s.z; if(s.y<0) s.y=height;
-                ctx.globalAlpha = s.o; ctx.beginPath(); ctx.arc(s.x, s.y, s.z, 0, Math.PI*2); ctx.fill();
-            });
-            requestAnimationFrame(animate);
+        function anim() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle="white";
+            stars.forEach(s => { s.y -= 0.2*s.z; if(s.y<0) s.y=canvas.height; ctx.globalAlpha=0.5; ctx.beginPath(); ctx.arc(s.x,s.y,s.z,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(anim);
         }
-        initStars(); animate();
+        window.addEventListener('resize', init); init(); anim();
 
-        document.querySelectorAll('.flashcard').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = (e.clientX - rect.left) - rect.width/2;
-                const y = (e.clientY - rect.top) - rect.height/2;
-                card.style.transform = `rotateY(${x/80}deg) rotateX(${-y/80}deg)`;
-            });
-            card.addEventListener('mouseleave', () => card.style.transform = `rotateY(0) rotateX(0)`);
-        });
-
-        // --- OVERLAY FUNCTIONS ---
-        function closeAll() { document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none'); }
-        
-        function openGallery() {
-            const photos = [
-                "https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", 
-                "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg", 
-                "https://i.imgur.com/oSRWXDW.jpeg", "https://i.imgur.com/tV1BaU1.jpeg", 
-                "https://i.imgur.com/zyuce90.jpeg", "https://i.imgur.com/9tCsU47.jpeg"
-            ];
-            document.getElementById('photo-grid').innerHTML = photos.map(p => `<div class="photo-item"><img src="${p}"></div>`).join('');
-            document.getElementById('gallery-overlay').style.display = 'block';
+        // Modals
+        function openMod(type) {
+            const ov = document.getElementById('overlay');
+            const title = document.getElementById('ov-title');
+            const body = document.getElementById('ov-body');
+            ov.style.display = 'block';
+            
+            if(type === 'gallery') {
+                title.innerText = "Visuals";
+                body.innerHTML = `<div class="photo-grid">${Array(6).fill('<div class="photo-item" style="background:#111"></div>').join('')}</div>`;
+            } else if(type === 'chess') {
+                title.innerText = "Chess";
+                body.innerHTML = "<p>Rapid Rating: Fetching...</p>";
+            } else {
+                title.innerText = "Anime";
+                body.innerHTML = "<ul><li>Attack on Titan</li><li>Vinland Saga</li></ul>";
+            }
         }
-
-        function openAnime() { document.getElementById('anime-overlay').style.display = 'block'; }
-
-        async function openChess() {
-            document.getElementById('chess-overlay').style.display = 'block';
-            try {
-                const stats = await fetch(`https://api.chess.com/pub/player/chinatsu-lover/stats`).then(r=>r.json());
-                document.getElementById('rapid-elo').innerText = stats.chess_rapid?.last?.rating || 'N/A';
-                document.getElementById('total-matches').innerText = (stats.chess_rapid?.record?.win || 0) + (stats.chess_rapid?.record?.loss || 0);
-            } catch(e) {}
-        }
+        function closeMod() { document.getElementById('overlay').style.display = 'none'; }
     </script>
 </body>
 </html>
