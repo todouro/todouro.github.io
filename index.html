@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shan | Index</title>
+    <title>Portfolio | 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <style>
@@ -30,14 +30,6 @@
             position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.04;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
-
-        /* --- NAV --- */
-        nav {
-            position: fixed; top: 0; left: 0; width: 100%; padding: 40px 60px;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; mix-blend-mode: difference; pointer-events: none;
-        }
-        .nav-item { font-family: 'JetBrains Mono'; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; }
 
         /* --- SCROLLER --- */
         .main-scroller {
@@ -122,7 +114,6 @@
         }
         .close-btn:hover { background: white; color: black; }
 
-        /* --- FULLSCREEN VIEWER --- */
         #fullscreen-view {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98);
             z-index: 3000; justify-content: center; align-items: center; cursor: zoom-out;
@@ -148,7 +139,7 @@
         .anime-info h3 { font-size: 1.8rem; margin: 0; }
         .anime-meta { margin-top: 5px; font-family: 'JetBrains Mono'; font-size: 0.8rem; opacity: 0.6; }
 
-        /* --- GALLERY (Grayscale Removed) --- */
+        /* --- GALLERY --- */
         .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2px; }
         .photo-item { aspect-ratio: 1; overflow: hidden; position: relative; cursor: zoom-in; }
         .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
@@ -166,17 +157,12 @@
     <canvas id="starfield"></canvas>
     <div class="noise"></div>
 
-    <nav>
-        <div class="nav-item">Shan</div>
-        <div class="nav-item">Index / 2026</div>
-    </nav>
-
     <div class="main-scroller">
         
         <div class="section" id="sec1">
             <div class="flashcard">
-                <h1>Shan</h1>
-                <p>Welcome to the index.</p>
+                <h1>Hello.</h1>
+                <p>Explore the modules below.</p>
                 <button class="scroll-down" onclick="document.getElementById('sec2').scrollIntoView();">↓</button>
             </div>
         </div>
@@ -191,7 +177,7 @@
 
         <div class="section" id="sec3">
             <div class="flashcard">
-                <h1>Interests</h1>
+                <h1>Modules</h1>
                 <div class="btn-group">
                     <button class="action-btn" onclick="openGallery()">
                         <span class="btn-label"><i class="fas fa-camera btn-icon"></i> Photography</span>
@@ -212,7 +198,7 @@
 
         <div class="section" id="sec4">
             <div class="flashcard">
-                <h1>Link</h1>
+                <h1>Links</h1>
                 <div class="btn-group">
                     <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn">
                         <span class="btn-label"><i class="fab fa-discord btn-icon"></i> Discord</span>
@@ -307,7 +293,6 @@
     </div>
 
     <script>
-        // --- STARFIELD ---
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
         let width, height, stars = [], mouseX = 0, mouseY = 0;
@@ -338,7 +323,6 @@
         window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
         initStars(); animateStars();
 
-        // --- SUBTLE TILT EFFECT ---
         document.querySelectorAll('.flashcard').forEach(card => {
             card.addEventListener('mousemove', e => {
                 const rect = card.getBoundingClientRect();
@@ -349,13 +333,11 @@
             card.addEventListener('mouseleave', () => card.style.transform = `perspective(1000px) rotateY(0) rotateX(0)`);
         });
 
-        // --- OVERLAY LOGIC ---
         function closeAll() {
             document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none');
             document.body.style.overflow = 'auto';
         }
 
-        // --- GALLERY & FULLSCREEN ---
         const photos = [
             "https://i.imgur.com/qHixIKi.jpeg", "https://i.imgur.com/e91Lyow.jpeg", 
             "https://i.imgur.com/HImgOvp.jpeg", "https://i.imgur.com/YSK4QJP.jpeg", 
@@ -387,7 +369,6 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // --- CHESS API & LAST SEEN ---
         function timeAgo(timestamp) {
             const seconds = Math.floor((new Date() - new Date(timestamp * 1000)) / 1000);
             let interval = Math.floor(seconds / 31536000);
@@ -407,7 +388,7 @@
             document.getElementById('chess-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
             
-            const user = 'chinatsu-lover'; // Ensure this matches your username
+            const user = 'chinatsu-lover'; 
             try {
                 const stats = await fetch(`https://api.chess.com/pub/player/${user}/stats`).then(r=>r.json());
                 const status = await fetch(`https://api.chess.com/pub/player/${user}/is-online`).then(r=>r.json());
