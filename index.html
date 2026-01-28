@@ -10,10 +10,10 @@
         :root {
             --bg-deep: #030304;
             --accent: #ffffff;
-            --glass: rgba(255, 255, 255, 0.02);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glow: rgba(255, 255, 255, 0.06);
-            --ease: cubic-bezier(0.16, 1, 0.3, 1); /* Faster, snappy ease */
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glow: rgba(255, 255, 255, 0.07);
+            --ease: cubic-bezier(0.2, 1, 0.2, 1); /* Snappier, cleaner curve */
         }
 
         body {
@@ -41,36 +41,36 @@
             scroll-snap-align: center; perspective: 1500px;
         }
 
-        /* --- FLASHCARD WITH ENTRY ANIMATION --- */
+        /* --- FLASHCARD (NO BLUR) --- */
         .flashcard {
             position: relative;
             background: var(--glass); 
-            backdrop-filter: blur(15px);
             padding: 80px; width: 90%; max-width: 700px; border-radius: 12px;
             border: 1px solid var(--glass-border);
-            box-shadow: 0 0 40px var(--glow), inset 0 0 15px var(--glow), 0 40px 100px rgba(0,0,0,0.8);
             
-            /* Hidden State for Animation */
+            /* Sharp Edge Glow */
+            box-shadow: 
+                0 0 30px var(--glow), 
+                0 40px 100px rgba(0,0,0,0.8);
+            
+            /* Sharp Hidden State */
             opacity: 0;
-            filter: blur(10px);
-            transform: scale(0.9) translateY(40px);
+            transform: scale(0.95) translateY(30px);
             transition: 
-                opacity 0.8s var(--ease), 
-                transform 0.8s var(--ease), 
-                filter 0.8s var(--ease),
+                opacity 0.6s var(--ease), 
+                transform 0.6s var(--ease), 
                 box-shadow 0.4s var(--ease);
         }
 
-        /* Visible State (Triggered by JS) */
+        /* Crisp Reveal */
         .flashcard.reveal {
             opacity: 1;
-            filter: blur(0px);
             transform: scale(1) translateY(0);
         }
 
         .flashcard:hover {
-            box-shadow: 0 0 60px rgba(255, 255, 255, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 45px rgba(255, 255, 255, 0.1), 0 40px 100px rgba(0,0,0,0.9);
         }
 
         h1.brand-name { 
@@ -78,7 +78,6 @@
             text-transform: lowercase;
             background: linear-gradient(to bottom, #fff, #888); 
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-            transition: 0.6s var(--ease);
         }
 
         /* TERMINAL TEXT */
@@ -87,7 +86,7 @@
             font-size: 1.2rem; margin-top: 20px;
             display: flex; align-items: center; min-height: 1.5em;
         }
-        #typewriter-text { opacity: 0.7; font-weight: 300; }
+        #typewriter-text { opacity: 0.8; font-weight: 300; }
         .cursor {
             display: inline-block; width: 10px; height: 1.2rem;
             background-color: #fff; margin-left: 8px;
@@ -97,8 +96,8 @@
 
         .deco-text {
             position: absolute; font-family: 'JetBrains Mono', monospace;
-            font-size: 10px; color: rgba(255, 255, 255, 0.07);
-            pointer-events: none; letter-spacing: 1px;
+            font-size: 10px; color: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
         }
         .deco-top { top: 40px; right: 60px; }
         .deco-bottom { bottom: 60px; right: 80px; }
@@ -110,26 +109,17 @@
             display: flex; justify-content: space-between; align-items: center;
             transition: 0.3s var(--ease); border-radius: 8px; text-decoration: none;
         }
-        .action-btn:hover { background: rgba(255,255,255,0.1); padding-left: 40px; }
+        .action-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
 
         .scroll-down { background: none; border: none; color: rgba(255,255,255,0.2); font-size: 1.5rem; cursor: pointer; margin-top: 40px; }
         .arrow-bottom-left { position: absolute; bottom: 40px; left: 80px; }
 
-        /* --- MODALS --- */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; opacity: 0; visibility: hidden; display: flex; justify-content: center; align-items: center; transition: 0.4s var(--ease); backdrop-filter: blur(0px); }
-        .overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(20px); }
-        .overlay-content { background: #0a0a0b; width: 85%; max-width: 800px; max-height: 75vh; border: 1px solid var(--glass-border); border-radius: 20px; padding: 40px; overflow-y: auto; position: relative; transform: scale(0.9); transition: 0.4s var(--ease); }
+        /* --- MODALS (CLEAN) --- */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; opacity: 0; visibility: hidden; display: flex; justify-content: center; align-items: center; transition: 0.3s var(--ease); }
+        .overlay.active { opacity: 1; visibility: visible; }
+        .overlay-content { background: #0a0a0b; width: 85%; max-width: 800px; border: 1px solid var(--glass-border); border-radius: 12px; padding: 40px; position: relative; transform: scale(0.98); transition: 0.3s var(--ease); }
         .overlay.active .overlay-content { transform: scale(1); }
 
-        /* ... Other styles remain same ... */
-        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
-        .photo-item { aspect-ratio: 1; overflow: hidden; border-radius: 10px; cursor: zoom-in; background: #111; }
-        .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        #fullscreen-view { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000; justify-content: center; align-items: center; }
-        .anime-item { display: flex; align-items: center; padding: 25px; border-bottom: 1px solid var(--glass-border); }
-        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .stat-card { background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; border: 1px solid var(--glass-border); text-align: center; }
-        .big-num { font-size: 3rem; font-weight: 900; display: block; }
         @media (max-width: 768px) { .flashcard { padding: 40px; } h1.brand-name { font-size: 3.5rem; } }
     </style>
 </head>
@@ -139,7 +129,6 @@
     <div class="noise"></div>
 
     <div class="main-scroller" id="scroller">
-        
         <div class="section" id="sec1">
             <div class="flashcard">
                 <div class="deco-text deco-top">10100110 // 0x6ce8bc</div>
@@ -164,18 +153,9 @@
             <div class="flashcard">
                 <h1 class="brand-name">Interests</h1>
                 <div class="btn-group">
-                    <button class="action-btn" onclick="openOverlay('gallery-overlay')">
-                        <span><i class="fas fa-camera"></i> Photography</span>
-                        <span>→</span>
-                    </button>
-                    <button class="action-btn" onclick="openChess()">
-                        <span><i class="fas fa-chess"></i> Chess</span>
-                        <span>→</span>
-                    </button>
-                    <button class="action-btn" onclick="openOverlay('anime-overlay')">
-                        <span><i class="fas fa-tv"></i> Anime</span>
-                        <span>→</span>
-                    </button>
+                    <button class="action-btn" onclick="openOverlay('gallery-overlay')"><span>Photography</span><span>→</span></button>
+                    <button class="action-btn" onclick="openChess()"><span>Chess</span><span>→</span></button>
+                    <button class="action-btn" onclick="openOverlay('anime-overlay')"><span>Anime</span><span>→</span></button>
                 </div>
                 <button class="scroll-down" onclick="scrollToId('sec4')">↓</button>
             </div>
@@ -185,40 +165,28 @@
             <div class="flashcard">
                 <h1 class="brand-name">Contact</h1>
                 <div class="btn-group">
-                    <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn">
-                        <span><i class="fab fa-discord"></i> Discord</span>
-                        <span style="opacity:0.5; font-size:0.8rem;">@todouro</span>
-                    </a>
-                    <a href="https://github.com/todouro" target="_blank" class="action-btn">
-                        <span><i class="fab fa-github"></i> GitHub</span>
-                        <span>/todouro</span>
-                    </a>
+                    <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn"><span>Discord</span><span>@todouro</span></a>
+                    <a href="https://github.com/todouro" target="_blank" class="action-btn"><span>GitHub</span><span>/todouro</span></a>
                 </div>
                 <button class="scroll-down" style="font-size:1rem; opacity:0.5;" onclick="scrollToId('sec1')">↑ Return</button>
             </div>
         </div>
     </div>
 
-    <div id="gallery-overlay" class="overlay"><div class="overlay-content"><div class="overlay-header"><h2>Visuals</h2><button class="close-btn" onclick="closeAll()">Close</button></div><div class="photo-grid" id="photo-grid"></div></div></div>
-    <div id="anime-overlay" class="overlay"><div class="overlay-content"><div class="overlay-header"><h2>Top Picks</h2><button class="close-btn" onclick="closeAll()">Close</button></div><div class="anime-list"><div class="anime-item">Attack on Titan</div><div class="anime-item">Vinland Saga</div></div></div></div>
-    <div id="chess-overlay" class="overlay"><div class="overlay-content"><div class="overlay-header"><h2>Chess</h2><button class="close-btn" onclick="closeAll()">Close</button></div><div class="stat-grid"><div class="stat-card"><span class="stat-meta">Rating</span><span id="rapid-elo" class="big-num">---</span></div></div></div></div>
-    <div id="fullscreen-view" onclick="closeFull()"><img src="" id="full-img"></div>
+    <div id="gallery-overlay" class="overlay"><div class="overlay-content"><h2>Visuals</h2><button onclick="closeAll()">Close</button></div></div>
+    <div id="anime-overlay" class="overlay"><div class="overlay-content"><h2>Anime</h2><button onclick="closeAll()">Close</button></div></div>
+    <div id="chess-overlay" class="overlay"><div class="overlay-content"><h2>Chess</h2><button onclick="closeAll()">Close</button></div></div>
 
     <script>
         function scrollToId(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
 
-        // --- REVEAL ON SCROLL LOGIC ---
-        const observerOptions = { threshold: 0.2 }; // Trigger when 20% of card is visible
+        // --- OBSERVER (SNAPPY) ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('reveal');
-                } else {
-                    // Remove if you want it to animate every single time you scroll back up
-                    entry.target.classList.remove('reveal');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('reveal');
+                else entry.target.classList.remove('reveal');
             });
-        }, observerOptions);
+        }, { threshold: 0.1 });
 
         document.querySelectorAll('.flashcard').forEach(card => observer.observe(card));
 
@@ -230,17 +198,17 @@
             if (charIndex < textToType.length) {
                 target.textContent += textToType.charAt(charIndex);
                 charIndex++;
-                setTimeout(typeWriter, 70);
+                setTimeout(typeWriter, 60);
             }
         }
 
-        // Starfield & Tilt (Same as previous)
+        // --- STARFIELD ---
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
         let width, height, stars = [];
         function initStars() {
             width = window.innerWidth; height = window.innerHeight;
-            canvas.width = width; canvas.height = height; stars = [];
+            canvas.width = width; canvas.height = height;
             for(let i=0; i<150; i++) stars.push({ x: Math.random() * width, y: Math.random() * height, z: Math.random() * 1.5, o: Math.random() });
         }
         function animateStars() {
@@ -250,23 +218,21 @@
         }
         window.addEventListener('resize', initStars); initStars(); animateStars();
 
+        // --- TILT ---
         document.querySelectorAll('.flashcard').forEach(card => {
             card.addEventListener('mousemove', e => {
                 const rect = card.getBoundingClientRect();
                 const x = (e.clientX - rect.left) - rect.width/2;
                 const y = (e.clientY - rect.top) - rect.height/2;
-                card.style.transform = `perspective(1500px) rotateY(${x/100}deg) rotateX(${-y/100}deg) scale(1.02)`;
+                card.style.transform = `perspective(1000px) rotateY(${x/80}deg) rotateX(${-y/80}deg) scale(1.01)`;
             });
             card.addEventListener('mouseleave', () => card.style.transform = ``);
         });
 
-        // Overlay & Chess logic (Condensed)
-        function openOverlay(id) { document.getElementById(id).classList.add('active'); if(id === 'gallery-overlay') loadGallery(); }
+        function openOverlay(id) { document.getElementById(id).classList.add('active'); }
         function closeAll() { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active')); }
-        function loadGallery() { /* Photo data... */ }
-        async function openChess() { openOverlay('chess-overlay'); /* Fetch logic... */ }
 
-        window.addEventListener('DOMContentLoaded', () => setTimeout(typeWriter, 600));
+        window.addEventListener('DOMContentLoaded', () => setTimeout(typeWriter, 500));
     </script>
 </body>
 </html>
