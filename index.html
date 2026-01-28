@@ -42,6 +42,7 @@
 
         /* --- FLASHCARD --- */
         .flashcard {
+            position: relative;
             background: var(--glass); backdrop-filter: blur(12px);
             padding: 80px; width: 90%; max-width: 700px; border-radius: 12px;
             border: 1px solid var(--glass-border);
@@ -49,9 +50,44 @@
             transform-style: preserve-3d; transition: transform 0.4s var(--ease);
         }
 
-        h1 { font-size: 5rem; margin: 0; font-weight: 900; letter-spacing: -4px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        p { font-size: 1.2rem; margin-top: 20px; opacity: 0.6; font-weight: 300; }
+        /* BRAND NAME & GLOW */
+        h1.brand-name { 
+            font-size: 5.5rem; margin: 0; font-weight: 900; letter-spacing: -4px; 
+            text-transform: lowercase;
+            background: linear-gradient(to bottom, #fff, #888); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            transition: transform 0.6s var(--ease), filter 0.6s var(--ease);
+            cursor: default;
+        }
+        h1.brand-name:hover {
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
+            transform: scale(1.02);
+        }
 
+        /* TERMINAL TEXT & CURSOR */
+        .terminal-container {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem; margin-top: 20px;
+            display: flex; align-items: center; min-height: 1.5em;
+        }
+        #typewriter-text { opacity: 0.7; font-weight: 300; }
+        .cursor {
+            display: inline-block; width: 10px; height: 1.2rem;
+            background-color: #fff; margin-left: 8px;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* DECORATIVE SNIPPETS */
+        .deco-text {
+            position: absolute; font-family: 'JetBrains Mono', monospace;
+            font-size: 10px; color: rgba(255, 255, 255, 0.07);
+            pointer-events: none; letter-spacing: 1px;
+        }
+        .deco-top { top: 40px; right: 60px; }
+        .deco-bottom { bottom: 60px; right: 80px; }
+
+        /* BUTTONS & ACTIONS */
         .btn-group { margin-top: 40px; display: flex; flex-direction: column; gap: 10px; }
         .action-btn {
             background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
@@ -61,64 +97,41 @@
         }
         .action-btn:hover { background: rgba(255,255,255,0.1); padding-left: 40px; border-color: rgba(255,255,255,0.3); }
 
-        .scroll-down { margin-top: 40px; background: none; border: none; color: rgba(255,255,255,0.3); font-size: 1.5rem; cursor: pointer; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
-
-        /* --- MODALS (CENTERED & SCROLLABLE) --- */
-        .overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-            z-index: 2000; opacity: 0; visibility: hidden;
-            display: flex; justify-content: center; align-items: center;
-            transition: 0.4s var(--ease); backdrop-filter: blur(0px);
+        .scroll-down { 
+            background: none; border: none; color: rgba(255,255,255,0.2); 
+            font-size: 1.5rem; cursor: pointer; transition: 0.3s;
+            margin-top: 40px;
         }
+        .scroll-down:hover { color: #fff; }
+        
+        .arrow-bottom-left { position: absolute; bottom: 40px; left: 80px; margin: 0; }
+
+        /* --- MODALS & OVERLAYS --- (Keep existing styles) */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; opacity: 0; visibility: hidden; display: flex; justify-content: center; align-items: center; transition: 0.4s var(--ease); backdrop-filter: blur(0px); }
         .overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(15px); }
-
-        .overlay-content { 
-            background: #0a0a0b; width: 85%; max-width: 800px; max-height: 75vh;
-            border: 1px solid var(--glass-border); border-radius: 20px;
-            padding: 40px; overflow-y: auto; position: relative;
-            transform: scale(0.9) translateY(30px); transition: 0.4s var(--ease);
-        }
+        .overlay-content { background: #0a0a0b; width: 85%; max-width: 800px; max-height: 75vh; border: 1px solid var(--glass-border); border-radius: 20px; padding: 40px; overflow-y: auto; position: relative; transform: scale(0.9) translateY(30px); transition: 0.4s var(--ease); }
         .overlay.active .overlay-content { transform: scale(1) translateY(0); }
-
-        /* Custom Scrollbar for Modals */
         .overlay-content::-webkit-scrollbar { width: 4px; }
         .overlay-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-
         .overlay-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; }
         .close-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 18px; border-radius: 100px; cursor: pointer; font-family: 'JetBrains Mono'; font-size: 0.7rem; }
         .close-btn:hover { background: white; color: black; }
-
-        /* --- PHOTO GRID --- */
         .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
         .photo-item { aspect-ratio: 1; overflow: hidden; border-radius: 10px; cursor: zoom-in; background: #111; }
         .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .photo-item:hover img { transform: scale(1.1); }
-
-        /* --- FULLSCREEN PHOTO ANIMATION --- */
-        #fullscreen-view {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            z-index: 3000; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.3s ease;
-        }
+        #fullscreen-view { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
         #fullscreen-view.active { display: flex; opacity: 1; }
-        #fullscreen-view img { 
-            max-width: 90%; max-height: 90%; object-fit: contain; 
-            transform: scale(0.8); transition: transform 0.4s var(--ease);
-        }
+        #fullscreen-view img { max-width: 90%; max-height: 90%; object-fit: contain; transform: scale(0.8); transition: transform 0.4s var(--ease); }
         #fullscreen-view.active img { transform: scale(1); }
-
-        /* --- ANIME LIST --- */
         .anime-item { display: flex; align-items: center; padding: 25px; border-bottom: 1px solid var(--glass-border); }
         .anime-rank { font-family: 'JetBrains Mono'; font-size: 1.5rem; opacity: 0.2; width: 60px; font-weight: 700; }
-
-        /* --- CHESS STATS --- */
         .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .stat-card { background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; border: 1px solid var(--glass-border); text-align: center; }
         .big-num { font-size: 3rem; font-weight: 900; display: block; }
         .stat-meta { font-family: 'JetBrains Mono'; font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; }
 
-        @media (max-width: 768px) { .flashcard { padding: 40px; } h1 { font-size: 3.5rem; } .overlay-content { width: 95%; padding: 25px; } }
+        @media (max-width: 768px) { .flashcard { padding: 40px; } h1.brand-name { font-size: 3.5rem; } .overlay-content { width: 95%; padding: 25px; } }
     </style>
 </head>
 <body>
@@ -130,15 +143,21 @@
         
         <div class="section" id="sec1">
             <div class="flashcard">
-                <h1>Shan</h1>
-                <p>Welcome to the index.</p>
-                <button class="scroll-down" onclick="scrollToId('sec2')">↓</button>
+                <div class="deco-text deco-top">10100110 // 0x6ce8bc</div>
+                <div class="deco-text deco-bottom">system.init()</div>
+                
+                <h1 class="brand-name">shan</h1>
+                <div class="terminal-container">
+                    <span id="typewriter-text"></span><span class="cursor"></span>
+                </div>
+                
+                <button class="scroll-down arrow-bottom-left" onclick="scrollToId('sec2')">↓</button>
             </div>
         </div>
 
         <div class="section" id="sec2">
             <div class="flashcard">
-                <h1>Profile</h1>
+                <h1 class="brand-name">Profile</h1>
                 <p>15, based in Bahrain. Exploring photography and building projects.</p>
                 <button class="scroll-down" onclick="scrollToId('sec3')">↓</button>
             </div>
@@ -146,7 +165,7 @@
 
         <div class="section" id="sec3">
             <div class="flashcard">
-                <h1>Interests</h1>
+                <h1 class="brand-name">Interests</h1>
                 <div class="btn-group">
                     <button class="action-btn" onclick="openOverlay('gallery-overlay')">
                         <span class="btn-label"><i class="fas fa-camera"></i> Photography</span>
@@ -167,7 +186,7 @@
 
         <div class="section" id="sec4">
             <div class="flashcard">
-                <h1>Contact</h1>
+                <h1 class="brand-name">Contact</h1>
                 <div class="btn-group">
                     <a href="https://discord.com/users/1379090219688525898" target="_blank" class="action-btn">
                         <span class="btn-label"><i class="fab fa-discord"></i> Discord</span>
@@ -247,6 +266,20 @@
         // --- NAVIGATION ---
         function scrollToId(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
 
+        // --- TYPEWRITER EFFECT ---
+        const textToType = "Welcome to the index.";
+        const typingSpeed = 100;
+        let charIndex = 0;
+
+        function typeWriter() {
+            const target = document.getElementById("typewriter-text");
+            if (charIndex < textToType.length) {
+                target.textContent += textToType.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, typingSpeed);
+            }
+        }
+
         // --- OVERLAY LOGIC ---
         function openOverlay(id) {
             document.getElementById(id).classList.add('active');
@@ -316,13 +349,6 @@
         }
 
         // --- CHESS API ---
-        function timeAgo(ts) {
-            const diff = Math.floor((new Date() - new Date(ts * 1000)) / 1000);
-            if (diff < 3600) return Math.floor(diff/60) + "m ago";
-            if (diff < 86400) return Math.floor(diff/3600) + "h ago";
-            return Math.floor(diff/86400) + "d ago";
-        }
-
         async function openChess() {
             openOverlay('chess-overlay');
             const user = 'chinatsu-lover';
@@ -333,21 +359,19 @@
                 ]);
                 const stats = await sRes.json();
                 const profile = await pRes.json();
-
                 if(stats.chess_rapid) {
                     const r = stats.chess_rapid;
                     document.getElementById('rapid-elo').innerText = r.last.rating;
                     document.getElementById('rapid-record').innerText = `W:${r.record.win} L:${r.record.loss} D:${r.record.draw}`;
                     document.getElementById('total-matches').innerText = r.record.win + r.record.loss + r.record.draw;
                 }
-
-                const isOnline = (Date.now() / 1000) - profile.last_online < 300;
-                const dot = document.getElementById('status-dot');
-                const txt = document.getElementById('live-status');
-                dot.style.background = isOnline ? '#4ade80' : '#666';
-                txt.innerText = isOnline ? 'ONLINE' : `Last seen ${timeAgo(profile.last_online)}`;
             } catch(e) { console.error(e); }
         }
+
+        // --- START ALL ON LOAD ---
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(typeWriter, 500); // Start typing after half a second
+        });
     </script>
 </body>
 </html>
