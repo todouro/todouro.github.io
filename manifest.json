@@ -1,0 +1,73 @@
+{
+  "package": "todouro-site-v2",
+  "version": "2.0.0",
+  "entrypoint": "index.html",
+  "games": [
+    "The Legend of Zelda: Breath of the Wild",
+    "Elden Ring",
+    "MiSide",
+    "Among Us",
+    "Mecha Domination: Rampage",
+    "Assetto Corsa",
+    "PEAK",
+    "eFootball"
+  ],
+  "anime_source": "AniList GraphQL API",
+  "files": [
+    {
+      "path": "Install-TodouroSite-V2.ps1",
+      "sha256": "949ebba80e615a9741f6f1426fe1ecf23384b5c26cd0f2026dcf89793b43c53a",
+      "bytes": 1186
+    },
+    {
+      "path": "README.txt",
+      "sha256": "ce5f6b3a5ee00e8c0876c1d7c400f27fba902e506dad111414c02e340a0870b1",
+      "bytes": 768
+    },
+    {
+      "path": "assets/games/among-us.jpg",
+      "sha256": "a0c81314ff8710fcab033cf477639d7b5ab67157aabc65510a10abcb3682f2d3",
+      "bytes": 4617
+    },
+    {
+      "path": "assets/games/assetto-corsa.jpg",
+      "sha256": "20128c70440c247c5bf6331e263822358306171ddc1c3731ca02e10ba00daee3",
+      "bytes": 5505
+    },
+    {
+      "path": "assets/games/efootball.jpg",
+      "sha256": "f6890bdaa4f13dcf35084be54a19417c1cc0da9320770ba9d4cbaa8a77537e77",
+      "bytes": 5255
+    },
+    {
+      "path": "assets/games/elden-ring.jpg",
+      "sha256": "f3ac917da5202b2765efb957907442a51089fb39ca9ae66fafd875bc59e2dd85",
+      "bytes": 4242
+    },
+    {
+      "path": "assets/games/mecha-domination.jpg",
+      "sha256": "c693b40c519ddcbfffc91e75f0bea0a9d4968666eeb5c92fafc28c9ef703f718",
+      "bytes": 5354
+    },
+    {
+      "path": "assets/games/miside.jpg",
+      "sha256": "86b8af5c42d648f346e1f03f178cf2e5fc48b39cb8ef46affe40ea29e76b1b59",
+      "bytes": 5632
+    },
+    {
+      "path": "assets/games/peak.jpg",
+      "sha256": "da267bd6a98517ce98204b775ba750843fea2deaa173cf07d47eb258609d024c",
+      "bytes": 5371
+    },
+    {
+      "path": "assets/games/zelda-botw.jpg",
+      "sha256": "0e25c820ac8cfdacb75f6c3b3835aee2a88079c03ba7ebcf0bf27c6c5a1703ad",
+      "bytes": 5775
+    },
+    {
+      "path": "index.html",
+      "sha256": "fb45ea8ac467d57c52f63f503060e82cd2e37d693b01d7237f911ba8e9f767dd",
+      "bytes": 32933
+    }
+  ]
+}

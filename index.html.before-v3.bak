@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050507">
+<meta name="description" content="Todouro's personal site — games, anime, photography and links.">
+<title>todouro</title>
+
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link rel="preconnect" href="https://graphql.anilist.co">
+<link rel="preconnect" href="https://shared.fastly.steamstatic.com">
+<link rel="preconnect" href="https://cdn.cloudflare.steamstatic.com">
+<link rel="preconnect" href="https://upload.wikimedia.org">
+<link rel="preconnect" href="https://play-lh.googleusercontent.com">
+<link rel="preconnect" href="https://cdn.simpleicons.org">
+<link href="https://fonts.bunny.net/css?family=jetbrains-mono:400,500,600,700,800|outfit:400,500,600,700,800" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 104px; }
+:root {
+  --bg: #050507;
+  --surface: #0b0b11;
+  --surface-2: #11111a;
+  --surface-3: #171722;
+  --border: rgba(255,255,255,.085);
+  --border-strong: rgba(255,255,255,.16);
+  --text: #f1f3f8;
+  --muted: #a0a8b8;
+  --faint: #687287;
+  --violet: #a78bfa;
+  --blue: #8da2fb;
+  --green: #55d98b;
+  --mono: "JetBrains Mono", monospace;
+  --body: "Outfit", sans-serif;
+  --spring: cubic-bezier(.16,1,.3,1);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 12% -8%, rgba(167,139,250,.08), transparent 32%),
+    radial-gradient(circle at 92% 5%, rgba(89,104,255,.055), transparent 28%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: subpixel-antialiased;
+  font-synthesis: none;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+}
+
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+button, a { -webkit-tap-highlight-color: transparent; }
+
+.wrap {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: 38px 28px 90px;
+}
+
+.site-nav {
+  position: sticky;
+  top: 14px;
+  z-index: 50;
+  width: fit-content;
+  max-width: calc(100vw - 28px);
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 0 auto 60px;
+  padding: 7px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 17px;
+  background: rgba(7,7,12,.88);
+  box-shadow: 0 14px 40px rgba(0,0,0,.28);
+  backdrop-filter: blur(10px) saturate(1.15);
+}
+
+.site-nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 35px;
+  padding: 8px 12px 10px;
+  border-radius: 11px;
+  color: var(--faint);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s var(--spring);
+}
+
+.site-nav a::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 5px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--violet), #d8c7ff);
+  opacity: 0;
+  transform: scaleX(.4);
+  transition: opacity .18s ease, transform .18s var(--spring);
+}
+
+.site-nav a:hover,
+.site-nav a.is-active {
+  color: var(--text);
+  background: rgba(255,255,255,.052);
+}
+
+.site-nav a.is-active { box-shadow: inset 0 0 0 1px rgba(255,255,255,.045); }
+.site-nav a.is-active::after { opacity: 1; transform: scaleX(1); }
+.site-nav a:active { transform: translateY(1px); }
+
+.section { position: relative; margin-bottom: 68px; }
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: 0 0 20px;
+  color: var(--faint);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.section-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,.13), transparent);
+}
+
+.hero { padding-top: 6px; }
+.wordmark {
+  position: relative;
+  width: fit-content;
+  margin: 0 0 22px;
+  color: #fbfbff;
+  font-size: clamp(52px, 10vw, 98px);
+  font-weight: 800;
+  line-height: .92;
+  letter-spacing: -.075em;
+  text-shadow:
+    0 5px 0 #c4b5fd,
+    0 10px 0 #8da2fb,
+    0 15px 0 #5b617f;
+}
+
+.hero-meta { display: grid; gap: 7px; margin-bottom: 22px; }
+.hero-meta p { margin: 0; color: var(--muted); font-size: 13px; }
+.hero-meta p::before { content: "-> "; color: var(--faint); }
+.hero-copy {
+  max-width: 680px;
+  margin: 0;
+  color: #d7dbe5;
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.72;
+}
+.tags, .connections { display: flex; flex-wrap: wrap; gap: 9px; }
+.tags { margin-top: 22px; }
+.tag, .connection {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(14,14,22,.88);
+  color: var(--muted);
+  font-size: 11px;
+  text-decoration: none;
+  transition: color .18s ease, border-color .18s ease, background .18s ease, transform .18s var(--spring);
+}
+.tag:hover, .connection:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+  background: rgba(255,255,255,.048);
+  transform: translateY(-1px);
+}
+.connection img { width: 17px; height: 17px; object-fit: contain; }
+
+.favorite-card {
+  --cover: url("https://upload.wikimedia.org/wikipedia/en/0/0d/Legend_of_Zelda_Breath_of_the_Wild_box_art.jpg");
+  position: relative;
+  isolation: isolate;
+  min-height: 290px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 28px;
+  border: 1px solid rgba(141,162,251,.23);
+  border-radius: 24px;
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 20px 54px rgba(0,0,0,.24);
+  transition: transform .22s var(--spring), border-color .18s ease, box-shadow .18s ease;
+}
+.favorite-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: var(--cover), url("assets/games/zelda-botw.jpg");
+  background-size: cover;
+  background-position: center 35%;
+  transform: scale(1.012);
+  transition: transform .4s var(--spring);
+}
+.favorite-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(5,5,8,.97) 0%, rgba(5,5,8,.79) 48%, rgba(5,5,8,.22) 100%),
+    linear-gradient(180deg, rgba(5,5,8,.08), rgba(5,5,8,.86));
+}
+.favorite-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(167,139,250,.46);
+  box-shadow: 0 26px 70px rgba(0,0,0,.34), 0 0 30px rgba(141,162,251,.08);
+}
+.favorite-card:hover::before { transform: scale(1.045); }
+.favorite-copy { max-width: 540px; }
+.favorite-kicker {
+  display: block;
+  margin-bottom: 10px;
+  color: #c4b5fd;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.favorite-title {
+  display: block;
+  color: #fff;
+  font-family: var(--body);
+  font-size: clamp(27px, 5vw, 46px);
+  line-height: 1.02;
+  letter-spacing: -.04em;
+}
+.favorite-quote {
+  display: block;
+  margin-top: 13px;
+  color: rgba(241,243,248,.8);
+  font-family: var(--body);
+  font-size: 15px;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.game-card {
+  position: relative;
+  min-height: 178px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 21px;
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 14px 40px rgba(0,0,0,.18);
+  transition: transform .22s var(--spring), border-color .18s ease, box-shadow .18s ease;
+}
+.game-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,.17);
+  box-shadow: 0 20px 55px rgba(0,0,0,.29);
+}
+.game-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 36%;
+  opacity: .92;
+  transform: scale(1.01);
+  transition: transform .38s var(--spring), opacity .25s ease;
+}
+.game-card:hover .game-cover { transform: scale(1.045); opacity: 1; }
+.game-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(5,5,8,.94) 0%, rgba(5,5,8,.62) 56%, rgba(5,5,8,.18) 100%),
+    linear-gradient(180deg, rgba(5,5,8,.05) 25%, rgba(5,5,8,.88) 100%);
+}
+.game-content {
+  position: relative;
+  z-index: 2;
+  min-height: 178px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 20px;
+}
+.game-logo {
+  width: min(72%, 230px);
+  max-height: 54px;
+  margin-bottom: 10px;
+  object-fit: contain;
+  object-position: left bottom;
+  filter: drop-shadow(0 4px 14px rgba(0,0,0,.6));
+}
+.game-logo.is-missing { display: none; }
+.game-title {
+  margin: 0;
+  color: #fff;
+  font-family: var(--body);
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.08;
+  text-shadow: 0 3px 18px rgba(0,0,0,.7);
+}
+.game-logo:not(.is-missing) + .game-title { font-size: 12px; color: rgba(255,255,255,.72); }
+.game-meta {
+  margin-top: 5px;
+  color: rgba(241,243,248,.66);
+  font-size: 10px;
+  letter-spacing: .06em;
+}
+
+.anime-section { isolation: isolate; }
+.anime-ambient {
+  position: absolute;
+  inset: 20px -50px -30px;
+  z-index: -2;
+  overflow: hidden;
+  border-radius: 40px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+}
+.anime-ambient::before {
+  content: "";
+  position: absolute;
+  inset: -45px;
+  background-image: var(--ambient-banner, none);
+  background-size: cover;
+  background-position: center;
+  filter: blur(42px) saturate(1.18);
+  opacity: .35;
+  transform: scale(1.08);
+}
+.anime-section.has-ambient .anime-ambient { opacity: 1; }
+.anime-list { display: grid; gap: 14px; }
+.anime-card {
+  --anime-banner: none;
+  --anime-accent: #a78bfa;
+  position: relative;
+  isolation: isolate;
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  overflow: hidden;
+  padding: 17px;
+  border: 1px solid var(--border);
+  border-radius: 21px;
+  background: rgba(11,11,17,.96);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 14px 38px rgba(0,0,0,.17);
+  transition: transform .22s var(--spring), border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.anime-card::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  z-index: -2;
+  background-image: var(--anime-banner);
+  background-size: cover;
+  background-position: center;
+  filter: blur(16px) saturate(1.15);
+  opacity: 0;
+  transform: scale(1.12);
+  transition: opacity .28s ease, transform .38s var(--spring);
+}
+.anime-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(5,5,8,.96) 0%, rgba(5,5,8,.83) 46%, rgba(5,5,8,.56) 100%),
+    linear-gradient(180deg, rgba(5,5,8,.18), rgba(5,5,8,.82));
+}
+.anime-card:hover,
+.anime-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--anime-accent) 48%, rgba(255,255,255,.16));
+  box-shadow: 0 20px 56px rgba(0,0,0,.31), 0 0 26px color-mix(in srgb, var(--anime-accent) 10%, transparent);
+}
+.anime-card:hover::before,
+.anime-card:focus-visible::before { opacity: .7; transform: scale(1.16); }
+.anime-rank {
+  flex: 0 0 38px;
+  color: rgba(241,243,248,.23);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-align: center;
+}
+.anime-cover-wrap {
+  width: 82px;
+  height: 116px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+  box-shadow: 0 13px 34px rgba(0,0,0,.34);
+}
+.anime-cover { width: 100%; height: 100%; object-fit: cover; }
+.anime-fallback {
+  width: 100%; height: 100%;
+  display: grid; place-items: center;
+  padding: 10px;
+  background: linear-gradient(145deg, rgba(167,139,250,.22), rgba(141,162,251,.12));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-align: center;
+}
+.anime-copy { min-width: 0; }
+.anime-title {
+  color: #fff;
+  font-family: var(--body);
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.12;
+  text-shadow: 0 3px 18px rgba(0,0,0,.6);
+}
+.anime-native { margin-top: 6px; color: rgba(241,243,248,.63); font-size: 11px; }
+.anime-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 11px;
+  padding: 5px 9px;
+  border: 1px solid color-mix(in srgb, var(--anime-accent) 38%, rgba(255,255,255,.1));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--anime-accent) 14%, rgba(8,8,13,.78));
+  color: #d9d0ff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.links-note { margin: 15px 0 0; color: var(--faint); font-size: 10px; line-height: 1.6; }
+footer {
+  margin-top: 48px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+  color: var(--faint);
+  font-size: 10px;
+  letter-spacing: .08em;
+}
+
+.fade-in { opacity: 0; transform: translateY(10px); animation: fade-up .46s ease forwards; }
+.fade-in:nth-child(1) { animation-delay: .03s; }
+.fade-in:nth-child(2) { animation-delay: .09s; }
+.fade-in:nth-child(3) { animation-delay: .15s; }
+.fade-in:nth-child(4) { animation-delay: .21s; }
+.fade-in:nth-child(5) { animation-delay: .27s; }
+.fade-in:nth-child(6) { animation-delay: .33s; }
+@keyframes fade-up { to { opacity: 1; transform: translateY(0); } }
+
+:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 4px; }
+
+@media (max-width: 760px) {
+  .wrap { padding: 28px 16px 70px; }
+  .site-nav {
+    top: 9px;
+    width: auto;
+    max-width: calc(100vw - 24px);
+    margin-bottom: 46px;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+  }
+  .site-nav::-webkit-scrollbar { display: none; }
+  .site-nav a { flex: 0 0 auto; padding-inline: 10px; font-size: 10px; }
+  .section { margin-bottom: 54px; }
+  .wordmark { font-size: clamp(50px, 16vw, 78px); text-shadow: 0 4px 0 #c4b5fd, 0 8px 0 #8da2fb, 0 12px 0 #5b617f; }
+  .favorite-card { min-height: 330px; padding: 22px; }
+  .favorite-card::after {
+    background: linear-gradient(180deg, rgba(5,5,8,.1) 8%, rgba(5,5,8,.72) 60%, rgba(5,5,8,.96) 100%);
+  }
+  .games-grid { grid-template-columns: 1fr; }
+  .game-card, .game-content { min-height: 190px; }
+  .anime-card { min-height: 236px; flex-direction: column; justify-content: center; text-align: center; padding: 22px 18px; }
+  .anime-card::after { background: linear-gradient(180deg, rgba(5,5,8,.42), rgba(5,5,8,.92)); }
+  .anime-rank { position: absolute; top: 14px; left: 14px; }
+  .anime-cover-wrap { width: 94px; height: 132px; }
+  .anime-badge { margin-inline: auto; }
+  .anime-ambient { inset: 25px -18px -20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="site-nav fade-in" aria-label="Primary navigation">
+    <a href="#about">index</a>
+    <a href="#favorite">favorite</a>
+    <a href="#games">games</a>
+    <a href="#anime">anime</a>
+    <a href="#links">links</a>
+  </nav>
+
+  <main>
+    <section class="section hero fade-in" id="about">
+      <h1 class="wordmark">todouro</h1>
+      <div class="hero-meta">
+        <p>gamer &amp; photographer</p>
+        <p>16 years old · he/him</p>
+        <p>bahrain 🇧🇭</p>
+      </div>
+      <p class="hero-copy">
+        I like games, anime, photography and chess. This is my small corner of the internet for the things I enjoy most.
+      </p>
+      <div class="tags" aria-label="Interests">
+        <span class="tag">🎮 gaming</span>
+        <span class="tag">📷 photography</span>
+        <span class="tag">♟ chess</span>
+        <span class="tag">🌙 ep lover</span>
+      </div>
+    </section>
+
+    <section class="section fade-in" id="favorite">
+      <p class="section-label">Favourite game</p>
+      <a class="favorite-card" href="https://www.nintendo.com/us/store/products/the-legend-of-zelda-breath-of-the-wild-switch/" target="_blank" rel="noopener noreferrer">
+        <span class="favorite-copy">
+          <span class="favorite-kicker">all-time favourite</span>
+          <strong class="favorite-title">The Legend of Zelda:<br>Breath of the Wild</strong>
+          <span class="favorite-quote">“Best game I've ever played.”</span>
+        </span>
+      </a>
+    </section>
+
+    <section class="section fade-in" id="games">
+      <p class="section-label">Games I like</p>
+      <div class="games-grid">
+
+        <a class="game-card" href="https://www.nintendo.com/us/store/products/the-legend-of-zelda-breath-of-the-wild-switch/" target="_blank" rel="noopener noreferrer">
+          <img class="game-cover" src="https://upload.wikimedia.org/wikipedia/en/0/0d/Legend_of_Zelda_Breath_of_the_Wild_box_art.jpg" data-fallbacks='["assets/games/zelda-botw.jpg"]' alt="The Legend of Zelda: Breath of the Wild cover" loading="eager" decoding="async">
+          <div class="game-content">
+            <img class="game-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/The_Legend_of_Zelda_Breath_of_the_Wild.svg/512px-The_Legend_of_Zelda_Breath_of_the_Wild.svg.png" data-fallbacks='[]' alt="The Legend of Zelda: Breath of the Wild logo" decoding="async">
+            <h2 class="game-title">The Legend of Zelda: Breath of the Wild</h2>
+            <span class="game-meta">favourite · adventure</span>
+          </div>
+        </a>
+
+        <a class="game-card" href="https://store.steampowered.com/app/1245620/ELDEN_RING/" target="_blank" rel="noopener noreferrer">
+          <img class="game-cover" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1245620/library_600x900_2x.jpg" data-fallbacks='["https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/library_600x900_2x.jpg","assets/games/elden-ring.jpg"]' alt="Elden Ring cover" loading="lazy" decoding="async">
+          <div class="game-content">
+            <img class="game-logo" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1245620/logo.png" data-fallbacks='["https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/logo.png"]' alt="Elden Ring logo" loading="lazy" decoding="async">
+            <h2 class="game-title">Elden Ring</h2>
+            <span class="game-meta">action RPG</span>
+          </div>
+        </a>
+
+        <a class="game-card" href="https://store.steampowered.com/app/2527500/MiSide/" target="_blank" rel="noopener noreferrer">
+          <img class="game-cover" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2527500/library_600x900_2x.jpg" data-fallbacks='["https://cdn.cloudflare.steamstatic.com/steam/apps/2527500/library_600x900_2x.jpg","assets/games/miside.jpg"]' alt="MiSide cover" loading="lazy" decoding="async">
+          <div class="game-content">
+            <img class="game-logo" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2527500/logo.png" data-fallbacks='["https://cdn.cloudflare.steamstatic.com/steam/apps/2527500/logo.png"]' alt="MiSide logo" loading="lazy" decoding="async">
+            <h2 class="game-title">MiSide</h2>
+            <span class="game-meta">psychological adventure</span>
+          </div>
+        </a>
+
+        <a class="game-card" href="https://store.steampowered.com/app/945360/Among_Us/" target="_blank" rel="noopener noreferrer">
+          <img class="game-cover" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/945360/library_600x900_2x.jpg" data-fallbacks='["https://cdn.cloudflare.steamstatic.com/steam/apps/945360/library_600x900_2x.jpg","assets/games/among-us.jpg"]' alt="Among Us cover" loading="lazy" decoding="async">
+          <div class="game-content">
+            <img class="game-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Among_Us_Logo.svg/512px-Among_Us_Logo.svg.png" data-fallbacks='["https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/945360/logo.png"]' alt="Among Us logo" loading="lazy" decoding="async">
+            <h2 class="game-title">Among Us</h2>
+            <span class="game-meta">social deduction</span>
+          </div>
+        </a>
+
+        <a class="game-card" href="https://play.google.com/store/apps/details?id=com.dino.steel" target="_blank" rel="noopener noreferrer">
+          <img class="game-cover" src="https://play-lh.googleusercontent.com/7p7iWMvkT96sumHIWaWkBkbB8I13iZCWBWDMrt-pOo0Ns4zrBkC6t48qJAjv8jWjW3imfrYQn1p956nWTaijTA=w720-h1080" data-fallbacks='["assets/games/mecha-domination.jpg"]' alt="Mecha Domination: Rampage cover" loading="lazy" decoding="async">
+          <div class="game-content">
+            <h2 class="game-title">Mecha Domination: Rampage</h2>
+            <span class="game-meta">strategy · mecha</span>
+          </div>
+        </a>
+
+        <a class="game-card" href="https://store.steampowered.com/app/244210/Assetto_Corsa/" target="_blank" rel="noopener noreferrer">
+          <img class="game-cover" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/244210/library_600x900_2x.jpg" data-fallbacks='["https://cdn.cloudflare.steamstatic.com/steam/apps/244210/library_600x900_2x.jpg","assets/games/assetto-corsa.jpg"]' alt="Assetto Corsa cover" loading="lazy" decoding="async">
+          <div class="game-content">
+            <img class="game-logo" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/244210/logo.png" data-fallbacks='["https://cdn.cloudflare.steamstatic.com/steam/apps/244210/logo.png"]' alt="Assetto Corsa logo" loading="lazy" decoding="async">
+            <h2 class="game-title">Assetto Corsa</h2>
+            <span class="game-meta">racing simulator</span>
+          </div>
+        </a>
+
+        <a class="game-card" href="https://store.steampowered.com/app/3527290/PEAK/" target="_blank" rel="noopener noreferrer">
+          <img class="game-cover" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3527290/library_600x900_2x.jpg" data-fallbacks='["https://cdn.cloudflare.steamstatic.com/steam/apps/3527290/library_600x900_2x.jpg","assets/games/peak.jpg"]' alt="PEAK cover" loading="lazy" decoding="async">
+          <div class="game-content">
+            <img class="game-logo" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3527290/logo.png" data-fallbacks='["https://cdn.cloudflare.steamstatic.com/steam/apps/3527290/logo.png"]' alt="PEAK logo" loading="lazy" decoding="async">
+            <h2 class="game-title">PEAK</h2>
+            <span class="game-meta">co-op climbing</span>
+          </div>
+        </a>
+
+        <a class="game-card" href="https://store.steampowered.com/app/1665460/eFootball/" target="_blank" rel="noopener noreferrer">
+          <img class="game-cover" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1665460/library_600x900_2x.jpg" data-fallbacks='["https://cdn.cloudflare.steamstatic.com/steam/apps/1665460/library_600x900_2x.jpg","assets/games/efootball.jpg"]' alt="eFootball cover" loading="lazy" decoding="async">
+          <div class="game-content">
+            <img class="game-logo" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1665460/logo.png" data-fallbacks='["https://cdn.cloudflare.steamstatic.com/steam/apps/1665460/logo.png"]' alt="eFootball logo" loading="lazy" decoding="async">
+            <h2 class="game-title">eFootball</h2>
+            <span class="game-meta">football</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <section class="section anime-section fade-in" id="anime">
+      <div class="anime-ambient" aria-hidden="true"></div>
+      <p class="section-label">Top anime picks</p>
+      <div class="anime-list">
+        <a class="anime-card" data-anilist="Attack on Titan|Shingeki no Kyojin" href="https://anilist.co/search/anime?search=Attack%20on%20Titan" target="_blank" rel="noopener noreferrer">
+          <span class="anime-rank">01</span><div class="anime-cover-wrap"><div class="anime-fallback">AOT</div></div>
+          <div class="anime-copy"><div class="anime-title">Attack on Titan</div><div class="anime-native">進撃の巨人</div><span class="anime-badge">top pick</span></div>
+        </a>
+        <a class="anime-card" data-anilist="Vinland Saga|VINLAND SAGA" href="https://anilist.co/search/anime?search=Vinland%20Saga" target="_blank" rel="noopener noreferrer">
+          <span class="anime-rank">02</span><div class="anime-cover-wrap"><div class="anime-fallback">VS</div></div>
+          <div class="anime-copy"><div class="anime-title">Vinland Saga</div><div class="anime-native">ヴィンランド・サガ</div><span class="anime-badge">top pick</span></div>
+        </a>
+        <a class="anime-card" data-anilist="Frieren: Beyond Journey's End|Sousou no Frieren" href="https://anilist.co/search/anime?search=Frieren" target="_blank" rel="noopener noreferrer">
+          <span class="anime-rank">03</span><div class="anime-cover-wrap"><div class="anime-fallback">FR</div></div>
+          <div class="anime-copy"><div class="anime-title">Frieren: Beyond Journey's End</div><div class="anime-native">葬送のフリーレン</div><span class="anime-badge">top pick</span></div>
+        </a>
+        <a class="anime-card" data-anilist="Death Note|DEATH NOTE" href="https://anilist.co/search/anime?search=Death%20Note" target="_blank" rel="noopener noreferrer">
+          <span class="anime-rank">04</span><div class="anime-cover-wrap"><div class="anime-fallback">DN</div></div>
+          <div class="anime-copy"><div class="anime-title">Death Note</div><div class="anime-native">デスノート</div><span class="anime-badge">top pick</span></div>
+        </a>
+        <a class="anime-card" data-anilist="Blue Box|Ao no Hako" href="https://anilist.co/search/anime?search=Blue%20Box" target="_blank" rel="noopener noreferrer">
+          <span class="anime-rank">05</span><div class="anime-cover-wrap"><div class="anime-fallback">BB</div></div>
+          <div class="anime-copy"><div class="anime-title">Blue Box</div><div class="anime-native">アオのハコ</div><span class="anime-badge">top pick</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section fade-in" id="links">
+      <p class="section-label">Connections</p>
+      <div class="connections">
+        <span class="connection"><img src="https://cdn.simpleicons.org/epicgames/FFFFFF" alt="" loading="lazy">todouro.</span>
+        <a class="connection" href="https://github.com/todouro" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/github/FFFFFF" alt="" loading="lazy">todouro ↗</a>
+        <a class="connection" href="https://www.roblox.com/search/users?keyword=Fenrix_YouthYT" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/roblox/FFFFFF" alt="" loading="lazy">Fenrix_YouthYT ↗</a>
+        <a class="connection" href="https://steamcommunity.com/search/users/#text=todouro" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/steam/FFFFFF" alt="" loading="lazy">todouro ↗</a>
+        <a class="connection" href="https://todouro.github.io/" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/githubpages/FFFFFF" alt="" loading="lazy">todouro.github.io ↗</a>
+      </div>
+      <p class="links-note">Discord display: todouro · Member since 13 May 2023</p>
+    </section>
+  </main>
+
+  <footer class="fade-in">© 2026 todouro</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function installImageFallback(img) {
+    let fallbacks = [];
+    try { fallbacks = JSON.parse(img.dataset.fallbacks || "[]"); } catch (_) {}
+    let index = 0;
+
+    function next() {
+      if (index < fallbacks.length) {
+        img.src = fallbacks[index++];
+        return;
+      }
+      if (img.classList.contains("game-logo")) img.classList.add("is-missing");
+    }
+
+    img.addEventListener("error", next);
+    if (img.complete && img.naturalWidth === 0) next();
+  }
+
+  document.querySelectorAll("img[data-fallbacks]").forEach(installImageFallback);
+
+  const links = Array.from(document.querySelectorAll('.site-nav a[href^="#"]'));
+  const sections = links.map(link => document.querySelector(link.getAttribute("href"))).filter(Boolean);
+
+  function updateNav() {
+    let current = sections[0];
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= 145) current = section;
+    }
+    links.forEach(link => link.classList.toggle("is-active", link.getAttribute("href") === "#" + current.id));
+  }
+
+  links.forEach(link => {
+    link.addEventListener("click", event => {
+      const target = document.querySelector(link.getAttribute("href"));
+      if (!target) return;
+      event.preventDefault();
+      const gap = window.innerWidth <= 760 ? 82 : 102;
+      const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - gap);
+      window.scrollTo({ top, behavior: "smooth" });
+      history.replaceState(null, "", link.getAttribute("href"));
+    });
+  });
+
+  const animeSection = document.querySelector(".anime-section");
+  const animeCards = Array.from(document.querySelectorAll(".anime-card[data-anilist]"));
+  const CACHE_PREFIX = "todouro:anilist:v2:";
+  const CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
+
+  function cleanUrl(value) { return String(value || "").replace(/["\\\n\r]/g, ""); }
+
+  async function queryAniList(search) {
+    const key = CACHE_PREFIX + search.toLowerCase();
+    try {
+      const cached = JSON.parse(localStorage.getItem(key) || "null");
+      if (cached && Date.now() - cached.savedAt < CACHE_TTL) return cached.media;
+    } catch (_) {}
+
+    const query = `query ($search: String) {
+      Media(search: $search, type: ANIME) {
+        siteUrl bannerImage
+        coverImage { extraLarge large medium color }
+        title { romaji english native }
+      }
+    }`;
+
+    const response = await fetch("https://graphql.anilist.co", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ query, variables: { search } })
+    });
+    if (!response.ok) throw new Error("AniList request failed");
+    const body = await response.json();
+    const media = body && body.data ? body.data.Media : null;
+    if (media) {
+      try { localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), media })); } catch (_) {}
+    }
+    return media;
+  }
+
+  async function findAnime(searches) {
+    for (const search of searches) {
+      try {
+        const media = await queryAniList(search);
+        if (media) return media;
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  function setAmbient(card) {
+    if (!animeSection) return;
+    const banner = card.dataset.banner;
+    if (!banner) return;
+    animeSection.style.setProperty("--ambient-banner", `url("${cleanUrl(banner)}")`);
+    animeSection.classList.add("has-ambient");
+  }
+
+  function clearAmbient() {
+    if (animeSection) animeSection.classList.remove("has-ambient");
+  }
+
+  function applyAnime(card, media) {
+    if (!media) return;
+    const cover = media.coverImage && (media.coverImage.extraLarge || media.coverImage.large || media.coverImage.medium);
+    const banner = media.bannerImage || cover;
+    const accent = media.coverImage && media.coverImage.color;
+    const coverWrap = card.querySelector(".anime-cover-wrap");
+    const native = card.querySelector(".anime-native");
+
+    if (banner) {
+      const safe = cleanUrl(banner);
+      card.style.setProperty("--anime-banner", `url("${safe}")`);
+      card.dataset.banner = safe;
+    }
+    if (accent) card.style.setProperty("--anime-accent", accent);
+    if (cover && coverWrap) coverWrap.innerHTML = `<img class="anime-cover" src="${cleanUrl(cover)}" alt="Anime cover" loading="lazy" decoding="async">`;
+    if (native && media.title && media.title.native) native.textContent = media.title.native;
+    if (media.siteUrl) card.href = media.siteUrl;
+  }
+
+  animeCards.forEach(card => {
+    card.addEventListener("mouseenter", () => setAmbient(card));
+    card.addEventListener("focus", () => setAmbient(card));
+    card.addEventListener("mouseleave", clearAmbient);
+    card.addEventListener("blur", clearAmbient);
+  });
+
+  Promise.all(animeCards.map(async card => {
+    const searches = card.dataset.anilist.split("|").map(v => v.trim()).filter(Boolean);
+    const media = await findAnime(searches);
+    applyAnime(card, media);
+  })).catch(() => {});
+
+  updateNav();
+  window.addEventListener("scroll", updateNav, { passive: true });
+})();
+</script>
+</body>
+</html>
