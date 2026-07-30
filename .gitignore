@@ -1,0 +1,5 @@
+﻿*.bak
+*.zip
+README.txt
+SHA256SUMS.txt
+Install-*.ps1
