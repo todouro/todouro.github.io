@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<meta name="description" content="Todouro â€” photography, games, chess, anime and links.">
+<meta name="description" content="Todouro — photography, games, chess, anime and links.">
 <title>todouro</title>
 
 <link rel="preconnect" href="https://fonts.bunny.net">
@@ -269,74 +269,201 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 .connection img { width: 17px; height: 17px; object-fit: contain; }
 
-.favorite-card {
-  --cover: url("https://upload.wikimedia.org/wikipedia/en/0/0d/Legend_of_Zelda_Breath_of_the_Wild_box_art.jpg");
+
+.chess-card {
   position: relative;
   isolation: isolate;
-  min-height: 290px;
-  display: flex;
-  align-items: flex-end;
   overflow: hidden;
-  padding: 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+  gap: 22px;
+  min-height: 290px;
+  padding: 26px;
   border: 1px solid rgba(255,255,255,.14);
   border-radius: 24px;
-  background: var(--surface);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.035), transparent 46%),
+    var(--surface);
   color: inherit;
   text-decoration: none;
-  box-shadow: 0 20px 54px rgba(0,0,0,.24);
+  box-shadow: 0 20px 54px rgba(0,0,0,.28);
   transition: transform .22s var(--spring), border-color .18s ease, box-shadow .18s ease;
 }
-.favorite-card::before {
-  content: "";
+
+.chess-card::before {
+  content: "♜";
   position: absolute;
-  inset: 0;
-  z-index: -2;
-  background-image: var(--cover), url("assets/games/zelda-botw.jpg");
-  background-size: cover;
-  background-position: center 35%;
-  transform: scale(1.012);
-  transition: transform .4s var(--spring);
-}
-.favorite-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
+  right: -18px;
+  bottom: -78px;
   z-index: -1;
-  background:
-    linear-gradient(90deg, rgba(5,5,8,.97) 0%, rgba(5,5,8,.79) 48%, rgba(5,5,8,.22) 100%),
-    linear-gradient(180deg, rgba(5,5,8,.08), rgba(5,5,8,.86));
+  color: rgba(255,255,255,.025);
+  font-family: Georgia, serif;
+  font-size: 330px;
+  line-height: 1;
+  pointer-events: none;
 }
-.favorite-card:hover {
+
+.chess-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(255,255,255,.36);
-  box-shadow: 0 26px 70px rgba(0,0,0,.42), 0 0 24px rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.28);
+  box-shadow: 0 26px 70px rgba(0,0,0,.42), 0 0 22px rgba(255,255,255,.035);
 }
-.favorite-card:hover::before { transform: scale(1.045); }
-.favorite-copy { max-width: 540px; }
-.favorite-kicker {
-  display: block;
-  margin-bottom: 10px;
-  color: #ededed;
+
+.chess-overview {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.chess-mark {
+  width: 84px;
+  height: 84px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 21px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.025)),
+    #080808;
+  color: #f4f4f4;
+  font-family: Georgia, serif;
+  font-size: 47px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.025), 0 16px 34px rgba(0,0,0,.26);
+}
+
+.chess-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.chess-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+  color: #d7d7d7;
   font-size: 9px;
   font-weight: 800;
-  letter-spacing: .2em;
+  letter-spacing: .18em;
   text-transform: uppercase;
 }
-.favorite-title {
-  display: block;
+
+.chess-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #777;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.045);
+  transition: background .2s ease, box-shadow .2s ease;
+}
+
+.chess-status-dot.is-online {
+  background: var(--green);
+  box-shadow: 0 0 12px rgba(85,217,139,.62);
+}
+
+.chess-status-dot.is-error {
+  background: #c8c8c8;
+}
+
+.chess-name {
+  margin: 0;
   color: #fff;
   font-family: var(--body);
-  font-size: clamp(27px, 5vw, 46px);
-  line-height: 1.02;
-  letter-spacing: -.04em;
+  font-size: clamp(27px, 4.5vw, 43px);
+  line-height: 1;
+  letter-spacing: -.035em;
 }
-.favorite-quote {
-  display: block;
-  margin-top: 13px;
-  color: rgba(241,243,248,.8);
+
+.chess-status {
+  min-height: 18px;
+  margin: 9px 0 0;
+  color: var(--muted);
   font-family: var(--body);
-  font-size: 15px;
+  font-size: 13px;
+  line-height: 1.45;
 }
+
+.chess-primary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 9px;
+  margin-top: 20px;
+}
+
+.chess-primary-stat,
+.chess-stat {
+  min-width: 0;
+  border: 1px solid rgba(255,255,255,.075);
+  background: rgba(255,255,255,.025);
+}
+
+.chess-primary-stat {
+  padding: 13px 14px;
+  border-radius: 13px;
+}
+
+.chess-primary-stat span,
+.chess-stat span {
+  display: block;
+  color: var(--faint);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.chess-primary-stat strong {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  color: #fff;
+  font-family: var(--body);
+  font-size: 24px;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chess-stat-grid {
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: stretch;
+  gap: 9px;
+}
+
+.chess-stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 12px 13px;
+  border-radius: 13px;
+}
+
+.chess-stat strong {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  color: #dfe2e8;
+  font-size: 12px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chess-source {
+  position: absolute;
+  right: 25px;
+  bottom: 14px;
+  color: rgba(255,255,255,.22);
+  font-size: 8px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
 
 .games-grid {
   display: grid;
@@ -559,10 +686,16 @@ footer {
   .site-nav a { flex: 0 0 auto; padding-inline: 10px; font-size: 10px; }
   .section { margin-bottom: 54px; }
   .wordmark { font-size: clamp(50px, 16vw, 78px); text-shadow: 0 4px 0 #d8d8d8, 0 8px 0 #8a8a8a, 0 12px 0 #3b3b3b; }
-  .favorite-card { min-height: 330px; padding: 22px; }
-  .favorite-card::after {
-    background: linear-gradient(180deg, rgba(5,5,8,.1) 8%, rgba(5,5,8,.72) 60%, rgba(5,5,8,.96) 100%);
+  .chess-card {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 20px;
   }
+  .chess-overview { align-items: flex-start; }
+  .chess-mark { width: 70px; height: 70px; border-radius: 18px; font-size: 39px; }
+  .chess-primary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .chess-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .chess-source { position: static; grid-column: 1 / -1; margin-top: 2px; }
   .games-grid { grid-template-columns: 1fr; }
   .game-card, .game-content { min-height: 190px; }
   .anime-card { min-height: 236px; flex-direction: column; justify-content: center; text-align: center; padding: 22px 18px; }
@@ -571,6 +704,16 @@ footer {
   .anime-cover-wrap { width: 94px; height: 132px; }
   .anime-badge { margin-inline: auto; }
   .anime-ambient { inset: 25px -18px -20px; }
+}
+
+@media (max-width: 420px) {
+  .chess-card { padding: 17px; gap: 17px; }
+  .chess-overview { gap: 13px; }
+  .chess-mark { width: 58px; height: 58px; border-radius: 15px; font-size: 32px; }
+  .chess-name { font-size: 25px; }
+  .chess-primary-stat { padding: 11px; }
+  .chess-primary-stat strong { font-size: 20px; }
+  .chess-stat { padding: 11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -701,7 +844,7 @@ footer {
 <div class="wrap">
   <nav class="site-nav fade-in" aria-label="Primary navigation">
     <a href="#about">index</a>
-    <a href="#favorite">favorite</a>
+    <a href="#chess">chess</a>
     <a href="#games">games</a>
     <a href="#anime">anime</a>
     <a href="#links">links</a>
@@ -713,21 +856,53 @@ footer {
       <div class="hero-meta">
         <p>gamer &amp; photographer</p>
         <p>he/him</p>
-        <p>bahrain ðŸ‡§ðŸ‡­</p>
+        <p>bahrain 🇧🇭</p>
       </div>
       <p class="hero-copy">
         16, in Bahrain, take photos of everything and uhh I like games and chess!!
       </p>
     </section>
 
-    <section class="section fade-in" id="favorite">
-      <p class="section-label">Favourite game</p>
-      <a class="favorite-card" href="https://www.nintendo.com/us/store/products/the-legend-of-zelda-breath-of-the-wild-switch/" target="_blank" rel="noopener noreferrer">
-        <span class="favorite-copy">
-          <span class="favorite-kicker">all-time favourite</span>
-          <strong class="favorite-title">The Legend of Zelda:<br>Breath of the Wild</strong>
-          <span class="favorite-quote">â€œBest game I've ever played.â€</span>
-        </span>
+    <section class="section fade-in" id="chess">
+      <p class="section-label">Chess.com</p>
+
+      <a class="chess-card" href="https://www.chess.com/member/chinatsu-lover" target="_blank" rel="noopener noreferrer" aria-label="Open chinatsu-lover on Chess.com">
+        <div class="chess-overview">
+          <div class="chess-mark" aria-hidden="true">♜</div>
+
+          <div class="chess-copy">
+            <span class="chess-kicker">
+              <span class="chess-status-dot" id="chess-status-dot"></span>
+              live public statistics
+            </span>
+
+            <h2 class="chess-name">chinatsu-lover</h2>
+            <p class="chess-status" id="chess-status">Loading Chess.com profile…</p>
+
+            <div class="chess-primary">
+              <div class="chess-primary-stat">
+                <span>Rapid rating</span>
+                <strong id="chess-rapid-rating">—</strong>
+              </div>
+
+              <div class="chess-primary-stat">
+                <span>Rapid record</span>
+                <strong id="chess-rapid-record">—</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chess-stat-grid">
+          <div class="chess-stat"><span>Rapid games</span><strong id="chess-rapid-games">—</strong></div>
+          <div class="chess-stat"><span>Rapid peak</span><strong id="chess-rapid-peak">—</strong></div>
+          <div class="chess-stat"><span>Blitz rating</span><strong id="chess-blitz-rating">—</strong></div>
+          <div class="chess-stat"><span>Bullet rating</span><strong id="chess-bullet-rating">—</strong></div>
+          <div class="chess-stat"><span>Daily rating</span><strong id="chess-daily-rating">—</strong></div>
+          <div class="chess-stat"><span>Last online</span><strong id="chess-last-online">—</strong></div>
+        </div>
+
+        <span class="chess-source">Chess.com PubAPI</span>
       </a>
     </section>
 
@@ -740,7 +915,7 @@ footer {
           <div class="game-content">
             <img class="game-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/The_Legend_of_Zelda_Breath_of_the_Wild.svg/512px-The_Legend_of_Zelda_Breath_of_the_Wild.svg.png" data-fallbacks='[]' alt="The Legend of Zelda: Breath of the Wild logo" decoding="async">
             <h2 class="game-title">The Legend of Zelda: Breath of the Wild</h2>
-            <span class="game-meta">favourite Â· adventure</span>
+            <span class="game-meta">favourite · adventure</span>
           </div>
         </a>
 
@@ -770,14 +945,9 @@ footer {
             <span class="game-meta">social deduction</span>
           </div>
         </a>
-        <a class="game-card" href="https://store.steampowered.com/app/4704690/MECCHA_CHAMELEON/" target="_blank" rel="noopener noreferrer">
-          <img class="game-cover"
-               src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4704690/163e2a742e5fb8e1f5d1e3a890da98f04ab809d4/header.jpg?t=1785107783"
-               data-fallbacks='["assets/games/meccha-chameleon.jpg"]'
-               alt="MECCHA CHAMELEON cover"
-               loading="lazy"
-               decoding="async">
 
+        <a class="game-card" href="https://store.steampowered.com/app/4704690/MECCHA_CHAMELEON/" target="_blank" rel="noopener noreferrer">
+          <img class="game-cover" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4704690/header.jpg" data-fallbacks='["assets/games/meccha-chameleon.jpg","assets/games/mecha-domination.jpg"]' alt="MECCHA CHAMELEON cover" loading="lazy" decoding="async">
           <div class="game-content">
             <h2 class="game-title">MECCHA CHAMELEON</h2>
             <span class="game-meta">multiplayer · hide-and-seek</span>
@@ -820,23 +990,23 @@ footer {
       <div class="anime-list">
         <a class="anime-card" data-anilist="Attack on Titan|Shingeki no Kyojin" href="https://anilist.co/search/anime?search=Attack%20on%20Titan" target="_blank" rel="noopener noreferrer">
           <span class="anime-rank">01</span><div class="anime-cover-wrap"><div class="anime-fallback">AOT</div></div>
-          <div class="anime-copy"><div class="anime-title">Attack on Titan</div><div class="anime-native">é€²æ’ƒã®å·¨äºº</div><span class="anime-badge">top pick</span></div>
+          <div class="anime-copy"><div class="anime-title">Attack on Titan</div><div class="anime-native">進撃の巨人</div><span class="anime-badge">top pick</span></div>
         </a>
         <a class="anime-card" data-anilist="Vinland Saga|VINLAND SAGA" href="https://anilist.co/search/anime?search=Vinland%20Saga" target="_blank" rel="noopener noreferrer">
           <span class="anime-rank">02</span><div class="anime-cover-wrap"><div class="anime-fallback">VS</div></div>
-          <div class="anime-copy"><div class="anime-title">Vinland Saga</div><div class="anime-native">ãƒ´ã‚£ãƒ³ãƒ©ãƒ³ãƒ‰ãƒ»ã‚µã‚¬</div><span class="anime-badge">top pick</span></div>
+          <div class="anime-copy"><div class="anime-title">Vinland Saga</div><div class="anime-native">ヴィンランド・サガ</div><span class="anime-badge">top pick</span></div>
         </a>
         <a class="anime-card" data-anilist="Frieren: Beyond Journey's End|Sousou no Frieren" href="https://anilist.co/search/anime?search=Frieren" target="_blank" rel="noopener noreferrer">
           <span class="anime-rank">03</span><div class="anime-cover-wrap"><div class="anime-fallback">FR</div></div>
-          <div class="anime-copy"><div class="anime-title">Frieren: Beyond Journey's End</div><div class="anime-native">è‘¬é€ã®ãƒ•ãƒªãƒ¼ãƒ¬ãƒ³</div><span class="anime-badge">top pick</span></div>
+          <div class="anime-copy"><div class="anime-title">Frieren: Beyond Journey's End</div><div class="anime-native">葬送のフリーレン</div><span class="anime-badge">top pick</span></div>
         </a>
         <a class="anime-card" data-anilist="Death Note|DEATH NOTE" href="https://anilist.co/search/anime?search=Death%20Note" target="_blank" rel="noopener noreferrer">
           <span class="anime-rank">04</span><div class="anime-cover-wrap"><div class="anime-fallback">DN</div></div>
-          <div class="anime-copy"><div class="anime-title">Death Note</div><div class="anime-native">ãƒ‡ã‚¹ãƒŽãƒ¼ãƒˆ</div><span class="anime-badge">top pick</span></div>
+          <div class="anime-copy"><div class="anime-title">Death Note</div><div class="anime-native">デスノート</div><span class="anime-badge">top pick</span></div>
         </a>
         <a class="anime-card" data-anilist="Blue Box|Ao no Hako" href="https://anilist.co/search/anime?search=Blue%20Box" target="_blank" rel="noopener noreferrer">
           <span class="anime-rank">05</span><div class="anime-cover-wrap"><div class="anime-fallback">BB</div></div>
-          <div class="anime-copy"><div class="anime-title">Blue Box</div><div class="anime-native">ã‚¢ã‚ªã®ãƒã‚³</div><span class="anime-badge">top pick</span></div>
+          <div class="anime-copy"><div class="anime-title">Blue Box</div><div class="anime-native">アオのハコ</div><span class="anime-badge">top pick</span></div>
         </a>
       </div>
     </section>
@@ -845,12 +1015,12 @@ footer {
       <p class="section-label">Connections</p>
       <div class="connections">
         <span class="connection"><img src="https://cdn.simpleicons.org/epicgames/FFFFFF" alt="" loading="lazy">todouro.</span>
-        <a class="connection" href="https://github.com/todouro" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/github/FFFFFF" alt="" loading="lazy">todouro â†—</a>
-        <a class="connection" href="https://www.roblox.com/search/users?keyword=Fenrix_YouthYT" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/roblox/FFFFFF" alt="" loading="lazy">Fenrix_YouthYT â†—</a>
-        <a class="connection" href="https://steamcommunity.com/search/users/#text=todouro" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/steam/FFFFFF" alt="" loading="lazy">todouro â†—</a>
-        <a class="connection" href="https://todouro.github.io/" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/githubpages/FFFFFF" alt="" loading="lazy">todouro.github.io â†—</a>
+        <a class="connection" href="https://github.com/todouro" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/github/FFFFFF" alt="" loading="lazy">todouro ↗</a>
+        <a class="connection" href="https://www.roblox.com/search/users?keyword=Fenrix_YouthYT" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/roblox/FFFFFF" alt="" loading="lazy">Fenrix_YouthYT ↗</a>
+        <a class="connection" href="https://steamcommunity.com/search/users/#text=todouro" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/steam/FFFFFF" alt="" loading="lazy">todouro ↗</a>
+        <a class="connection" href="https://todouro.github.io/" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/githubpages/FFFFFF" alt="" loading="lazy">todouro.github.io ↗</a>
       </div>
-      <p class="links-note">Discord display: todouro Â· Member since 13 May 2023</p>
+      <p class="links-note">Discord display: todouro · Member since 13 May 2023</p>
     </section>
 
     <section class="section fade-in" id="cool-buttons">
@@ -859,8 +1029,12 @@ footer {
         <a class="retro-button" href="#anime" aria-label="Go to anime picks">
           <img src="assets/buttons/anime-fan.png" alt="Anime fan">
         </a>
-        
-        
+        <a class="retro-button" href="#about" aria-label="Go to the OLED homepage">
+          <img src="assets/buttons/oled-web.png" alt="OLED web">
+        </a>
+        <span class="retro-button" title="Photography">
+          <img src="assets/buttons/photo-mode.png" alt="Photo mode">
+        </span>
         <span class="retro-button" title="Chess">
           <img src="assets/buttons/chess-player.png" alt="Chess player">
         </span>
@@ -871,13 +1045,13 @@ footer {
           <img src="assets/buttons/nekowatch.png" alt="NekoWatch">
         </a>
       </div>
-      <p class="buttons-note">uhhh I made</p>
+      <p class="buttons-note">tiny retro web buttons, rendered locally at 2× resolution so they stay crisp.</p>
     </section>
   </main>
 
   <footer class="fade-in">
-    <span>Â© 2026 todouro</span>
-    <span class="creator-credit">made by <a href="https://meshahid973.github.io/" target="_blank" rel="noopener noreferrer">meshahid973</a> with ðŸ’–</span>
+    <span>© 2026 todouro</span>
+    <span class="creator-credit">made by <a href="https://meshahid973.github.io/" target="_blank" rel="noopener noreferrer">meshahid973</a> with 💖</span>
   </footer>
 </div>
 
@@ -1041,7 +1215,173 @@ footer {
     applyAnime(card, media);
   })).catch(() => {});
 
+
+  const CHESS_USER = "chinatsu-lover";
+  const CHESS_CACHE_KEY = "todouro:chess:v1";
+  const CHESS_CACHE_TTL = 30 * 60 * 1000;
+
+  function setChessText(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  }
+
+  function formatChessNumber(value) {
+    const number = Number(value);
+    return Number.isFinite(number) ? Math.round(number).toLocaleString("en-US") : "—";
+  }
+
+  function chessMode(stats, name) {
+    return stats && stats[name] ? stats[name] : null;
+  }
+
+  function chessRating(mode) {
+    return mode && mode.last ? formatChessNumber(mode.last.rating) : "—";
+  }
+
+  function chessPeak(mode) {
+    return mode && mode.best ? formatChessNumber(mode.best.rating) : "—";
+  }
+
+  function chessRecord(mode) {
+    if (!mode || !mode.record) return "—";
+    const wins = Number(mode.record.win) || 0;
+    const losses = Number(mode.record.loss) || 0;
+    const draws = Number(mode.record.draw) || 0;
+    return `${wins}W · ${losses}L · ${draws}D`;
+  }
+
+  function chessGames(mode) {
+    if (!mode || !mode.record) return "—";
+    const total =
+      (Number(mode.record.win) || 0) +
+      (Number(mode.record.loss) || 0) +
+      (Number(mode.record.draw) || 0);
+    return total.toLocaleString("en-US");
+  }
+
+  function chessTimeAgo(timestamp) {
+    const seconds = Number(timestamp);
+    if (!Number.isFinite(seconds) || seconds <= 0) return "—";
+
+    const difference = Math.max(0, Math.floor(Date.now() / 1000 - seconds));
+    if (difference < 60) return "just now";
+    if (difference < 3600) return `${Math.floor(difference / 60)}m ago`;
+    if (difference < 86400) return `${Math.floor(difference / 3600)}h ago`;
+    if (difference < 604800) return `${Math.floor(difference / 86400)}d ago`;
+
+    return new Date(seconds * 1000).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    });
+  }
+
+  function renderChessStats(payload, stale) {
+    const stats = payload && payload.stats ? payload.stats : {};
+    const profile = payload && payload.profile ? payload.profile : {};
+
+    const rapid = chessMode(stats, "chess_rapid");
+    const blitz = chessMode(stats, "chess_blitz");
+    const bullet = chessMode(stats, "chess_bullet");
+    const daily = chessMode(stats, "chess_daily");
+
+    setChessText("chess-rapid-rating", chessRating(rapid));
+    setChessText("chess-rapid-record", chessRecord(rapid));
+    setChessText("chess-rapid-games", chessGames(rapid));
+    setChessText("chess-rapid-peak", chessPeak(rapid));
+    setChessText("chess-blitz-rating", chessRating(blitz));
+    setChessText("chess-bullet-rating", chessRating(bullet));
+    setChessText("chess-daily-rating", chessRating(daily));
+    setChessText("chess-last-online", chessTimeAgo(profile.last_online));
+
+    const status = document.getElementById("chess-status");
+    const dot = document.getElementById("chess-status-dot");
+    const lastOnline = Number(profile.last_online) || 0;
+    const online = lastOnline > 0 && (Date.now() / 1000 - lastOnline) < 300;
+
+    if (dot) {
+      dot.classList.toggle("is-online", online);
+      dot.classList.remove("is-error");
+    }
+
+    if (status) {
+      if (online) {
+        status.textContent = "Online on Chess.com now";
+      } else if (stale) {
+        status.textContent = "Showing the most recently saved public statistics";
+      } else if (lastOnline > 0) {
+        status.textContent = `Last seen ${chessTimeAgo(lastOnline)}`;
+      } else {
+        status.textContent = "Public Chess.com ratings and game record";
+      }
+    }
+  }
+
+  function renderChessFailure(hasCachedData) {
+    const status = document.getElementById("chess-status");
+    const dot = document.getElementById("chess-status-dot");
+
+    if (dot) {
+      dot.classList.remove("is-online");
+      dot.classList.add("is-error");
+    }
+
+    if (status && !hasCachedData) {
+      status.textContent = "Stats could not load — open the profile for the latest numbers";
+    }
+  }
+
+  async function fetchChessJson(url) {
+    const response = await fetch(url, {
+      headers: { "Accept": "application/json" },
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error(`Chess.com request failed with ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async function loadChessStats() {
+    let cached = null;
+
+    try {
+      cached = JSON.parse(localStorage.getItem(CHESS_CACHE_KEY) || "null");
+      if (cached && cached.payload) {
+        renderChessStats(cached.payload, true);
+      }
+    } catch (_) {
+      cached = null;
+    }
+
+    if (cached && Date.now() - cached.savedAt < CHESS_CACHE_TTL) {
+      renderChessStats(cached.payload, false);
+      return;
+    }
+
+    try {
+      // Fetch serially to stay friendly to Chess.com's public API rate limits.
+      const stats = await fetchChessJson(`https://api.chess.com/pub/player/${encodeURIComponent(CHESS_USER)}/stats`);
+      const profile = await fetchChessJson(`https://api.chess.com/pub/player/${encodeURIComponent(CHESS_USER)}`);
+
+      const payload = { stats, profile };
+      try {
+        localStorage.setItem(CHESS_CACHE_KEY, JSON.stringify({
+          savedAt: Date.now(),
+          payload
+        }));
+      } catch (_) {}
+
+      renderChessStats(payload, false);
+    } catch (_) {
+      renderChessFailure(Boolean(cached && cached.payload));
+    }
+  }
+
   updateNav();
+  loadChessStats();
   window.addEventListener("scroll", updateNav, { passive: true });
 })();
 </script>
