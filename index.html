@@ -579,6 +579,55 @@ button, a { -webkit-tap-highlight-color: transparent; }
     font-weight: 700;
 }
 
+
+.photo-grid {
+    margin-bottom: 30px;
+    display: grid;  
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.photo-grid img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform .2s ease;
+}
+
+.photo-grid img:hover {
+    transform: scale(1.02);
+}
+
+.photo-lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: opacity 0.25s ease;
+    z-index: 9999;
+}
+
+.photo-lightbox.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.photo-lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
 /* ==========================================================================
    ANIME SECTION
    ========================================================================== */
@@ -882,6 +931,7 @@ footer {
   <nav class="site-nav fade-in" aria-label="Primary navigation">
     <a href="#about">index</a>
     <a href="#chess">chess</a>
+    <a href="#photography">album</a>
     <a href="#anime">anime</a>
     <a href="#links">links</a>
   </nav>
@@ -892,10 +942,10 @@ footer {
       <div class="hero-meta">
         <p>gamer &amp; photographer</p>
         <p>he/him</p>
-        <p>bahrain</p>
+        <p>bahrain 🇧🇭</p>
       </div>
       <p class="hero-copy">
-        16, in Bahrain, take photos of everything and uhh I like photography,games and chess!!
+        16, in Bahrain, take photos of everything and uhh I like games and chess!!
       </p>
     </section>
 
@@ -955,6 +1005,28 @@ footer {
        
       </a>
     </section>
+
+
+    <section id="photography" class="photography-section">
+       <div class="section-header">
+        <p class="section-label">Album</p>
+       </div>
+
+        <div class="photo-grid">
+           <img src="assets/photography/photo1.jpg" alt="Photography 1">
+           <img src="assets/photography/photo2.jpg" alt="Photography 2">
+           <img src="assets/photography/photo3.jpg" alt="Photography 3">
+           <img src="assets/photography/photo4.jpg" alt="Photography 4">
+           <img src="assets/photography/photo5.jpg" alt="Photography 5">
+           <img src="assets/photography/photo6.jpg" alt="Photography 6">
+        </div>
+    </section>
+
+    <div id="photo-lightbox" class="photo-lightbox">
+       <img id="lightbox-image" src="" alt="">
+    </div>
+
+    
 
     <section class="section anime-section fade-in" id="anime">
       <div class="anime-ambient" aria-hidden="true"></div>
@@ -1071,6 +1143,22 @@ footer {
       history.replaceState(null, "", link.getAttribute("href"));
     });
   });
+
+const lightbox = document.getElementById("photo-lightbox");
+const lightboxImage = document.getElementById("lightbox-image");
+const photos = document.querySelectorAll(".photo-grid img");
+
+photos.forEach(photo => {
+    photo.addEventListener("click", () => {
+        lightboxImage.src = photo.src;
+        lightbox.classList.add("active");
+    });
+});
+
+lightbox.addEventListener("click", () => {
+    lightbox.classList.remove("active");
+    lightboxImage.src = "";
+}); 
 
   const animeSection = document.querySelector(".anime-section");
   const animeCards = Array.from(document.querySelectorAll(".anime-card[data-anilist]"));
