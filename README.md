@@ -1,6 +1,6 @@
 ﻿# todouro.github.io
 
-Todouro's personal website featuring photography, favourite games, anime picks, chess, and social links.
+uh my website
 
 ## Website
 
@@ -8,4 +8,4 @@ https://todouro.github.io
 
 ## Credits
 
-Designed and developed by [meshahid973](https://meshahid973.github.io).
+Designed and developed by todouro, assisted by [meshahid973](https://meshahid973.github.io).
