@@ -936,7 +936,7 @@ footer {
       <div class="hero-meta">
         <p>student &amp; hobbyist</p>
         <p>he/him</p>
-        <p>bahrain 🇧🇭</p>
+        <p>bahrain</p>
       </div>
       <p class="hero-copy">
         16, in Bahrain, take photos of everything and uhh I like games and chess!!
@@ -1099,6 +1099,11 @@ footer {
     let current = sections[0];
     for (const section of sections) {
       if (section.getBoundingClientRect().top <= 145) current = section;
+    }
+    // The last section can be shorter than the viewport. At the bottom of
+    // the page it should still own the active navigation state.
+    if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+      current = sections[sections.length - 1];
     }
     links.forEach(link => link.classList.toggle("is-active", link.getAttribute("href") === "#" + current.id));
   }
