@@ -534,6 +534,17 @@ button, a { -webkit-tap-highlight-color: transparent; }
     filter:drop-shadow(0 0 18px rgba(129,182,76,.18));
     user-select:none;
     pointer-events:none;
+    z-index: 1;
+}
+
+.chess-graph {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 75%;
+    z-index: 0;
+    pointer-events: none;
 }
 
 .chess-anime::before{
@@ -967,6 +978,20 @@ footer {
           </div>
 
           <div class="chess-anime">
+            <svg class="chess-graph" viewBox="0 0 400 100" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="graph-grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#81B64C" stop-opacity="0.4"/>
+                        <stop offset="100%" stop-color="#81B64C" stop-opacity="0"/>
+                    </linearGradient>
+                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="3" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                </defs>
+                <path d="M0,90 L40,85 L80,95 L120,60 L160,70 L200,40 L240,45 L280,20 L320,30 L360,10 L400,15 L400,100 L0,100 Z" fill="url(#graph-grad)" />
+                <path d="M0,90 L40,85 L80,95 L120,60 L160,70 L200,40 L240,45 L280,20 L320,30 L360,10 L400,15" fill="none" stroke="#81B64C" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+            </svg>
             <img 
               src="assets/chess/chinatsu.png"
               alt="Anime character"
