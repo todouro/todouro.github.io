@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="90" y1="0" x2="1100" y2="675" gradientUnits="userSpaceOnUse"><stop stop-color="#161F32"/><stop offset=".55" stop-color="#0A0E18"/><stop offset="1" stop-color="#06070C"/></linearGradient>
+    <radialGradient id="aura"><stop stop-color="#8CA0FF" stop-opacity=".4"/><stop offset="1" stop-color="#727EFF" stop-opacity="0"/></radialGradient>
+    <linearGradient id="key" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#B7C0D5"/></linearGradient>
+    <linearGradient id="darkkey" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#343D52"/><stop offset="1" stop-color="#121725"/></linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="30"/></filter>
+  </defs>
+  <rect width="1200" height="675" rx="28" fill="url(#bg)"/>
+  <circle cx="605" cy="268" r="250" fill="url(#aura)" filter="url(#blur)"/>
+  <g opacity=".28" stroke="#9FAEFF" stroke-width="1">
+    <circle cx="600" cy="264" r="65"/><circle cx="600" cy="264" r="105"/><circle cx="600" cy="264" r="148"/><circle cx="600" cy="264" r="193"/>
+  </g>
+  <g stroke="#ADB7FF" stroke-opacity=".2" stroke-width="1">
+    <path d="M600 264 345 84M600 264 454 46M600 264 571 25M600 264 727 49M600 264 852 104M600 264 905 235M600 264 844 409M600 264 703 484M600 264 496 476M600 264 356 392M600 264 310 240"/>
+  </g>
+  <g fill="#C9D2FF">
+    <circle cx="345" cy="84" r="3"/><circle cx="454" cy="46" r="3"/><circle cx="571" cy="25" r="3"/><circle cx="727" cy="49" r="3"/><circle cx="852" cy="104" r="3"/><circle cx="905" cy="235" r="3"/><circle cx="844" cy="409" r="3"/><circle cx="703" cy="484" r="3"/><circle cx="496" cy="476" r="3"/><circle cx="356" cy="392" r="3"/><circle cx="310" cy="240" r="3"/>
+  </g>
+  <rect x="22" y="22" width="1156" height="631" rx="20" stroke="#D9E0FF" stroke-opacity=".13"/>
+  <text x="62" y="72" font-family="Arial,sans-serif" font-size="12" letter-spacing="4" fill="#A9B5D6">NOCTURNE / INTERACTIVE PIANO</text>
+  <text x="600" y="166" text-anchor="middle" font-family="Georgia,serif" font-size="62" letter-spacing="7" fill="#F1F3FF">NOCTURNE</text>
+  <text x="600" y="202" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" letter-spacing="2" fill="#AAB3CE">A small, moonlit piano for the moments in between.</text>
+  <rect x="505" y="226" width="190" height="38" rx="19" fill="#E5E9FF" fill-opacity=".09" stroke="#D6DEFF" stroke-opacity=".36"/>
+  <circle cx="527" cy="245" r="4" fill="#C7D0FF"/><text x="600" y="250" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#E3E8FF">WAKE THE PIANO</text>
+  <g opacity=".65" fill="#D5DCFF">
+    <circle cx="385" cy="289" r="2"/><circle cx="419" cy="322" r="1.5"/><circle cx="475" cy="281" r="2.5"/><circle cx="764" cy="295" r="2"/><circle cx="807" cy="337" r="1.5"/><circle cx="721" cy="318" r="2.5"/><circle cx="552" cy="356" r="1.6"/><circle cx="658" cy="365" r="1.5"/>
+  </g>
+  <rect x="85" y="397" width="1030" height="183" rx="13" fill="#090C14" stroke="#D5DEFF" stroke-opacity=".24"/>
+  <g>
+    <rect x="97" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="168" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="239" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="310" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="381" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="452" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="523" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="594" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="665" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="736" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="807" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="878" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="949" y="409" width="70" height="158" rx="3" fill="url(#key)"/><rect x="1020" y="409" width="83" height="158" rx="3" fill="url(#key)"/>
+    <g fill="url(#darkkey)" stroke="#20283A" stroke-width="1.5">
+      <rect x="148" y="409" width="39" height="97" rx="4"/><rect x="219" y="409" width="39" height="97" rx="4"/><rect x="361" y="409" width="39" height="97" rx="4"/><rect x="432" y="409" width="39" height="97" rx="4"/><rect x="503" y="409" width="39" height="97" rx="4"/><rect x="645" y="409" width="39" height="97" rx="4"/><rect x="716" y="409" width="39" height="97" rx="4"/><rect x="787" y="409" width="39" height="97" rx="4"/><rect x="929" y="409" width="39" height="97" rx="4"/><rect x="1000" y="409" width="39" height="97" rx="4"/>
+    </g>
+    <rect x="593" y="409" width="72" height="158" rx="3" fill="#C4CEFF" fill-opacity=".42" stroke="#DAE0FF" stroke-opacity=".75" stroke-width="2"/>
+    <rect x="716" y="409" width="39" height="97" rx="4" fill="#8B9DFF" fill-opacity=".7"/>
+  </g>
+  <g font-family="Arial,sans-serif" font-size="12" fill="#8994B4" text-anchor="middle">
+    <text x="132" y="548">Z</text><text x="203" y="548">X</text><text x="274" y="548">C</text><text x="345" y="548">V</text><text x="416" y="548">B</text><text x="487" y="548">N</text><text x="558" y="548">M</text><text x="629" y="548" fill="#262E49">,</text><text x="700" y="548">.</text><text x="771" y="548">/</text><text x="842" y="548">Q</text><text x="913" y="548">W</text><text x="984" y="548">E</text><text x="1060" y="548">R</text>
+  </g>
+  <g font-family="Arial,sans-serif" font-size="10" fill="#818BA7" letter-spacing="1.6">
+    <text x="92" y="612">SUSTAIN: OFF</text><text x="490" y="612">ROOM: 24%</text><text x="1015" y="612" text-anchor="end">OCTAVE: 0</text>
+  </g>
+</svg>
