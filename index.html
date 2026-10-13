@@ -639,6 +639,107 @@ button, a { -webkit-tap-highlight-color: transparent; }
     border-radius: 8px;
 }
 
+
+/* ==========================================================================
+   PROJECTS
+   ========================================================================== */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.project-card {
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 19px;
+  background: linear-gradient(155deg, rgba(255,255,255,.035), rgba(255,255,255,.012) 42%), rgba(5,5,7,.94);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 14px 34px rgba(0,0,0,.2);
+  transition: transform .24s var(--spring), border-color .2s ease, box-shadow .2s ease;
+}
+.project-card:hover,
+.project-card:focus-visible {
+  transform: translateY(-3px);
+  border-color: rgba(255,255,255,.2);
+  box-shadow: 0 22px 46px rgba(0,0,0,.34), 0 0 24px rgba(255,255,255,.035);
+}
+.project-preview {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #0b0c10;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.project-preview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,.02), transparent 58%, rgba(0,0,0,.18));
+}
+.project-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .55s var(--spring);
+}
+.project-card:hover .project-preview img,
+.project-card:focus-visible .project-preview img { transform: scale(1.035); }
+.project-copy {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 19px 19px 18px;
+}
+.project-kicker {
+  margin-bottom: 9px;
+  color: #9299a8;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.project-title {
+  margin: 0;
+  color: #f3f4f7;
+  font-family: var(--body);
+  font-size: 23px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.025em;
+}
+.project-description {
+  margin: 10px 0 18px;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: 13px;
+  line-height: 1.65;
+}
+.project-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  color: #e6e8ed;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.project-cta span {
+  color: #9299a8;
+  transition: transform .2s var(--spring), color .2s ease;
+}
+.project-card:hover .project-cta span,
+.project-card:focus-visible .project-cta span { color: #fff; transform: translate(2px, -2px); }
+
 /* ==========================================================================
    ANIME SECTION
    ========================================================================== */
@@ -786,6 +887,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .chess-primary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .chess-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .chess-source { position: static; grid-column: 1 / -1; margin-top: 4px; text-align: right; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .project-copy { padding: 18px; }
   
   .anime-card { min-height: 236px; flex-direction: column; justify-content: center; text-align: center; padding: 22px 18px; }
   .anime-card::after { background: linear-gradient(180deg, rgba(5,5,8,.42), rgba(5,5,8,.92)); }
@@ -936,6 +1039,7 @@ footer {
   <nav class="site-nav fade-in" aria-label="Primary navigation">
     <a href="#about">index</a>
     <a href="#chess">chess</a>
+    <a href="#projects">projects</a>
     <a href="#photography">album</a>
     <a href="#anime">anime</a>
     <a href="#links">links</a>
@@ -1025,6 +1129,37 @@ footer {
       </a>
     </section>
 
+
+
+
+    <section class="section fade-in" id="projects">
+      <p class="section-label">Projects</p>
+      <div class="projects-grid">
+        <a class="project-card" href="https://github.com/todouro/resonance" target="_blank" rel="noopener noreferrer" aria-label="Explore Resonance Music Player on GitHub">
+          <div class="project-preview">
+            <img src="assets/projects/resonance-preview.svg" alt="Preview of Resonance's dark music library and now-playing interface" width="1200" height="675" loading="lazy" decoding="async">
+          </div>
+          <div class="project-copy">
+            <span class="project-kicker">Windows · Music player</span>
+            <h3 class="project-title">Resonance</h3>
+            <p class="project-description">A clean, local-first music player for your own library, with playlists, artwork and a focused listening experience.</p>
+            <span class="project-cta">View project <span aria-hidden="true">↗</span></span>
+          </div>
+        </a>
+
+        <a class="project-card" href="https://github.com/todouro/piano" target="_blank" rel="noopener noreferrer" aria-label="Explore Piano, the NOCTURNE interactive piano, on GitHub">
+          <div class="project-preview">
+            <img src="assets/projects/piano-preview.svg" alt="Preview of NOCTURNE's moonlit piano keyboard and reactive visual effects" width="1200" height="675" loading="lazy" decoding="async">
+          </div>
+          <div class="project-copy">
+            <span class="project-kicker">Web audio · Instrument</span>
+            <h3 class="project-title">Piano</h3>
+            <p class="project-description">A moonlit, browser-based piano with expressive sampled notes, a playable keyboard and subtle note-reactive visuals.</p>
+            <span class="project-cta">View project <span aria-hidden="true">↗</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
 
     <section id="photography" class="photography-section">
        <div class="section-header">
