@@ -947,6 +947,11 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 .anime-copy { max-width: 48%; }
 
+@media (max-width: 760px) {
+  .anime-scene-stage { display: none; }
+  .anime-copy { max-width: 100%; }
+}
+
 .links-note { margin: 15px 0 0; color: var(--faint); font-size: 10px; line-height: 1.6; }
 
 .fade-in { opacity: 0; transform: translateY(10px); animation: fade-up .46s ease forwards; }
