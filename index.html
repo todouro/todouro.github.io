@@ -860,6 +860,98 @@ button, a { -webkit-tap-highlight-color: transparent; }
   text-transform: uppercase;
 }
 
+
+/* Hover-revealed scene gallery */
+.anime-scene-stage {
+  position: absolute;
+  inset: 0 0 0 41%;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  perspective: 900px;
+  transition: opacity .28s ease, visibility .28s ease;
+}
+.anime-scene-frame {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 12px;
+  background: #111;
+  box-shadow: 0 12px 32px rgba(0,0,0,.42), 0 0 0 1px rgba(255,255,255,.045);
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: transform .58s var(--spring), opacity .3s ease, border-color .3s ease;
+}
+.anime-scene-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+  transform: scale(1.04);
+}
+.anime-scene-frame:nth-child(1) {
+  left: 4%;
+  top: 22%;
+  width: 31%;
+  height: 62%;
+  transform: translate3d(var(--scene-x, 0px), calc(var(--scene-y, 0px) + 24px), 0) rotate(-11deg) scale(.68);
+}
+.anime-scene-frame:nth-child(1) img { object-position: 13% 50%; }
+.anime-scene-frame:nth-child(2) {
+  left: 34%;
+  top: 5%;
+  width: 34%;
+  height: 86%;
+  transform: translate3d(var(--scene-x, 0px), calc(var(--scene-y, 0px) + 20px), 0) rotate(2deg) scale(.66);
+}
+.anime-scene-frame:nth-child(2) img { object-position: 50% 50%; }
+.anime-scene-frame:nth-child(3) {
+  right: 3%;
+  top: 19%;
+  width: 30%;
+  height: 66%;
+  transform: translate3d(var(--scene-x, 0px), calc(var(--scene-y, 0px) + 26px), 0) rotate(10deg) scale(.64);
+}
+.anime-scene-frame:nth-child(3) img { object-position: 87% 50%; }
+.anime-card:hover .anime-scene-stage,
+.anime-card:focus-visible .anime-scene-stage {
+  opacity: 1;
+  visibility: visible;
+}
+.anime-card:hover .anime-scene-frame,
+.anime-card:focus-visible .anime-scene-frame {
+  opacity: 1;
+  border-color: rgba(255,255,255,.28);
+}
+.anime-card:hover .anime-scene-frame:nth-child(1),
+.anime-card:focus-visible .anime-scene-frame:nth-child(1) {
+  transform: translate3d(var(--scene-x, 0px), var(--scene-y, 0px), 0) rotate(-11deg) scale(1);
+}
+.anime-card:hover .anime-scene-frame:nth-child(2),
+.anime-card:focus-visible .anime-scene-frame:nth-child(2) {
+  transform: translate3d(var(--scene-x, 0px), var(--scene-y, 0px), 0) rotate(2deg) scale(1.04);
+}
+.anime-card:hover .anime-scene-frame:nth-child(3),
+.anime-card:focus-visible .anime-scene-frame:nth-child(3) {
+  transform: translate3d(var(--scene-x, 0px), var(--scene-y, 0px), 0) rotate(10deg) scale(1);
+}
+.anime-rank,
+.anime-cover-wrap,
+.anime-copy {
+  position: relative;
+  z-index: 2;
+}
+.anime-copy { max-width: 48%; }
+
+@media (max-width: 760px) {
+  .anime-scene-stage { display: none; }
+  .anime-copy { max-width: 100%; }
+}
+
 .links-note { margin: 15px 0 0; color: var(--faint); font-size: 10px; line-height: 1.6; }
 
 .fade-in { opacity: 0; transform: translateY(10px); animation: fade-up .46s ease forwards; }
@@ -1167,22 +1259,47 @@ footer {
       <p class="section-label">Top anime picks</p>
       <div class="anime-list">
         <a class="anime-card" data-anilist="Attack on Titan|Shingeki no Kyojin" href="https://anilist.co/search/anime?search=Attack%20on%20Titan" target="_blank" rel="noopener noreferrer">
+          <span class="anime-scene-stage" aria-hidden="true">
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+          </span>
           <span class="anime-rank">01</span><div class="anime-cover-wrap"><div class="anime-fallback">AOT</div></div>
           <div class="anime-copy"><div class="anime-title">Attack on Titan</div><div class="anime-native">進撃の巨人</div><span class="anime-badge">top pick</span></div>
         </a>
         <a class="anime-card" data-anilist="Vinland Saga|VINLAND SAGA" href="https://anilist.co/search/anime?search=Vinland%20Saga" target="_blank" rel="noopener noreferrer">
+          <span class="anime-scene-stage" aria-hidden="true">
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+          </span>
           <span class="anime-rank">02</span><div class="anime-cover-wrap"><div class="anime-fallback">VS</div></div>
           <div class="anime-copy"><div class="anime-title">Vinland Saga</div><div class="anime-native">ヴィンランド・サガ</div><span class="anime-badge">top pick</span></div>
         </a>
         <a class="anime-card" data-anilist="Frieren: Beyond Journey's End|Sousou no Frieren" href="https://anilist.co/search/anime?search=Frieren" target="_blank" rel="noopener noreferrer">
+          <span class="anime-scene-stage" aria-hidden="true">
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+          </span>
           <span class="anime-rank">03</span><div class="anime-cover-wrap"><div class="anime-fallback">FR</div></div>
           <div class="anime-copy"><div class="anime-title">Frieren: Beyond Journey's End</div><div class="anime-native">葬送のフリーレン</div><span class="anime-badge">top pick</span></div>
         </a>
         <a class="anime-card" data-anilist="Death Note|DEATH NOTE" href="https://anilist.co/search/anime?search=Death%20Note" target="_blank" rel="noopener noreferrer">
+          <span class="anime-scene-stage" aria-hidden="true">
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+          </span>
           <span class="anime-rank">04</span><div class="anime-cover-wrap"><div class="anime-fallback">DN</div></div>
           <div class="anime-copy"><div class="anime-title">Death Note</div><div class="anime-native">デスノート</div><span class="anime-badge">top pick</span></div>
         </a>
         <a class="anime-card" data-anilist="Blue Box|Ao no Hako" href="https://anilist.co/search/anime?search=Blue%20Box" target="_blank" rel="noopener noreferrer">
+          <span class="anime-scene-stage" aria-hidden="true">
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+            <span class="anime-scene-frame"><img alt="" loading="lazy" decoding="async"></span>
+          </span>
           <span class="anime-rank">05</span><div class="anime-cover-wrap"><div class="anime-fallback">BB</div></div>
           <div class="anime-copy"><div class="anime-title">Blue Box</div><div class="anime-native">アオのハコ</div><span class="anime-badge">top pick</span></div>
         </a>
@@ -1354,6 +1471,12 @@ lightbox.addEventListener("click", () => {
     const banner = media.bannerImage || cover;
     const coverWrap = card.querySelector(".anime-cover-wrap");
     const native = card.querySelector(".anime-native");
+    const sceneImage = cleanUrl(banner || cover || "");
+    if (sceneImage) {
+      card.querySelectorAll(".anime-scene-frame img").forEach(image => {
+        if (image.getAttribute("src") !== sceneImage) image.src = sceneImage;
+      });
+    }
 
     if (banner) {
       const safe = cleanUrl(banner);
@@ -1365,9 +1488,33 @@ lightbox.addEventListener("click", () => {
     if (media.siteUrl) card.href = media.siteUrl;
   }
 
+  function updateAnimeSceneParallax(card, event) {
+    const bounds = card.getBoundingClientRect();
+    if (!bounds.width || !bounds.height) return;
+
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+    const depth = [0.72, 1.12, 0.82];
+
+    card.querySelectorAll(".anime-scene-frame").forEach((frame, index) => {
+      frame.style.setProperty("--scene-x", ((x * depth[index] * 20).toFixed(2)) + "px");
+      frame.style.setProperty("--scene-y", ((y * depth[index] * 14).toFixed(2)) + "px");
+    });
+  }
+
+  function resetAnimeSceneParallax(card) {
+    card.querySelectorAll(".anime-scene-frame").forEach(frame => {
+      frame.style.removeProperty("--scene-x");
+      frame.style.removeProperty("--scene-y");
+    });
+  }
+
   animeCards.forEach(card => {
     card.addEventListener("mouseenter", () => setSiteAnimeBackground(card));
+    card.addEventListener("mousemove", event => updateAnimeSceneParallax(card, event));
+    card.addEventListener("mouseleave", () => resetAnimeSceneParallax(card));
     card.addEventListener("focus", () => setSiteAnimeBackground(card));
+    card.addEventListener("blur", () => resetAnimeSceneParallax(card));
   });
 
   if (animeSection) {
